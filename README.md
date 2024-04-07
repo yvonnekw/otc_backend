@@ -117,3 +117,7 @@ The tests are currently written in Postman. In the future, component and integra
 
 `docker images`
 
+`docker run -p 8000:8000 yvonnetest/otc-springboot-backend-image:latest`
+
+`docker run -p 2000:2000 yvonnetest/otc-vite-react-frontend-image:latest`
+
