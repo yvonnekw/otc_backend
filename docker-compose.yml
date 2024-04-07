@@ -1,0 +1,55 @@
+#
+version: '2'
+
+services:
+  app:
+    image: 'otc-backend-springboot-docker-img:latest'
+    build:
+      context: otc-backend
+    #container_name: otcbackend
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/otcDb
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+    ports:
+      - "8000:8000"
+
+  db:
+    image: 'postgres:16.1'
+    #container_name: otc-db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=otcDb
+    ports:
+      - "5434:5432"
+    restart: unless-stopped
+
+  frontend:
+    image: 'otc-frontend-vite-react-docker-img:latest'
+   # build:
+      #context: frontend
+    #container_name: otc-frontend
+    ports:
+        - "2000:2000"
+
+  rabbitmq:
+    image: rabbitmq:latest
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      discovery.type: single-node
+    ports:
+      - "9200:9200"
+      - "9300:9300"

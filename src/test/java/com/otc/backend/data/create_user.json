@@ -1,0 +1,9 @@
+{
+ "firstName": "Gergna",
+ "lastName": "Brown",
+ "emailAddress": "mki@mail.com",
+ "username": "yodalpinky1",
+ "password": "pwd",
+ "telephone": "07892883117",
+  "authorities": ["ADMIN"]
+}
