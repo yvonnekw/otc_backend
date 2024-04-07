@@ -70,6 +70,6 @@ jobs:
         with:
           push: true
           tags: yvonnetest/otc-springboot-backend-image:latest
-          dockerfile: Dockerfile
-         # context: otc-backend
+          dockerfile: otc-backend/Dockerfile
+          context: .
 
