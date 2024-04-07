@@ -19,5 +19,5 @@ FROM openjdk:20
 
 # Expose port
 EXPOSE 8000
-ADD target/otc-springboot-backend-image.jar otc-springboot-backend-image.jar
+ADD /target/otc-springboot-backend-image.jar otc-springboot-backend-image.jar
 ENTRYPOINT ["java","-jar","/otc-springboot-backend-image.jar"]
