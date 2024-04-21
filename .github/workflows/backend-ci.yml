@@ -16,7 +16,7 @@ jobs:
 
     services:
       db:
-        image: postgres:16
+        image: postgres
         env:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -84,5 +84,5 @@ jobs:
           context: .
 
    # volumes:
-     # postgres:
+      #postgres:
       #pgadmin:
