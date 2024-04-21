@@ -17,11 +17,11 @@ jobs:
 
     services:
       db:
-        image: postgres:16
+        image: postgres
         env:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          #POSTGRES_DB: otcDb
+          POSTGRES_DB: otcDb
           PGDATA: /data/postgres
         volumes: 
           - postgres:/data/postgres
@@ -29,18 +29,18 @@ jobs:
           - "5432:5432"
         #networks:
          # - otc-network
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+       # options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
       
-      #pgadmin:
-        #image: dpage/pgadmin4
-        #env:
-         # PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-         #PGADMIN_DEFAULT_PASSWORD: ${POSTGRES_PASSWORD}
-          #PGADMIN_CONFIG_SERVER_MODE: "False"
-        #volumes: 
-         # - pgadmin:/var/lib/pgadmin
-        #ports: 
-          #- 5050:80
+      pgadmin:
+        image: dpage/pgadmin4
+        env:
+          PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+          PGADMIN_DEFAULT_PASSWORD: ${POSTGRES_PASSWORD}
+          PGADMIN_CONFIG_SERVER_MODE: "False"
+        volumes: 
+          - pgadmin:/var/lib/pgadmin
+        ports: 
+          - 5050:80
        # networks:
          # - otc-network
 
