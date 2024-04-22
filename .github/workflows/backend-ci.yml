@@ -17,8 +17,8 @@ jobs:
 
     services:
       rabbitmq:
-        #image: rabbitmq:latest
-        image: ghcr.io/pedersen/rabbitmq-action:latest
+        image: rabbitmq:latest
+        #image: ghcr.io/pedersen/rabbitmq-action:latest
         options: --name my-rabbitmq --publish 5672:5672
         env:
           RABBITMQ_DEFAULT_USER: ${{ secrets.RABBITMQ_USERNAME }}
