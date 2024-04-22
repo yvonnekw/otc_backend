@@ -16,24 +16,18 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      db:
-        image: postgres:16
-        env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: otcDb
-        ports:
-          - 5434:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
-
       rabbitmq:
         image: rabbitmq:latest
+        #image: ghcr.io/pedersen/rabbitmq-action:latest
+        options: --name my-rabbitmq --publish 5672:5672
         env:
           RABBITMQ_DEFAULT_USER: ${{ secrets.RABBITMQ_USERNAME }}
           RABBITMQ_DEFAULT_PASS: ${{ secrets.RABBITMQ_PASSWORD }}
         ports:
-          - 5672:5672
-        options: --health-cmd "rabbitmq-diagnostics -q ping"
+         # - 5672:5672
+          - 15673:15672
+        #options: --health-cmd "rabbitmq-diagnostics -q ping"
+        #command: rabbitmq-server
 
       elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
