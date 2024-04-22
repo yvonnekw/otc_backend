@@ -70,7 +70,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public Users registerUser(@RequestBody RegistrationDto body) {
         try {
-        rabbitMQJsonProducer.sendJsonMessage(body);
+       // rabbitMQJsonProducer.sendJsonMessage(body);
         return userService.registerUser(body);
         } catch (Exception e) {
             logger.error("Error occurred during user registration: " + e.getMessage(), e);
