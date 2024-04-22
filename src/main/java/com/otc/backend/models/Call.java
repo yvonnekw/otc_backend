@@ -7,9 +7,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -55,10 +57,9 @@ public class Call {
     @ManyToOne
     @JoinColumn(name = "receiver_id")
     private CallReceiver receiver;
- 
+
     public Call() {
     }
-
 
     public Call(String startTime, String endTime, String duration, String costPerSecond, String discountForCalls,
             String vat, String netCost, String grossCost, String callDate, String status, Users user, CallReceiver receiver) {
@@ -74,6 +75,7 @@ public class Call {
         this.status = status;
         this.user = user;
         this.receiver = receiver;
+       
     }
 
 
