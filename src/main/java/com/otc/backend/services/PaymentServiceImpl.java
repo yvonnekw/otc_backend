@@ -50,17 +50,17 @@ public class PaymentServiceImpl implements PaymentService {
     public Payment createPayment(Payment payment) {
         try {
             Invoice invoice = payment.getInvoice();
-            Set<Call> calls = invoice.getCalls();
+           // Set<Call> calls = invoice.getCalls();
 
             // Set invoice status to "Paid"
             invoice.setStatus("Paid");
 
-            // Update the status of each call to "Paid" and save them
+           /* // Update the status of each call to "Paid" and save them
             for (Call call : calls) {
                 call.setStatus("Paid");
                 callRepository.save(call);
                 logger.info("Call status updated: {}", call);
-            }
+            }*/
             payment.setAmount(invoice.getTotalAmount());
 
             logger.info("Total amount from invoice: {}", payment.getAmount());

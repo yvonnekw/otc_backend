@@ -16,7 +16,7 @@ public class CallsToInvoicePK implements Serializable{
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "call_id")
-    private Call Call;
+    private Call call;
 
     public Invoice getInvoice() {
         return invoice;
@@ -27,11 +27,11 @@ public class CallsToInvoicePK implements Serializable{
     }
 
     public Call getCall() {
-        return Call;
+        return call;
     }
 
     public void setCall(Call call) {
-        Call = call;
+        call = call;
     }
 
     

@@ -1,6 +1,7 @@
 package com.otc.backend.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -65,6 +66,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Invoice createInvoice(Invoice invoice) {
+        invoice.setInvoiceDate(LocalDate.now().toString());
  
         Invoice savedInvoice = invoiceRepository.save(invoice);
 
@@ -164,7 +166,7 @@ public class InvoiceServiceImpl implements InvoiceService {
             invoice.setInvoiceDate(LocalDateTime.now().toString());
             invoice.setStatus("Invoiced");
             invoice.setTotalAmount(totalAmount.toString());
-            invoice.setCalls(new HashSet<>(calls));
+          //  invoice.setCalls(new HashSet<>(calls));
             invoice = invoiceRepository.save(invoice);
 
             // Update the InvoiceDTO with the saved invoice details
