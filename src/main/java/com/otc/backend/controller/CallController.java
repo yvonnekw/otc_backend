@@ -114,7 +114,7 @@ public class CallController {
 
         Call call = callService.makeCall(userName, telephone, callsDto);
 
-        rabbitMQJsonProducer.sendJsonMessage(call);
+        //rabbitMQJsonProducer.sendJsonMessage(call);
 
         return call;
     }
