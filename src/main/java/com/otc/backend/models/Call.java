@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
@@ -38,7 +39,9 @@ public class Call {
     private Long callId;
     private String startTime;
     private String endTime;
+    @JsonIgnore
     private String duration;
+    @JsonIgnore
     private String costPerSecond;
     private String discountForCalls;
     private String vat;
@@ -47,6 +50,7 @@ public class Call {
    // private String totalCost;
     private String callDate;
     private String status;
+    private BigDecimal netCostAfterDiscount;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -105,6 +109,15 @@ public class Call {
         this.user = user;
         this.receiver = receiver;
     }
+
+    public BigDecimal getNetCostAfterDiscount() {
+        return netCostAfterDiscount;
+    }
+
+    public void setNetCostAfterDiscount(BigDecimal netCostAfterDiscount) {
+        this.netCostAfterDiscount = netCostAfterDiscount;
+    }
+
 
     public String getCostPerSecond() {
         return costPerSecond;

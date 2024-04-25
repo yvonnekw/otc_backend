@@ -54,7 +54,7 @@ public class CallReceiverController {
         List<CallReceiver> callReceivers = callReceiverService.getCallReceiversByUsername(username);
         return new ResponseEntity<>(callReceivers, HttpStatus.OK);
     }
-    @PostMapping("/add/receiver")
+    @PostMapping("/add-receiver")
     public ResponseEntity<String> callReceiver(@RequestBody LinkedHashMap<String, String> body) throws Exception {
 
         String telephone = body.get("telephone");

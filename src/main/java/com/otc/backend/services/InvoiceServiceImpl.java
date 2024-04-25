@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+
 import com.otc.backend.dto.InvoiceDTO;
 import com.otc.backend.models.Call;
 import com.otc.backend.models.Invoice;
@@ -22,6 +24,7 @@ import com.otc.backend.repository.CallRepository;
 import com.otc.backend.repository.InvoiceRepository;
 
 @Service
+@Transactional
 public class InvoiceServiceImpl implements InvoiceService {
 
     private static final Logger logger = LoggerFactory.getLogger(InvoiceServiceImpl.class);
@@ -133,10 +136,99 @@ public class InvoiceServiceImpl implements InvoiceService {
     public InvoiceDTO createInvoiceForCalls(InvoiceDTO invoiceDTO) {
         try {
 
+            logger.info("invoice datacoming in{}", invoiceDTO);
             // Check if callIds list is null
             if (invoiceDTO.getCallIds() == null) {
                 throw new IllegalArgumentException("CallIds list must not be null.");
             }
+
+            // Extract call IDs from the DTO
+            List<Long> callIds = invoiceDTO.getCallIds();
+            logger.info("Call ids {}", callIds);
+
+            // Retrieve only the calls provided in the DTO
+            Set<Call> calls = new HashSet<>();
+            for (Long callId : callIds) {
+                Optional<Call> optionalCall = callRepository.findById(callId);
+                optionalCall.ifPresent(calls::add);
+            }
+
+            // Update status of associated calls to "Invoiced"
+            for (Call call : calls) {
+                call.setStatus("Invoiced");
+                // Save the updated call status to the database if needed
+                callRepository.save(call);
+                logger.info("Call status updated: {}", call);
+            }
+
+            // Save invoice entity
+            Invoice invoice = new Invoice();
+            invoice.setInvoiceDate(LocalDateTime.now().toString());
+           
+            //invoice.calls.setTotalAmount();
+
+            BigDecimal totalAmount = BigDecimal.ZERO;
+            BigDecimal totalAmount1 = BigDecimal.ZERO;
+            for (Call call : calls) {
+                BigDecimal netCostAfterDiscount = call.getNetCostAfterDiscount();
+                String netCost = call.getNetCost();
+                if (netCostAfterDiscount != null) { // Check if netCostAfterDiscount is not null
+                    totalAmount = totalAmount.add(netCostAfterDiscount);
+                }
+
+                BigDecimal netCostDecimal = new BigDecimal(netCost);
+
+                if (netCost != null) { // Check if netCostAfterDiscount is not null
+                    totalAmount1 = totalAmount1.add(netCostDecimal);
+                }
+
+                logger.info("Totalcost {}", totalAmount);
+                logger.info("net cost from call {}", totalAmount1);
+
+                invoice.setStatus("Invoiced");
+
+
+            }
+            invoice.setTotalAmount(totalAmount1.toString());
+
+            // Set other invoice properties as needed
+            invoice.setCalls(calls);
+            invoice = invoiceRepository.save(invoice);
+
+            // Update the InvoiceDTO with the saved invoice details
+           // invoiceDTO.setInvoiceId(invoice.getInvoiceId());
+           // invoiceDTO.setInvoiceDate(invoice.getInvoiceDate());
+          //  invoiceDTO.setStatus(invoice.getStatus());
+            // Set other fields if needed
+
+            return invoiceDTO;
+        } catch (Exception e) {
+            // Handle exceptions
+            logger.error("Error creating invoice: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to create invoice", e);
+        }
+    }
+
+    private BigDecimal parseDecimal(String value) {
+        try {
+            return new BigDecimal(value);
+        } catch (NumberFormatException e) {
+            // Handle the case where the value cannot be parsed as a BigDecimal
+            // For example, log the error and return a default value
+            logger.error("Error parsing decimal value: {}", value);
+            return BigDecimal.ZERO; // Or any other default value
+        }
+    }
+
+    /*
+
+    public InvoiceDTO createInvoiceForCalls(InvoiceDTO invoiceDTO) {
+        try {
+            // Check if callIds list is null
+            if (invoiceDTO.getCallIds() == null) {
+                throw new IllegalArgumentException("CallIds list must not be null.");
+            }
+
             // Extract call IDs from the DTO
             List<Long> callIds = invoiceDTO.getCallIds();
             logger.info("Call ids {}", callIds);
@@ -148,41 +240,44 @@ public class InvoiceServiceImpl implements InvoiceService {
                 optionalCall.ifPresent(calls::add);
             }
 
+            // Check if any call has already been invoiced
+            for (Call call : calls) {
+                if ("Invoiced".equals(call.getStatus())) {
+                    // If any call has already been invoiced, return an error
+                    throw new IllegalStateException("Call with ID " + call.getCallId() + " has already been invoiced.");
+                }
+            }
+
             // Calculate total amount
             BigDecimal totalAmount = callService.calculateTotalAmount(calls);
             logger.info("Total amount calculated: {}", totalAmount);
 
-            // Update status of associated calls
+            // Update status of associated calls to "Invoiced"
             for (Call call : calls) {
                 call.setStatus("Invoiced");
                 callRepository.save(call);
                 logger.info("Call status updated: {}", call);
             }
 
-            // Save invoice entity
-            Invoice invoice = new Invoice();
-            invoice.setInvoiceDate(LocalDateTime.now().toString());
-            invoice.setStatus("Invoiced");
-            invoice.setTotalAmount(totalAmount.toString());
-            invoice.setCalls(new HashSet<>(calls));
-            invoice = invoiceRepository.save(invoice);
+            // Create or update the invoice entity
+            // (Code for creating or updating invoice goes here...)
 
-            // Update the InvoiceDTO with the saved invoice details
-            invoiceDTO.setInvoiceId(invoice.getInvoiceId());
-            invoiceDTO.setInvoiceDate(invoice.getInvoiceDate());
-            invoiceDTO.setStatus(invoice.getStatus());
-            invoiceDTO.setTotalAmount(invoice.getTotalAmount());
-            // You may need to set other fields if they were updated by the repository
-
-            return invoiceDTO;
+            // Return success response
+            // Since we are not yet returning the created/updated invoice details,
+            // we'll return a generic success response here.
+            return new InvoiceDTO(); // Modify as per your actual response structure
+        } catch (IllegalStateException e) {
+            // Handle case where call has already been invoiced
+            logger.error("Error creating invoice: {}", e.getMessage());
+            throw new RuntimeException(e.getMessage(), e);
         } catch (Exception e) {
-            // Handle exceptions
-            // Log and throw or return an appropriate error response
+            // Handle other exceptions
             logger.error("Error creating invoice: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to create invoice", e);
         }
     }
-
+    
+    */
 /* 
     public Invoice createInvoiceForCalls(Invoice invoice) {
         try {

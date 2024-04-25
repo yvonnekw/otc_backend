@@ -20,6 +20,7 @@ import com.otc.backend.repository.InvoiceRepository;
 import com.otc.backend.repository.PaymentRepository;
 
 @Service
+@Transactional
 public class PaymentServiceImpl implements PaymentService {
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
@@ -45,15 +46,19 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentOptional.orElse(null); // Return null if payment is not found
     }
 
-    @Transactional
+    //@Transactional
     @Override
     public Payment createPayment(Payment payment) {
         try {
             Invoice invoice = payment.getInvoice();
+
+            logger.info("invoice for payment: {}", invoice);
             Set<Call> calls = invoice.getCalls();
 
+            logger.info("Total amount from invoice before status set: {}", invoice.getTotalAmount());
+            logger.info("set of calls for invoicing: {}", calls);
             // Set invoice status to "Paid"
-            invoice.setStatus("Paid");
+            //invoice.setStatus("Paid");
 
             // Update the status of each call to "Paid" and save them
             for (Call call : calls) {
@@ -61,9 +66,13 @@ public class PaymentServiceImpl implements PaymentService {
                 callRepository.save(call);
                 logger.info("Call status updated: {}", call);
             }
+
+            logger.info("Total amount from invoice: {}", invoice.getTotalAmount());
             payment.setAmount(invoice.getTotalAmount());
 
-            logger.info("Total amount from invoice: {}", payment.getAmount());
+            logger.info("Total amount from payment: {}", payment.getAmount());
+
+            invoice.setStatus("Paid");
 
             // Save the updated invoice
             invoiceRepository.save(invoice);

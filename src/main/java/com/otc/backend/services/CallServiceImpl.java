@@ -34,7 +34,10 @@ import com.otc.backend.repository.CallRepository;
 import com.otc.backend.repository.InvoiceRepository;
 import com.otc.backend.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class CallServiceImpl implements CallService {
 
     private static final Logger logger = LoggerFactory.getLogger(CallServiceImpl.class);
@@ -119,6 +122,8 @@ public class CallServiceImpl implements CallService {
 
             // Apply discount if available
             BigDecimal netCostAfterDiscount = call.applyDiscount(netCost, discount);
+            logger.info("netCost After Discount {}", netCostAfterDiscount);
+            call.setNetCostAfterDiscount(netCostAfterDiscount);
 
             // Calculate VAT amount
             BigDecimal vatAmount = call.calculateVATAmount(netCostAfterDiscount);

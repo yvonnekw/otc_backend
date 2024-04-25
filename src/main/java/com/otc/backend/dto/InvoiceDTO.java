@@ -19,7 +19,12 @@ public class InvoiceDTO {
 
     public InvoiceDTO() {
     }
-    
+
+    public InvoiceDTO(String status, List<Long> callIds) {
+        this.status = status;
+        this.callIds = callIds;
+    }
+
     public InvoiceDTO(Long invoiceId, String invoiceDate, String status, String totalAmount,
             List<Long> callIds) {
         this.invoiceId = invoiceId;

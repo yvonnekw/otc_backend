@@ -53,8 +53,14 @@ public class Invoice {
    // @JoinColumn(name = "current_call_id")
    // private CurrentCall currentCall;
 
-    public Invoice() {
-    }
+   public Invoice() {
+   }
+    
+   public Invoice( String status, String totalAmount, Set<Call> calls) {
+       this.status = status;
+       this.totalAmount = totalAmount;
+       this.calls = calls;
+   }
 
 
     public Invoice(Long invoiceId, String invoiceDate, String status, String totalAmount, Set<Call> calls) {
