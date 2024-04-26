@@ -52,6 +52,11 @@ jobs:
         run:
           #cd otc-backend
           mvn -B package -DskipTests --file pom.xml
+        
+      - name: Wait for backend application to be ready
+        run: |
+          while [[ "$(curl -s -o /dev/null -w '%{http_code}' localhost:8000/actuator/health)" != "200" ]]; do sleep 5; done
+
           
      # - name: Logging to Docker
         #uses: docker/login-action@v3
