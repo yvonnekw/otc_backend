@@ -76,7 +76,7 @@ jobs:
           #workflow_file_name: otc_github_ci.yml
           #ref: postman_test_branch
         with:
-          token: ${{ secrets.GITHUB_TOKEN }} # Use a valid GitHub token here
+          token: ${{ secrets.G_PERSONAL_TOKEN }} # Use a valid GitHub token here
           repository: yvonnekw/otc_backend # Repository where the workflow should be triggered
           event-type: workflow_dispatch # Type of event to trigger (workflow_dispatch in this case)
           client-payload: '{}' # Optional payload data (empty in this case)
