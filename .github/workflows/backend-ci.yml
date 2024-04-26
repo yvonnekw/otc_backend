@@ -60,11 +60,20 @@ jobs:
       
       - name: Verify port 8000 of the app is running
         run: |
-          sleep 10 # Give the application some time to start
+          sleep 10 
           nc -zv localhost 8000
+          sleept 10s
 
       - name: Tear down services
         run: docker-compose -f docker-compose.yml down
+
+      - name: Trigger and wait for Postman tests
+        uses: convictional/trigger-workflow-and-wait@v1.6.5
+        with:
+          owner: yvonnekw
+          repo: otc-postman-repo
+          token: ${{ secrets.G_PERSONAL_TOKEN}}
+          workflow_file_name: otc-postman-ci.yml
 
       #- name: Start backend application
        #run: java -jar target/otc-springboot-backend-image.jar &
