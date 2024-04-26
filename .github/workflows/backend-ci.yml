@@ -72,7 +72,7 @@ jobs:
         with:
           owner: yvonnekw
           repo: otc-postman-repo
-          token: ${{ secrets.G_PERSONAL_TOKEN}}
+          github_token: ${{ secrets.G_PERSONAL_TOKEN}}
           workflow_file_name: otc-postman-ci.yml
 
       #- name: Start backend application
