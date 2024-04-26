@@ -56,6 +56,10 @@ jobs:
       - name: Start backend application
         run: java -jar target/otc-springboot-backend-image.jar &
 
+      - name: Start PostgreSQL database
+        run: |
+            docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=password -d postgres:latest
+
         
       - name: Wait for backend application to be ready
         run: |
