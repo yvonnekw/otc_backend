@@ -74,6 +74,7 @@ jobs:
           repo: otc-postman-repo
           github_token: ${{ secrets.G_PERSONAL_TOKEN}}
           workflow_file_name: otc-postman-ci.yml
+          ref: postman_test_branch
 
       #- name: Start backend application
        #run: java -jar target/otc-springboot-backend-image.jar &
