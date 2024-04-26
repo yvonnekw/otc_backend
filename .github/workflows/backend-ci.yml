@@ -59,7 +59,7 @@ jobs:
         
       - name: Wait for backend application to be ready
         run: |
-          while [[ "$(curl -s -o /dev/null -w '%{http_code}' localhost:8000/actuator/health)" != "200" ]]; do sleep 5; done
+          while [[ "$(curl -s -o /dev/null -w '%{http_code}' localhost:8000/user)" != "200" ]]; do sleep 5; done
 
           
      # - name: Logging to Docker
