@@ -52,18 +52,34 @@ jobs:
         run:
           #cd otc-backend
           mvn -B package -DskipTests --file pom.xml
-
-      - name: Start backend application
-        run: java -jar target/otc-springboot-backend-image.jar &
-
-      - name: Start PostgreSQL database
+        
+      - name: Build and run services
         run: |
-            docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=password -d postgres:latest
+          docker-compose -f docker-compose.yml up -d
+      
+      - name: Verify port 8000 of the app is running
+        run: |
+          sleep 10 # Give the application some time to start
+          nc -zv localhost 8000
+
+      - name: Run tests
+        run: |
+          # Execute your tests here against the running services
+
+      - name: Tear down services
+        run: docker-compose -f docker-compose.yml down
+
+      #- name: Start backend application
+       #run: java -jar target/otc-springboot-backend-image.jar &
+
+      #- name: Start PostgreSQL database
+        #run: |
+            #docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=password -d postgres:latest
 
         
-      - name: Wait for backend application to be ready
-        run: |
-          while [[ "$(curl -s -o /dev/null -w '%{http_code}' localhost:8000/user)" != "200" ]]; do sleep 5; done
+     # - name: Wait for backend application to be ready
+       # run: |
+          #while [[ "$(curl -s -o /dev/null -w '%{http_code}' localhost:8000/user)" != "200" ]]; do sleep 5; done
 
           
      # - name: Logging to Docker
