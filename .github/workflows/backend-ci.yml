@@ -54,7 +54,7 @@ jobs:
           mvn -B package -DskipTests --file pom.xml
 
       - name: Start backend application
-        run: java -jar /target/otc-springboot-backend-image.jar &
+        run: java -jar target/otc-springboot-backend-image.jar &
 
         
       - name: Wait for backend application to be ready
