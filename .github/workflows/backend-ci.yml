@@ -6,6 +6,7 @@
 name: backend CI with Maven
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
   pull_request:
@@ -61,10 +62,6 @@ jobs:
         run: |
           sleep 10 # Give the application some time to start
           nc -zv localhost 8000
-
-      - name: Run tests
-        run: |
-          # Execute your tests here against the running services
 
       - name: Tear down services
         run: docker-compose -f docker-compose.yml down
