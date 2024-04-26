@@ -68,7 +68,7 @@ jobs:
        # run: docker-compose -f docker-compose.yml down
 
       - name: Trigger and wait for Postman tests
-        uses: peter-evans/workflow-dispatch@v3.0.0
+        uses:  peter-evans/repository-dispatch@v3
         with:
           owner: yvonnekw
           repo: otc_backend_api_postman_tests
