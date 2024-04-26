@@ -66,6 +66,18 @@ jobs:
 
       #- name: Tear down services
        # run: docker-compose -f docker-compose.yml down
+    
+      
+      - name: trigger postman tests
+        #uses: actions/checkout@v4
+        uses: convictional/trigger-workflow-and-wait@v1.6.5
+        with:
+          owner: yvonnekw
+          repo: otc_backend_api_postman_tests
+         #path: otc_backend
+          github_token: ${{ secrets.G_PERSONAL_TOKEN }}
+          workflow_file_name: otc_github_ci.yml
+          ref: fix_github_actions
 
       - name: Trigger and wait for Postman tests
         uses:  peter-evans/repository-dispatch@v1
