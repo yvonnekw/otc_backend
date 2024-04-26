@@ -62,7 +62,7 @@ jobs:
         run: |
           sleep 10 
           nc -zv localhost 8000
-          sleept 10s
+          sleep 10s
 
       - name: Tear down services
         run: docker-compose -f docker-compose.yml down
