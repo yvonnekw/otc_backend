@@ -47,7 +47,7 @@ services:
       - otc-network
 
   frontend:
-    image: 'otc-frontend-vite-react-docker-img:latest'
+    image: 'yvonnetest/otc-frontend-vite-react-docker-img:latest'
     ports:
       - "2000:2000"
     networks:
