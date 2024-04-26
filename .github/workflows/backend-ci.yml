@@ -64,16 +64,16 @@ jobs:
           nc -zv localhost 8000
           sleep 10s
 
-      - name: Tear down services
-        run: docker-compose -f docker-compose.yml down
+      #- name: Tear down services
+       # run: docker-compose -f docker-compose.yml down
 
       - name: Trigger and wait for Postman tests
-        uses: convictional/trigger-workflow-and-wait@v1.6.5
+        uses: peter-evans/workflow-dispatch@v3.0.0
         with:
           owner: yvonnekw
           repo: otc_backend_api_postman_tests
           github_token: ${{ secrets.G_PERSONAL_TOKEN}}
-          workflow_file_name: otc-postman-ci.yml
+          workflow_file_name: otc_github_ci.yml
           ref: postman_test_branch
 
       #- name: Start backend application
