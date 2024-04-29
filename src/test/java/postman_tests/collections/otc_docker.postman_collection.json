@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "7ecfa1cf-45dc-40d2-9918-6c516513f5cd",
 		"name": "otc_docker",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "4261526",
 		"_collection_link": "https://blue-space-4522.postman.co/workspace/myworkspace~a3396432-9948-4bce-9c09-ea884a5defc7/collection/4261526-7ecfa1cf-45dc-40d2-9918-6c516513f5cd?action=share&source=collection_link&creator=4261526"
 	},
@@ -34,20 +34,7 @@
 							"mode": "raw",
 							"raw": "{\n    \"amount\":\"60\",\n    \"paymentDate\":\"01/02/2024\",\n    \"fullNameOnPaymentCard\": \"Myfull Name\",\n    \"cardNumber\":\"4545676798341110\",\n   \"expiringDate\":\"12/09/2025\",\n   \"issueNumber\": \"123\",\n    \"securityNumber\": \"234\"\n}"
 						},
-						"url": {
-							"raw": "http://127.0.0.1:8000/payments",
-							"protocol": "http",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "8000",
-							"path": [
-								"payments"
-							]
-						}
+						"url": "http://127.0.0.1:8000/payments"
 					},
 					"response": []
 				}
@@ -79,18 +66,7 @@
 							"mode": "raw",
 							"raw": "{\n //\"invoiceId\":1,\n    //\"invoiceDate\": \"27/02/2024\",\n    //\"totalAmount\":\"100\",\n    \"calls\": [\n        {\n            \"callId\": 1\n        },\n        {\n            \"callId\": 2\n        },\n         \n        {\n            \"callId\": 3\n        },\n        \n        {\n            \"callId\": 4\n        }\n    ],\n    \"status\":\"Invoiced\"\n}"
 						},
-						"url": {
-							"raw": "http://localhost:8000/invoices/create-invoice",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"invoices",
-								"create-invoice"
-							]
-						}
+						"url": "http://localhost:8000/invoices/create-invoice"
 					},
 					"response": []
 				},
@@ -119,18 +95,7 @@
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": {
-							"raw": "http://localhost:8000/invoices/get-all-invoice",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"invoices",
-								"get-all-invoice"
-							]
-						}
+						"url": "http://localhost:8000/invoices/get-all-invoice"
 					},
 					"response": []
 				},
@@ -159,18 +124,7 @@
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": {
-							"raw": "http://localhost:8000/invoices/all",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"invoices",
-								"all"
-							]
-						}
+						"url": "http://localhost:8000/invoices/all"
 					},
 					"response": []
 				},
@@ -199,18 +153,7 @@
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": {
-							"raw": "http://localhost:8000/invoices/3",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"invoices",
-								"3"
-							]
-						}
+						"url": "http://localhost:8000/invoices/3"
 					},
 					"response": []
 				},
@@ -239,18 +182,7 @@
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": {
-							"raw": "http://localhost:8000/invoices/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"invoices",
-								"1"
-							]
-						}
+						"url": "http://localhost:8000/invoices/1"
 					},
 					"response": []
 				},
@@ -322,18 +254,7 @@
 								"disabled": true
 							}
 						],
-						"url": {
-							"raw": "http://localhost:8000/call-receiver/call",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"call-receiver",
-								"call"
-							]
-						}
+						"url": "http://localhost:8000/call-receiver/call"
 					},
 					"response": []
 				},
@@ -369,21 +290,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://127.0.0.1:8000/call-receiver/add-receiver",
-							"protocol": "http",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "8000",
-							"path": [
-								"call-receiver",
-								"add-receiver"
-							]
-						}
+						"url": "http://db:8000/call-receiver/add-receiver"
 					},
 					"response": []
 				},
@@ -404,19 +311,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:8000/callreceiver/add/reciever",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"callreceiver",
-								"add",
-								"reciever"
-							]
-						}
+						"url": "http://localhost:8000/callreceiver/add/reciever"
 					},
 					"response": []
 				}
@@ -430,19 +325,7 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": {
-							"raw": "http://localhost:8000/api/calls/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"api",
-								"calls",
-								"1"
-							]
-						}
+						"url": "http://localhost:8000/api/calls/1"
 					},
 					"response": []
 				},
@@ -460,19 +343,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:8000/api/calls/4",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"api",
-								"calls",
-								"4"
-							]
-						}
+						"url": "http://localhost:8000/api/calls/4"
 					},
 					"response": []
 				},
@@ -497,19 +368,7 @@
 								"type": "text"
 							}
 						],
-						"url": {
-							"raw": "http://localhost:8000/api/calls/3",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"api",
-								"calls",
-								"3"
-							]
-						}
+						"url": "http://localhost:8000/api/calls/3"
 					},
 					"response": []
 				},
@@ -527,21 +386,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://127.0.0.1:8000/calls/make-call",
-							"protocol": "http",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "8000",
-							"path": [
-								"calls",
-								"make-call"
-							]
-						}
+						"url": "http://127.0.0.1:8000/calls/make-call"
 					},
 					"response": []
 				},
@@ -559,19 +404,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:8000/calls/make/call",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"calls",
-								"make",
-								"call"
-							]
-						}
+						"url": "http://localhost:8000/calls/make/call"
 					},
 					"response": []
 				},
@@ -589,18 +422,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:8000/calls/completed",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"calls",
-								"completed"
-							]
-						}
+						"url": "http://localhost:8000/calls/completed"
 					},
 					"response": []
 				},
@@ -609,19 +431,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "http://localhost:8000/calls/user/yodalpinky1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"calls",
-								"user",
-								"yodalpinky1"
-							]
-						}
+						"url": "http://localhost:8000/calls/user/yodalpinky1"
 					},
 					"response": []
 				},
@@ -656,19 +466,7 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": {
-							"raw": "http://localhost:8000/api/calls/2",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"api",
-								"calls",
-								"2"
-							]
-						}
+						"url": "http://localhost:8000/api/calls/2"
 					},
 					"response": []
 				},
@@ -773,18 +571,7 @@
 								"type": "text"
 							}
 						],
-						"url": {
-							"raw": "http://localhost:8000/calls/paid",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"calls",
-								"paid"
-							]
-						}
+						"url": "http://localhost:8000/calls/paid"
 					},
 					"response": []
 				},
@@ -802,18 +589,7 @@
 								"type": "text"
 							}
 						],
-						"url": {
-							"raw": "http://localhost:8000/calls/paid",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"calls",
-								"paid"
-							]
-						}
+						"url": "http://localhost:8000/calls/paid"
 					},
 					"response": []
 				},
@@ -916,19 +692,7 @@
 								"disabled": true
 							}
 						],
-						"url": {
-							"raw": "http://host.docker.internal:8080/getUsers",
-							"protocol": "http",
-							"host": [
-								"host",
-								"docker",
-								"internal"
-							],
-							"port": "8080",
-							"path": [
-								"getUsers"
-							]
-						}
+						"url": "http://host.docker.internal:8080/getUsers"
 					},
 					"response": []
 				},
@@ -956,18 +720,7 @@
 							"mode": "raw",
 							"raw": "{\n //\"userId\": \"1\",\n \"firstName\": \"Myfirstname\",\n \"lastName\": \"lastname\",\n \"emailAddress\": \"my email@mail.com\",\n \"telephoneNumber\": \"09874653234\"\n}"
 						},
-						"url": {
-							"raw": "http://localhost:8000/users/register",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"users",
-								"register"
-							]
-						}
+						"url": "http://localhost:8000/users/register"
 					},
 					"response": []
 				},
@@ -1006,27 +759,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoiYWRtaW5TbWl0aCIsImlhdCI6MTcwOTkyMzM1MCwic2NvcGUiOiJBRE1JTiJ9.IDdv98opX06ENEE33e-94ZRi_KXiHu9_mVg8MW9NcGqeLVX33q405nkFSNt50vM9Fey7SrLXbvgJKSq0AJg8LekDg1Wk6TBzAcdsOCM08Mz8cUQlP5TW31QduDM8tQw86mJqJVmYIAsJuFjoj6foox7bsB5OmGwkmg6cVceCw1Kws9byIZP0V9teafptrlO7KU83am8W5t5PGs9QZpENIij1MBfjrtTjtoSLN9bFjX7kI3QtI6OuGAKgBW-91E1-SXUuWu2CkyfItknOnu3cUcqnIbpNTwqECLc9vTfR-GEjZsUm1wqozDNyuD9AawuyOL_rl1maAPG5M717LJOEqQ",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoiYWRtaW5TbWl0aCIsImlhdCI6MTcwOTkyMzM1MCwic2NvcGUiOiJBRE1JTiJ9.IDdv98opX06ENEE33e-94ZRi_KXiHu9_mVg8MW9NcGqeLVX33q405nkFSNt50vM9Fey7SrLXbvgJKSq0AJg8LekDg1Wk6TBzAcdsOCM08Mz8cUQlP5TW31QduDM8tQw86mJqJVmYIAsJuFjoj6foox7bsB5OmGwkmg6cVceCw1Kws9byIZP0V9teafptrlO7KU83am8W5t5PGs9QZpENIij1MBfjrtTjtoSLN9bFjX7kI3QtI6OuGAKgBW-91E1-SXUuWu2CkyfItknOnu3cUcqnIbpNTwqECLc9vTfR-GEjZsUm1wqozDNyuD9AawuyOL_rl1maAPG5M717LJOEqQ"
+							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "http://localhost:8000/user",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"user"
-							]
-						}
+						"url": "http://localhost:8000/user"
 					},
 					"response": []
 				},
@@ -1047,18 +786,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://app:8000/auth/register",
-							"protocol": "http",
-							"host": [
-								"app"
-							],
-							"port": "8000",
-							"path": [
-								"auth",
-								"register"
-							]
-						}
+						"url": "http://app:8000/auth/register"
 					},
 					"response": []
 				},
@@ -1082,18 +810,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:8000/auth/login",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"auth",
-								"login"
-							]
-						}
+						"url": "http://db:8000/auth/login"
 					},
 					"response": []
 				},
@@ -1117,18 +834,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:8000/auth/login",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"auth",
-								"login"
-							]
-						}
+						"url": "http://localhost:8000/auth/login"
 					},
 					"response": []
 				},
@@ -1146,18 +852,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:8000/auth/username",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"auth",
-								"username"
-							]
-						}
+						"url": "http://localhost:8000/auth/username"
 					},
 					"response": []
 				},
@@ -1175,18 +870,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:8000/auth/login",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"auth",
-								"login"
-							]
-						}
+						"url": "http://db:8000/auth/login"
 					},
 					"response": []
 				},
@@ -1195,18 +879,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "http://localhost:8000/user/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"user",
-								"1"
-							]
-						}
+						"url": "http://localhost:8000/user/1"
 					},
 					"response": []
 				},
@@ -1215,20 +888,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "http://host.docker.internal:8000/user/yodalpinky1",
-							"protocol": "http",
-							"host": [
-								"host",
-								"docker",
-								"internal"
-							],
-							"port": "8000",
-							"path": [
-								"user",
-								"yodalpinky1"
-							]
-						}
+						"url": "http://host.docker.internal:8000/user/yodalpinky1"
 					},
 					"response": []
 				},
@@ -1237,18 +897,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "http://localhost:8000/user/all-users",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"user",
-								"all-users"
-							]
-						}
+						"url": "http://app:8000/user/all-users"
 					},
 					"response": []
 				},
@@ -1257,18 +906,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "http://localhost:8000/user/users",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8000",
-							"path": [
-								"user",
-								"users"
-							]
-						}
+						"url": "http://db:8000/user/users"
 					},
 					"response": []
 				}
@@ -1295,18 +933,7 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "http://localhost:8000/auth/register",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"auth",
-						"register"
-					]
-				}
+				"url": "http://localhost:8000/auth/register"
 			},
 			"response": []
 		},
@@ -1327,18 +954,7 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "http://localhost:8000/auth/register",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"auth",
-						"register"
-					]
-				}
+				"url": "http://localhost:8000/auth/register"
 			},
 			"response": []
 		}
