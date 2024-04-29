@@ -58,43 +58,50 @@ jobs:
         run: |
           docker-compose -f docker-compose.yml up -d
       
-      - name: Verify port 8000 of the app is running
-        run: |
-          sleep 10 
-          nc -zv localhost 8000
-          sleep 10s
+     # - name: Verify port 8000 of the app is running
+       # run: |
+         # sleep 10 
+         # nc -zv localhost 8000
+         # sleep 10s
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman tests
+        run: newman run ../../src/test/java/postman_tests/postman_test_branch/collections/otc_docker.postman_collection.json -e ../../src/test/java/postman_tests/postman_test_branch/collections/otc.postman_environment.json --delay-request 1000
+
 
       #- name: Tear down services
        # run: docker-compose -f docker-compose.yml down
     
       
-      - name: trigger postman tests
+     # - name: trigger postman tests
         #uses: actions/checkout@v4
-        uses: convictional/trigger-workflow-and-wait@v1.6.5
-        with:
-          owner: yvonnekw
-          repo: otc_backend_api_postman_tests
+      #  uses: convictional/trigger-workflow-and-wait@v1.6.5
+       # with:
+          #owner: yvonnekw
+         # repo: otc_backend_api_postman_tests
          #path: otc_backend
-          github_token: ${{ secrets.G_PERSONAL_TOKEN }}
-          workflow_file_name: otc_github_ci.yml
-          ref: fix_github_actions
+         # github_token: ${{ secrets.G_PERSONAL_TOKEN }}
+          #workflow_file_name: otc_github_ci.yml
+         # ref: fix_github_actions
 
-      - name: Trigger and wait for Postman tests
-        uses:  peter-evans/repository-dispatch@v1
+     # - name: Trigger and wait for Postman tests
+       # uses:  peter-evans/repository-dispatch@v1
        # with:
           #owner: yvonnekw
           #repo: otc_backend_api_postman_tests
           #github_token: ${{ secrets.G_PERSONAL_TOKEN}}
           #workflow_file_name: otc_github_ci.yml
           #ref: postman_test_branch
-        with:
-          token: ${{ secrets.G_PERSONAL_TOKEN }} # Use a valid GitHub token here
-          repository: yvonnekw/otc_backend # Repository where the workflow should be triggered
-          event-type: workflow_dispatch # Type of event to trigger (workflow_dispatch in this case)
-          client-payload: '{}' # Optional payload data (empty in this case)
-        env:
-          JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.2-13/x64
-          JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.2-13/x64
+       # with:
+         # token: ${{ secrets.G_PERSONAL_TOKEN }} # Use a valid GitHub token here
+         # repository: yvonnekw/otc_backend # Repository where the workflow should be triggered
+          #event-type: workflow_dispatch # Type of event to trigger (workflow_dispatch in this case)
+         # client-payload: '{}' # Optional payload data (empty in this case)
+        #env:
+         # JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.2-13/x64
+         # JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.2-13/x64
 
       #- name: Start backend application
        #run: java -jar target/otc-springboot-backend-image.jar &
