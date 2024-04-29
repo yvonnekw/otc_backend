@@ -68,8 +68,8 @@ jobs:
         run: npm install -g newman
 
       - name: Run Postman tests
-        run: newman run ../../src/test/java/postman_tests/postman_test_branch/collections/otc_docker.postman_collection.json -e ../../src/test/java/postman_tests/postman_test_branch/collections/otc.postman_environment.json --delay-request 1000
-
+        run: |
+          newman run ./src/test/java/postman_tests/collections/otc_docker.postman_collection.json -e ./src/test/java/postman_tests/collections/otc.postman_environment.json --delay-request 1000
 
       #- name: Tear down services
        # run: docker-compose -f docker-compose.yml down
