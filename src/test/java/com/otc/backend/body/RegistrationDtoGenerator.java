@@ -16,13 +16,11 @@ import java.util.Set;
 
 @Component
 public class RegistrationDtoGenerator {
-    private static final Logger logger = LoggerFactory.getLogger(RegistrationDtoGenerator.class);
-    private static final Faker faker = new Faker();
+    public static final Logger logger = LoggerFactory.getLogger(RegistrationDtoGenerator.class);
+    public static final Faker faker = new Faker();
 
     @Autowired
-    private RoleRepository roleRepository;
-
-
+    public RoleRepository roleRepository;
 
     public RegistrationDto generateRandomRegistrationDto() {
         Optional<Role> optionalUserRole = roleRepository.findByAuthority("USER");

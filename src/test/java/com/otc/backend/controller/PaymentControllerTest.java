@@ -2,6 +2,7 @@ package com.otc.backend.controller;
 
 import com.otc.backend.base.TestBase;
 import com.otc.backend.body.CallDtoGenerator;
+import com.otc.backend.body.PaymentDtoGenerator;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -19,17 +20,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
-class CallControllerTest extends TestBase {
+class PaymentControllerTest extends TestBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationControllerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserControllerTest.class);
 
     @Autowired
     TestRestTemplate restTemplate;
-
-
-
     @Test
-    public void makeCallTest() throws JSONException {
+    void createPayment() throws JSONException {
         CallDtoGenerator callDtoGenerator = new CallDtoGenerator();
         ResponseEntity<String> callReceiverResponse = addCallReceiver();
         assertEquals(HttpStatus.OK, callReceiverResponse.getStatusCode());
@@ -48,11 +46,31 @@ class CallControllerTest extends TestBase {
         ResponseEntity<String> makeCallResponse = restTemplate.exchange("/calls/make-call", HttpMethod.POST, requestEntity, String.class);
 
         assertEquals(HttpStatus.OK, makeCallResponse.getStatusCode());
+
+        logger.info("Call body" + makeCallResponse.getBody());
+
+        String callId = makeCallResponse.getBody();
+        String extractedCallId = extractData(callId, "callId");
+
+        logger.info("Call id " + extractedCallId);
+
+        HttpEntity<String> invoiceRequestEntity = new HttpEntity<>(requestBody.toString(), headers);
+        ResponseEntity<String> invoiceResponse = restTemplate.exchange("/invoices/create-invoice", HttpMethod.POST, invoiceRequestEntity, String.class);
+
+        logger.info("invoice response " + invoiceResponse.getBody());
+
+        String invoiceId = invoiceResponse.getBody();
+        String extractedInvoiceId = extractData(invoiceId, "invoiceId");
+
+        logger.info("invoice Id " + extractedInvoiceId);
+
+        PaymentDtoGenerator paymentDtoGenerator = new PaymentDtoGenerator();
+
+        JSONObject paymentRequestBody = paymentDtoGenerator.generateFakePaymentDto(extractedInvoiceId);
+
+        HttpEntity<String> paymentRequestEntity = new HttpEntity<>(paymentRequestBody.toString(), headers);
+        ResponseEntity<String> paymentResponse = restTemplate.exchange("/payments/payment", HttpMethod.POST, paymentRequestEntity, String.class);
+
+        assertEquals(HttpStatus.OK, paymentResponse.getStatusCode());
     }
-
-   
-
-
-
-
 }
