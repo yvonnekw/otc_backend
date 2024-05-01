@@ -26,8 +26,6 @@ class CallControllerTest extends TestBase {
     @Autowired
     TestRestTemplate restTemplate;
 
-
-
     @Test
     public void makeCallTest() throws JSONException {
         CallDtoGenerator callDtoGenerator = new CallDtoGenerator();
