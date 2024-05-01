@@ -1,5 +1,6 @@
 package com.otc.backend.publisher;
 
+import com.otc.backend.models.Invoice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -48,14 +49,11 @@ public class RabbitMQJsonProducer {
     public void sendJsonMessage(Call body) {
         LOGGER.info(String.format("Json message sent -> %s", body.toString()));
         rabbitTemplate.convertAndSend(exchange, routingJsonKey, body);
-        // rabbitTemplate.convertAndSend(exchange, routingJsonKey, body);
     }
-
-      // Method to send InvoiceGenerationEvent as JSON message
-    public void sendJsonMessage(InvoiceGenerationEvent event) {
-        LOGGER.info(String.format("Json message sent -> %s", event.toString()));
-        rabbitTemplate.convertAndSend(exchange, routingJsonKey, event);
-    }
-
+      
+    public void sendJsonMessage(Invoice body) {
+          LOGGER.info(String.format("Json message sent -> %s", body.toString()));
+          rabbitTemplate.convertAndSend(exchange, routingJsonKey, body);
+      }
 
 }
