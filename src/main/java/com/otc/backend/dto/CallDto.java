@@ -26,6 +26,15 @@ public class CallDto {
     private CallReceiver callReceiver;
     private Set<Users> callUsers;
 
+    public CallDto(String startTime, String endTime, String discountForCalls, CallReceiver callReceiver,
+            Set<Users> callUsers) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.discountForCalls = discountForCalls;
+        this.callReceiver = callReceiver;
+        this.callUsers = callUsers;
+    }
+
     public CallDto(String startTime, String endTime, String duration, String costPerSecond, String discountForCalls,
             String vat, String netCost, String grossCost, String totalCost, String callDate,
             CallReceiver callReceiver, Set<Users> callUsers) {

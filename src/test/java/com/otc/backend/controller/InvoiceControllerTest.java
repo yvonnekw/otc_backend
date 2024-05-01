@@ -1,6 +1,8 @@
 package com.otc.backend.controller;
 
-import com.otc.backend.base.TestBase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.otc.backend.body.CallDtoGenerator;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,24 +12,30 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
+import com.otc.backend.base.TestBase;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
-class CallControllerTest extends TestBase {
+public class InvoiceControllerTest extends TestBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationControllerTest.class);
+    public static final Logger logger = LoggerFactory.getLogger(AuthenticationControllerTest.class);
 
     @Autowired
     TestRestTemplate restTemplate;
 
     @Test
-    public void makeCallTest() throws JSONException {
+    void createInvoiceForOneCall() throws JSONException {
         CallDtoGenerator callDtoGenerator = new CallDtoGenerator();
         ResponseEntity<String> callReceiverResponse = addCallReceiver();
         assertEquals(HttpStatus.OK, callReceiverResponse.getStatusCode());
@@ -46,11 +54,20 @@ class CallControllerTest extends TestBase {
         ResponseEntity<String> makeCallResponse = restTemplate.exchange("/calls/make-call", HttpMethod.POST, requestEntity, String.class);
 
         assertEquals(HttpStatus.OK, makeCallResponse.getStatusCode());
+
+        logger.info("Call body" + makeCallResponse.getBody());
+
+       String callId = makeCallResponse.getBody();
+       String extractedCallId = extractData(callId, "callId");
+
+       logger.info("Call id " + extractedCallId);
+
+        HttpEntity<String> invoiceRequestEntity = new HttpEntity<>(requestBody.toString(), headers);
+        ResponseEntity<String> invoiceResponse = restTemplate.exchange("/invoices/create-invoice", HttpMethod.POST, invoiceRequestEntity, String.class);
+
+        logger.info("invoice response " + invoiceResponse.getBody());
+
+        assertEquals(HttpStatus.OK, invoiceResponse.getStatusCode());
     }
-
-   
-
-
-
 
 }

@@ -118,4 +118,63 @@ public class TestBase {
 
         return calReceiverResponse;
     }
+
+    protected String extractTelephoneNumber(String responseBody) {
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(responseBody);
+            return rootNode.get("telephone").asText();
+        } catch (Exception e) {
+            logger.error("Error extracting telephone number from response body", e);
+            return null;
+        }
+    }
+
+    protected String extractUsername(String responseBody) {
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(responseBody);
+            return rootNode.get("username").asText();
+        } catch (Exception e) {
+            logger.error("Error extracting username from response body", e);
+            return null;
+        }
+    }
+
+    protected String extractData(String responseBody) {
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(responseBody);
+            return rootNode.get("callId").asText();
+        } catch (Exception e) {
+            logger.error("Error extracting call id from response body", e);
+            return null;
+        }
+    }
+
+    protected String extractInvoiceId(String responseBody) {
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(responseBody);
+            return rootNode.get("invoiceId").asText();
+        } catch (Exception e) {
+            logger.error("Error extracting invoice id from response body", e);
+            return null;
+        }
+    }
+
+    protected String extractData(String responseBody, String fieldName) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(responseBody);
+            return rootNode.get(fieldName).asText();
+        } catch (Exception e) {
+            logger.error("Error extracting {} data from response body", fieldName, e);
+            return null;
+        }
+    }
 }

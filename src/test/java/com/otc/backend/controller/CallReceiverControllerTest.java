@@ -27,9 +27,6 @@ class CallReceiverControllerTest extends TestBase {
     @Autowired
     TestRestTemplate restTemplate;
 
-    //@Autowired
-    //TestDataProvider testDataProvider;
-
     @Autowired
     CallReceiverDtoGenerator callReceiverDtoGenerator;
 
