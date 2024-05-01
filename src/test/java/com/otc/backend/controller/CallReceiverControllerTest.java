@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 class CallReceiverControllerTest extends TestBase {
-
+/*
     private static final Logger logger = LoggerFactory.getLogger(CallReceiverControllerTest.class);
 
     private static final Faker faker = new Faker();
@@ -37,6 +37,8 @@ class CallReceiverControllerTest extends TestBase {
 
     @Autowired
     private UserRepository userRepository;
+
+    */
 
     @Test
     public void addCallReceiverTest(){
