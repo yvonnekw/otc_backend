@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.otc.backend.dto.PaymentDto;
 import com.otc.backend.models.Call;
 import com.otc.backend.models.Payment;
 
@@ -14,7 +15,7 @@ public interface PaymentService {
 
     public Payment getPaymentById(Long paymentId);
 
-    public Payment createPayment(Payment payment);
+    public PaymentDto createPayment(PaymentDto paymentDto);
 
     public Payment updatePayment(Long paymentId, Payment paymentDetails);
 

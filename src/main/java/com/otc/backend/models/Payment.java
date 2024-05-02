@@ -20,11 +20,11 @@ import jakarta.persistence.Table;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "payment_id")
+   // @Column(name = "payment_id")
     private Long paymentId;
-    @Column(name = "amount")
+   // @Column(name = "amount")
     private String amount;
-    @Column(name = "payment_date")
+   // @Column(name = "payment_date")
     private String paymentDate;
     private String fullNameOnPaymentCard;
     private String cardNumber;
