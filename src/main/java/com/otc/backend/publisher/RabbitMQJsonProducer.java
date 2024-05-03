@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.otc.backend.consumer.RabbitMQConsumer;
 import com.otc.backend.dto.RegistrationDto;
-import com.otc.backend.event.InvoiceGenerationEvent;
 import com.otc.backend.models.Call;
 import com.otc.backend.models.CallReceiver;
 import com.otc.backend.models.Users;

@@ -19,7 +19,6 @@ public class CallDto {
     private String vat;
     private String netCost;
     private String grossCost;
-    // private String totalCost;
     private String callDate;
     private String status;
 
