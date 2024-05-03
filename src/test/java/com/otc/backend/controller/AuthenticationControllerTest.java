@@ -52,8 +52,6 @@ class AuthenticationControllerTest extends TestBase {
 
     @Autowired
     private RoleRepository roleRepository;
-    //@Autowired
-    //TestDataProvider testDataProvider;
 
     @Test
     public void registerUserTest(){

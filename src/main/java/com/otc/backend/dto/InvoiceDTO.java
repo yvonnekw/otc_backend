@@ -1,12 +1,6 @@
 package com.otc.backend.dto;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 
 public class InvoiceDTO {
     

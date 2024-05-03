@@ -1,59 +1,49 @@
 package com.otc.backend.dto;
 
-import com.otc.backend.models.Users;
-
 public class CallReceiverDto {
 
     private Long callReceiverId;
-	private String telephone;
+    private String telephone;
+    private String username;
 
-    public Users getUser() {
-        return user;
-    }
-
-    public void setUser(Users user) {
-        this.user = user;
-    }
-
-    private Users user;
-	
     public CallReceiverDto() {
     }
 
-    public CallReceiverDto(String telephone, Users user) {
+    public CallReceiverDto(String telephone, String username) {
         this.telephone = telephone;
-        this.user = user;
-    }
-
-    public CallReceiverDto(Long callReceiverId, String telephone, Users user) {
-        this.callReceiverId = callReceiverId;
-        this.telephone = telephone;
-        this.user = user;
+        this.username = username;
     }
 
     public Long getCallReceiverId() {
         return callReceiverId;
     }
+
     public void setCallReceiverId(Long callReceiverId) {
         this.callReceiverId = callReceiverId;
     }
-  
+
     public String getTelephone() {
         return telephone;
     }
+
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
 
-    /*
-    public CallReceiverDto(Long callReceiverId, String telephone) {
-        this.callReceiverId = callReceiverId;
-        this.telephone = telephone;
-    }*/
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     @Override
     public String toString() {
-        return "CallReceiverDto [callReceiverId=" + callReceiverId + ", telephone=" + telephone + "]";
+        return "CallReceiverDto{" +
+                "callReceiverId=" + callReceiverId +
+                ", telephone='" + telephone + '\'' +
+                ", username='" + username + '\'' +
+                '}';
     }
-   
 }

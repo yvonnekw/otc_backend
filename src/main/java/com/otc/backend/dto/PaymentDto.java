@@ -1,7 +1,5 @@
 package com.otc.backend.dto;
 
-import com.otc.backend.models.Invoice;
-
 public class PaymentDto {
 
     private Long paymentId;

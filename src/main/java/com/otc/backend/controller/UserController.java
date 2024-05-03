@@ -31,16 +31,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/user")
 @CrossOrigin("*")
-//@CrossOrigin(origins = "*", allowedHeaders = "*")
-//@CrossOrigin(origins = "http://localhost:2000", allowCredentials = "true")
 public class UserController {
 
 
     private final RabbitMQProducer rabbitMQProducer;
     private final UserService userService;
     private final TokenService tokenService;
-    //private final CallService callService;
-   // private final CallReceiverService callReceiverService;
 
     private RabbitMQJsonProducer rabbitMQJsonProducer;
 
@@ -48,10 +44,8 @@ public class UserController {
     public UserController(UserService userService, TokenService tokenService,
             RabbitMQProducer rabbitMQProducer, 
             RabbitMQJsonProducer rabbitMQJsonProducer) {
-        this.userService = userService;
         this.tokenService = tokenService;
-        //this.callService = callService;
-       // this.callReceiverService = callReceiverService;
+        this.userService = userService;
         this.rabbitMQProducer = rabbitMQProducer;
         this.rabbitMQJsonProducer = rabbitMQJsonProducer;
     }
@@ -79,7 +73,6 @@ public class UserController {
         
         return user;
     }
-    
 
     @GetMapping("/hello")
     public ResponseEntity<String> helloUserController(@RequestParam("message") String message) {
@@ -94,12 +87,6 @@ public class UserController {
         // return "User access level";
         return ResponseEntity.ok("Message sent to RabbitMQ");
     }
-/* 
-    @GetMapping("{id}")//url method argument is band with the Path variable if to the callId
-    public ResponseEntity<Users> getUserById(@PathVariable("id") long userId){
-        Users userDto = userService.getUserById(userId);
-       return ResponseEntity.ok(userDto);
-    }*/
 
     @GetMapping
     public ResponseEntity<List<Users>> getAllUsers(){

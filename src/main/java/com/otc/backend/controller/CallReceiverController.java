@@ -65,20 +65,17 @@ public class CallReceiverController {
                     .body("Phone number is already registered for the user. Please register another phone number.");
         }
 
-        // If the phone number is not registered, proceed with the new registration
         CallReceiverDto callReceiverDTO = new CallReceiverDto();
         callReceiverDTO.setTelephone(telephone);
 
         CallReceiver callReceiver = callReceiverService.addCallReceiver(username, callReceiverDTO);
         rabbitMQJsonProducer.sendJsonMessage(callReceiver);
 
-        // Construct the response map
         Map<String, String> jsonResponse = new HashMap<>();
         jsonResponse.put("username", username);
         jsonResponse.put("telephone", telephone);
         jsonResponse.put("message", "Phone number registered successfully.");
 
-        // Serialize the map to JSON
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(jsonResponse);
 

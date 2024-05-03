@@ -22,21 +22,10 @@ public class CallDto {
     private String callDate;
     private String status;
 
-    private CallReceiver callReceiver;
-    private Set<Users> callUsers;
+    private Long callReceiverId;
+    private Set<Long> callUser;
 
-    public CallDto(String startTime, String endTime, String discountForCalls, CallReceiver callReceiver,
-            Set<Users> callUsers) {
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.discountForCalls = discountForCalls;
-        this.callReceiver = callReceiver;
-        this.callUsers = callUsers;
-    }
-
-    public CallDto(String startTime, String endTime, String duration, String costPerSecond, String discountForCalls,
-            String vat, String netCost, String grossCost, String totalCost, String callDate,
-            CallReceiver callReceiver, Set<Users> callUsers) {
+    public CallDto(String startTime, String endTime, String duration, String costPerSecond, String discountForCalls, String vat, String netCost, String grossCost, String callDate, String status, Long callReceiverId, Set<Long> callUser) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.duration = duration;
@@ -45,10 +34,34 @@ public class CallDto {
         this.vat = vat;
         this.netCost = netCost;
         this.grossCost = grossCost;
-      //  this.totalCost = totalCost;
         this.callDate = callDate;
-        this.callReceiver = callReceiver;
-        this.callUsers = callUsers;
+        this.status = status;
+        this.callReceiverId = callReceiverId;
+        this.callUser = callUser;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Long getCallReceiverId() {
+        return callReceiverId;
+    }
+
+    public void setCallReceiverId(Long callReceiverId) {
+        this.callReceiverId = callReceiverId;
+    }
+
+    public Set<Long> getCallUser() {
+        return callUser;
+    }
+
+    public void setCallUser(Set<Long> callUser) {
+        this.callUser = callUser;
     }
 
     public String getCallDate() {
@@ -59,13 +72,6 @@ public class CallDto {
         this.callDate = callDate;
     }
 
-    public Set<Users> getCallUsers() {
-        return callUsers;
-    }
-
-    public void setCallUsers(Set<Users> callUsers) {
-        this.callUsers = callUsers;
-    }
 
     public String getCostPerSecond() {
         return costPerSecond;
@@ -131,21 +137,7 @@ public class CallDto {
         this.duration = duration;
     }
 
-    public CallReceiver getCallReceiver() {
-        return callReceiver;
-    }
 
-    public void setCallReceiver(CallReceiver callReceiver) {
-        this.callReceiver = callReceiver;
-    }
-
-    @Override
-    public String toString() {
-        return "CallDto [startTime=" + startTime + ", endTime=" + endTime + ", duration=" + duration
-                + ", costPerSecond=" + costPerSecond + ", discountForCalls=" + discountForCalls + ", vat=" + vat
-                + ", netCost=" + netCost + ", grossCost=" + grossCost + ", callDate=" + callDate + ", status=" + status
-                + ", callReceiver=" + callReceiver + ", callUsers=" + callUsers + "]";
-    }
 
   
 

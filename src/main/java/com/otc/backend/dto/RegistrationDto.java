@@ -3,7 +3,6 @@ package com.otc.backend.dto;
 import java.util.Set;
 
 import org.springframework.data.elasticsearch.annotations.Document;
-
 import com.otc.backend.models.Role;
 
 @Document(indexName ="user")
@@ -69,12 +68,6 @@ public class RegistrationDto {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-/* 
-    public RegistrationDTO(String username, String password){
-        super();
-        this.username = username;
-        this.password = password;
-    }*/
 
     public RegistrationDto(String username, String password, Set<Role> authoritie) {
 		this.username = username;
@@ -104,11 +97,6 @@ public class RegistrationDto {
         this.telephone = telephone;
         this.authorities = authorities;
     }
-/* 
-    public RegistrationDTO(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }*/
 
     public String getUsername(){
         return this.username;
