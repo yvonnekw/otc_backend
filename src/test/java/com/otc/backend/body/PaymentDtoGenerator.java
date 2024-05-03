@@ -17,9 +17,7 @@ public class PaymentDtoGenerator {
         Faker faker = new Faker();
 
         JSONObject paymentDto = new JSONObject();
-        paymentDto.put("paymentId", faker.number().randomNumber());
-        // Commented out amount field since it's not specified in the provided JSON structure
-        // paymentDto.put("amount", faker.number().randomNumber());
+        //paymentDto.put("paymentId", faker.number().randomNumber());
         paymentDto.put("paymentDate", formatDate(faker.date().birthday(18, 65)));
         paymentDto.put("fullNameOnPaymentCard", faker.name().fullName());
         paymentDto.put("cardNumber", faker.finance().creditCard());
