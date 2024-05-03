@@ -24,9 +24,8 @@ public class InvoiceDTO {
         this.invoiceId = invoiceId;
     }
 
-    public InvoiceDTO(Long invoiceId, String invoiceDate, String status, String totalAmount,
+    public InvoiceDTO(String invoiceDate, String status, String totalAmount,
                       List<Long> callIds) {
-        this.invoiceId = invoiceId;
         this.invoiceDate = invoiceDate;
         this.status = status;
         this.totalAmount = totalAmount;
