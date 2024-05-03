@@ -54,7 +54,9 @@ public class CallReceiverDtoGenerator extends TestBase {
 
        // CallReceiverDto requestBody = String.format("{\"telephone\": \"%s\", \"username\": \"%s\"}", telephone, username);
 
-        return new CallReceiverDto(telephone, new Users(username));
+        //return new CallReceiverDto(telephone, new Users(username));
+
+        return new CallReceiverDto(telephone, username);
 
            // re
        // }

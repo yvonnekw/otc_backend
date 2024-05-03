@@ -3,23 +3,13 @@ package com.otc.backend.models;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.Duration;
 
@@ -44,7 +34,6 @@ public class Call {
     private String vat;
     private String netCost;
     private String grossCost;
-   // private String totalCost;
     private String callDate;
     private String status;
 
@@ -58,7 +47,6 @@ public class Call {
  
     public Call() {
     }
-
 
     public Call(String startTime, String endTime, String duration, String costPerSecond, String discountForCalls,
             String vat, String netCost, String grossCost, String callDate, String status, Users user, CallReceiver receiver) {
@@ -99,7 +87,6 @@ public class Call {
         this.vat = vat;
         this.netCost = netCost;
         this.grossCost = grossCost;
-        //this.totalCost = totalCost;
         this.callDate = callDate;
         this.status = status;
         this.user = user;

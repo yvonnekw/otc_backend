@@ -29,8 +29,6 @@ import com.otc.backend.services.AuthenticationService;
 import com.otc.backend.services.TokenService;
 import com.otc.backend.services.UserService;
 
-import org.springframework.web.bind.annotation.PathVariable;
-
 
 @RestController
 @RequestMapping("/auth")
@@ -59,13 +57,6 @@ public class AuthenticationController {
         return new ResponseEntity<String>("The email you provided is already taken", HttpStatus.CONFLICT);
 
     }
-     
-    /* 
-    @PostMapping("/register")
-    public ApplicationUser registerUser(@RequestBody RegistrationDto body){
-        return authenticationService.registerUser(body.getUsername(), body.getPassword(), body.getEmailAddress(), body.getMainTelephone());
-    }*/
-    
 
     @PostMapping("/register")
     public Users registerUser(@RequestBody RegistrationDto body) {
@@ -96,13 +87,6 @@ public class AuthenticationController {
         }
 
         }
-        //return authenticationService.loginUser(body.getUsername(), body.getPassword());
-
-/* 
-    @PostMapping("/login")
-    public ApplicationUser login(@RequestBody LinkedHashMap<String, String> body){
-        return authenticationService.loginUser(body.getUsername(), body.getPassword());
-    }*/
 
     @ExceptionHandler({UserDoesNotExistException.class})
     public ResponseEntity<String> handleUserDoesNotExist(){

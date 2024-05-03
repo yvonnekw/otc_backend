@@ -24,7 +24,6 @@ import com.otc.backend.base.TestBase;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
@@ -52,15 +51,16 @@ public class InvoiceControllerTest extends TestBase {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody.toString(), headers);
-        ResponseEntity<String> makeCallResponse = restTemplate.exchange("/calls/make-call", HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> makeCallResponse = restTemplate.exchange("/calls/make-call", HttpMethod.POST,
+                requestEntity, String.class);
 
         assertEquals(HttpStatus.OK, makeCallResponse.getStatusCode());
 
         logger.info("Call body" + makeCallResponse.getBody());
 
-       String callId = makeCallResponse.getBody();
-       String extractedCallId = extractData(callId, "callId");
-       
+        String callId = makeCallResponse.getBody();
+        String extractedCallId = extractData(callId, "callId");
+
         JSONArray callIdsArray = new JSONArray();
         callIdsArray.put(extractedCallId);
 
@@ -69,10 +69,11 @@ public class InvoiceControllerTest extends TestBase {
 
         String requestBodyString = jsonRequestBody.toString();
 
-       logger.info("Call id request body string " + requestBodyString);
+        logger.info("Call id request body string " + requestBodyString);
 
         HttpEntity<String> invoiceRequestEntity = new HttpEntity<>(requestBodyString, headers);
-        ResponseEntity<String> invoiceResponse = restTemplate.exchange("/invoices/create-invoice", HttpMethod.POST, invoiceRequestEntity, String.class);
+        ResponseEntity<String> invoiceResponse = restTemplate.exchange("/invoices/create-invoice", HttpMethod.POST,
+                invoiceRequestEntity, String.class);
 
         logger.info("invoice response " + invoiceResponse.getBody());
 

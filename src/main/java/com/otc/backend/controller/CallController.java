@@ -32,21 +32,10 @@ public class CallController {
 
     public CallController(CallService callService,  RabbitMQJsonProducer rabbitMQJsonProducer) {
         this.callService = callService;
-        //this.userService = userService;
         this.rabbitMQJsonProducer = rabbitMQJsonProducer;
-       // this.invoiceService = invoiceService;
     }
 
-    /* 
-       //build add calls
-    @PostMapping//@RequestBody converts the json into a CallDto java object
-    public ResponseEntity<Call> makeCall(@RequestBody LinkedHashMap<String, String> CallDto callDto){
-        System.out.println("make call data " + callDto.toString());
-        Call savedCall = callService.makeCall(callDto);
-        return new ResponseEntity<>(savedCall, HttpStatus.CREATED);
-    }*/
-
-    @GetMapping("{id}") //url method argument is band with the Path variable if to the callId
+    @GetMapping("{id}")
     public ResponseEntity<Call> getCallById(@PathVariable("id") long callId) {
         Call call = callService.getCallById(callId);
         return ResponseEntity.ok(call);
@@ -81,36 +70,14 @@ public class CallController {
         String userName = body.get("username");
         String startTime = body.get("startTime");
         String endTime = body.get("endTime");
-        //String duration = body.get("duration");
-        // String totalTime = body.get("totalTime");
-      //  String costPerMinute = body.get("costPerMinute");
         String discountForCalls = body.get("discountForCalls");
-        // String signUpDiscount = body.get("signUpDiscount");
-       // String vat = body.get("vat");
-        //String netCost = body.get("netCost");
-      //  String grossCost = body.get("grossCost");
-       // String totalCost = body.get("totalCost");
         String telephone = body.get("telephone");
-       // String callDate = LocalDateTime.now().toString();//= body.get("callDate");
-
-        //CallUser callUser = userService.getUserByUsername(userName);
 
         CallDto callsDto = new CallDto();
 
         callsDto.setStartTime(startTime);
         callsDto.setEndTime(endTime);
-        //callsDto.setDuration(duration);
-        //  callsDto.setTotalTime(totalTime);
-       // callsDto.setCostPerMinute(costPerMinute);
         callsDto.setDiscountForCalls(discountForCalls);
-        //callsDto.setSignUpDiscount(signUpDiscount);
-       // callsDto.setVat(vat);
-       // callsDto.setNetCost(netCost);
-       // callsDto.setGrossCost(grossCost);
-       // callsDto.setTotalCost(totalCost);
-       // callsDto.setCallDate(LocalDateTime.now().toString());
-        //callsDto.setInvoiced(false);
-      //  callsDto.setPaid(false);
 
         Call call = callService.makeCall(userName, telephone, callsDto);
 

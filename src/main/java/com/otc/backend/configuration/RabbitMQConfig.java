@@ -1,7 +1,5 @@
 package com.otc.backend.configuration;
 
-
-import org.antlr.v4.runtime.atn.AmbiguityInfo;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

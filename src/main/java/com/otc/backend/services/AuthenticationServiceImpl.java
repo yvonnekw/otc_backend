@@ -44,11 +44,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Role userRole = roleRepository.findByAuthority("USER").get();
 
         Set<Role> authorities = new HashSet<>();
-       // Set<Telephone> telephone = new HashSet<>();
-        //Address address = new Address();
 
         authorities.add(userRole);
-         //return userRepository.save(new ApplicationUser(username, encodedPassword, authorities, firstName));
 
         return userRepository.save(new Users(username, encodedPassword, emailAddress, telephone, authorities));
     }

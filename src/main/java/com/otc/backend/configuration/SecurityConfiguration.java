@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,8 +28,6 @@ import com.nimbusds.jose.proc.SecurityContext;
 
 import com.otc.backend.utils.RSAKeyProperties;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
 public class SecurityConfiguration {
 
@@ -39,7 +36,6 @@ public class SecurityConfiguration {
     public SecurityConfiguration(RSAKeyProperties keys){
         this.keys = keys;
     }
-    //password does not get stored in plain text
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
