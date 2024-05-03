@@ -53,17 +53,17 @@ public class PaymentServiceImpl implements PaymentService {
         try {
             Long invoiceId = paymentDto.getInvoiceId();
             Invoice invoice = invoiceRepository.findById(invoiceId)
-                    .orElseThrow(() -> new IllegalArgumentException("Invoice not found with ID: " + invoiceId));
+                    .orElseThrow(() -> new IllegalArgumentException("Invoice not found with ID - from create payment: " + invoiceId));
 
-            logger.info("Invoice to pay: {}", invoice);
+            logger.info("Invoice to pay - from create payment: {}", invoice);
 
             Set<Call> calls = invoice.getCalls();
-            logger.info("Calls contained in invoice: {}", calls);
+            logger.info("Calls contained in invoice - from create payment : {}", calls);
 
             for (Call call : calls) {
                 call.setStatus("Paid");
                 callRepository.save(call);
-                logger.info("Call status updated: {}", call);
+                logger.info("Call status updated - from create payment: {}", call);
             }
             payment.setAmount(invoice.getTotalAmount());
             payment.setPaymentDate(paymentDto.getPaymentDate());
@@ -77,8 +77,11 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setInvoice(invoice);
             invoiceRepository.save(invoice);
 
+            //new to fix payment tests
+            paymentDto.setInvoiceId(invoice.getInvoiceId());
+
             invoice.setStatus("Paid");
-            logger.info("Updated Invoice: {}", invoice);
+            logger.info("Updated Invoice to paid - in create payment: {}", invoice);
             
             Payment savedPayment = paymentRepository.save(payment);
             paymentDto.setPaymentId(savedPayment.getPaymentId());
@@ -86,7 +89,7 @@ public class PaymentServiceImpl implements PaymentService {
             return paymentDto;
         } catch (Exception e) {
     
-            logger.error("Error creating payment: {}", e.getMessage(), e);
+            logger.error("Error creating payment - from create payment: {}", e.getMessage(), e);
             throw e; 
         }
     }

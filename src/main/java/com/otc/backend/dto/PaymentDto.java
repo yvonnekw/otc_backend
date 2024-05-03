@@ -15,9 +15,7 @@ public class PaymentDto {
     private String status;
     private Long invoiceId;
 
-    public PaymentDto(Long paymentId, String amount, String paymentDate, String fullNameOnPaymentCard, String cardNumber, String expiringDate, String issueNumber, String securityNumber, String status, Long invoiceId) {
-        this.paymentId = paymentId;
-        this.amount = amount;
+    public PaymentDto(String paymentDate, String fullNameOnPaymentCard, String cardNumber, String expiringDate, String issueNumber, String securityNumber, String status, Long invoiceId) {
         this.paymentDate = paymentDate;
         this.fullNameOnPaymentCard = fullNameOnPaymentCard;
         this.cardNumber = cardNumber;

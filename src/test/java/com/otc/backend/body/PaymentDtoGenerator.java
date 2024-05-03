@@ -17,17 +17,14 @@ public class PaymentDtoGenerator {
         Faker faker = new Faker();
 
         JSONObject paymentDto = new JSONObject();
-        //paymentDto.put("paymentId", faker.number().randomNumber());
         paymentDto.put("paymentDate", formatDate(faker.date().birthday(18, 65)));
         paymentDto.put("fullNameOnPaymentCard", faker.name().fullName());
         paymentDto.put("cardNumber", faker.finance().creditCard());
         paymentDto.put("expiringDate", formatDate(faker.date().future(365, TimeUnit.DAYS)));
         paymentDto.put("issueNumber", faker.number().digits(3));
         paymentDto.put("securityNumber", faker.number().digits(3));
-        JSONObject invoice = new JSONObject();
 
-        invoice.put("invoiceId", extractedInvoiceId);
-        paymentDto.put("invoice", invoice);
+        paymentDto.put("invoiceId", Integer.parseInt(extractedInvoiceId));
         paymentDto.put("status", "Paid");
 
         return paymentDto;

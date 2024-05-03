@@ -56,23 +56,16 @@ public class InvoiceController {
 
         @PostMapping("/create-invoice")
         public ResponseEntity<InvoiceDTO> createInvoice(@RequestBody InvoiceDTO invoiceDTO) {
-            // Invoice createdInvoice = invoiceService.createInvoice(invoice);
-            // return ResponseEntity.ok(createdInvoice);
             try {
 
-                logger.info("Invoice data comming in : " + invoiceDTO);
-                // Call the service method to create the invoice
-                // Invoice createdInvoice = invoiceService.createInvoice(invoice);
+                logger.info("Invoice data coming in from create invoice controller: " + invoiceDTO);
                 InvoiceDTO createdInvoice = invoiceService.createInvoiceForCalls(invoiceDTO);
-                logger.info("Invoice created: " + createdInvoice);
+                logger.info("Invoice created from create invoice controller: " + createdInvoice);
 
-                // Return the created invoice with HTTP status code 200 (OK)
-                //return ResponseEntity.ok(createdInvoice);
                 return ResponseEntity.ok(createdInvoice);
             } catch (Exception e) {
-                // Log any exceptions that occur during invoice creation
-                System.err.println("Error creating invoice: " + e.getMessage());
-                e.printStackTrace(); // Print the stack trace for detailed error information
+                System.err.println("Error creating invoice from create invoice controller: " + e.getMessage());
+                e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
         }

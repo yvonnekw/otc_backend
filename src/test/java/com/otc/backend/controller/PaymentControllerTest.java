@@ -3,6 +3,7 @@ package com.otc.backend.controller;
 import com.otc.backend.base.TestBase;
 import com.otc.backend.body.CallDtoGenerator;
 import com.otc.backend.body.PaymentDtoGenerator;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ class PaymentControllerTest extends TestBase {
 
     @Autowired
     TestRestTemplate restTemplate;
+
     @Test
     void createPayment() throws JSONException {
         CallDtoGenerator callDtoGenerator = new CallDtoGenerator();
@@ -54,23 +56,39 @@ class PaymentControllerTest extends TestBase {
 
         logger.info("Call id " + extractedCallId);
 
-        HttpEntity<String> invoiceRequestEntity = new HttpEntity<>(requestBody.toString(), headers);
+        JSONArray callIdsArray = new JSONArray();
+        callIdsArray.put(extractedCallId);
+
+        JSONObject jsonRequestBody = new JSONObject();
+        jsonRequestBody.put("callIds", callIdsArray);
+
+        String requestBodyString = jsonRequestBody.toString();
+
+        logger.info("Call id request body string " + requestBodyString);
+
+        HttpEntity<String> invoiceRequestEntity = new HttpEntity<>(requestBodyString, headers);
         ResponseEntity<String> invoiceResponse = restTemplate.exchange("/invoices/create-invoice", HttpMethod.POST, invoiceRequestEntity, String.class);
 
         logger.info("invoice response " + invoiceResponse.getBody());
 
+        assertEquals(HttpStatus.OK, invoiceResponse.getStatusCode());
+
         String invoiceId = invoiceResponse.getBody();
         String extractedInvoiceId = extractData(invoiceId, "invoiceId");
 
-        logger.info("invoice Id " + extractedInvoiceId);
+        logger.info("invoice Id - in create payment test: " + extractedInvoiceId);
 
         PaymentDtoGenerator paymentDtoGenerator = new PaymentDtoGenerator();
 
         JSONObject paymentRequestBody = paymentDtoGenerator.generateFakePaymentDto(extractedInvoiceId);
 
+        logger.info("payment data for payment - in create payment test: " + paymentRequestBody);
+
         HttpEntity<String> paymentRequestEntity = new HttpEntity<>(paymentRequestBody.toString(), headers);
         ResponseEntity<String> paymentResponse = restTemplate.exchange("/payments/payment", HttpMethod.POST, paymentRequestEntity, String.class);
 
         assertEquals(HttpStatus.OK, paymentResponse.getStatusCode());
+
+
     }
 }

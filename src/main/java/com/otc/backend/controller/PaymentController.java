@@ -54,14 +54,14 @@ public class PaymentController {
     @PostMapping("/payment")
     public ResponseEntity<PaymentDto> createPayment(@RequestBody PaymentDto paymentDto) {
         try {
-            logger.info("Payment data comming in : " + paymentDto);
+            logger.info("Payment data coming in - payment controller : " + paymentDto);
             PaymentDto createdPayment = paymentService.createPayment(paymentDto);
-            logger.info("Invoice created: " + createdPayment);
+            logger.info("Payment created - payment controller: " + createdPayment);
 
             return ResponseEntity.ok(createdPayment);
 
         }catch (Exception e) {
-            logger.error("Error creating payment: " + e.getMessage());
+            logger.error("Error creating payment - payment controller: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
