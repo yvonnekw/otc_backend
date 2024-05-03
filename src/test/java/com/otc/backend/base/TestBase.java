@@ -112,7 +112,7 @@ public class TestBase {
         String requestBody = "{\"telephone\": \"" + telephone + "\", \"username\": \"" + username + "\"}";
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
-        ResponseEntity<String> calReceiverResponse = restTemplate.exchange("/call-receiver/add/receiver", HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> calReceiverResponse = restTemplate.exchange("/call-receiver/add-receiver", HttpMethod.POST, requestEntity, String.class);
 
         logger.info("call receiver details " + calReceiverResponse);
 

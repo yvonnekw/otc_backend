@@ -24,7 +24,7 @@ jobs:
           RABBITMQ_DEFAULT_USER: ${{ secrets.RABBITMQ_USERNAME }}
           RABBITMQ_DEFAULT_PASS: ${{ secrets.RABBITMQ_PASSWORD }}
         ports:
-         # - 5672:5672
+          - 5673:5672
           - 15673:15672
         #options: --health-cmd "rabbitmq-diagnostics -q ping"
         #command: rabbitmq-server

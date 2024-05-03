@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+
+import com.otc.backend.dto.PaymentDto;
 import com.otc.backend.models.Call;
 import com.otc.backend.models.Invoice;
 import com.otc.backend.models.Payment;
@@ -45,15 +47,67 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentOptional.orElse(null); // Return null if payment is not found
     }
 
-    @Transactional
     @Override
-    public Payment createPayment(Payment payment) {
+    public PaymentDto createPayment(PaymentDto paymentDto) {
+        Payment payment = new Payment();
         try {
-            Invoice invoice = payment.getInvoice();
-            Set<Call> calls = invoice.getCalls();
+            Long invoiceId = paymentDto.getInvoiceId();
+            Invoice invoice = invoiceRepository.findById(invoiceId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invoice not found with ID - from create payment: " + invoiceId));
 
-            // Set invoice status to "Paid"
+            logger.info("Invoice to pay - from create payment: {}", invoice);
+
+            Set<Call> calls = invoice.getCalls();
+            logger.info("Calls contained in invoice - from create payment : {}", calls);
+
+            for (Call call : calls) {
+                call.setStatus("Paid");
+                callRepository.save(call);
+                logger.info("Call status updated - from create payment: {}", call);
+            }
+            payment.setAmount(invoice.getTotalAmount());
+            payment.setPaymentDate(paymentDto.getPaymentDate());
+            payment.setFullNameOnPaymentCard(paymentDto.getFullNameOnPaymentCard());
+            payment.setCardNumber(paymentDto.getCardNumber());
+            payment.setExpiringDate(paymentDto.getExpiringDate());
+            payment.setIssueNumber(paymentDto.getIssueNumber());
+            payment.setSecurityNumber(paymentDto.getSecurityNumber());
+            payment.setStatus("Paid"); 
+
+            payment.setInvoice(invoice);
+            invoiceRepository.save(invoice);
+
+            //new to fix payment tests
+            paymentDto.setInvoiceId(invoice.getInvoiceId());
+
             invoice.setStatus("Paid");
+            logger.info("Updated Invoice to paid - in create payment: {}", invoice);
+            
+            Payment savedPayment = paymentRepository.save(payment);
+            paymentDto.setPaymentId(savedPayment.getPaymentId());
+
+            return paymentDto;
+        } catch (Exception e) {
+    
+            logger.error("Error creating payment - from create payment: {}", e.getMessage(), e);
+            throw e; 
+        }
+    }
+
+
+    /* 
+    @Override
+    public PaymentDto createPayment(PaymentDto paymentDto) {
+        Payment payment = new Payment();
+        try {
+            Long invoiceId = paymentDto.getInvoiceId();
+            Invoice invoice = invoiceRepository.findById(invoiceId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invoice not found with ID: " + invoiceId));
+
+            logger.info("Invoice to pay: {}", invoice);
+
+            Set<Call> calls = invoice.getCalls();
+            logger.info("Calls contained in invoice: {}", calls);
 
             // Update the status of each call to "Paid" and save them
             for (Call call : calls) {
@@ -65,19 +119,64 @@ public class PaymentServiceImpl implements PaymentService {
 
             logger.info("Total amount from invoice: {}", payment.getAmount());
 
+            // Set invoice status to "Paid"
+            invoice.setStatus("Paid");
+
             // Save the updated invoice
             invoiceRepository.save(invoice);
             logger.info("Updated Invoice: {}", invoice);
 
             // Save the payment
-            return paymentRepository.save(payment);
+            //return paymentRepository.save(payment);
+            return paymentDto;
         } catch (Exception e) {
             // Log and handle any exceptions
             logger.error("Error creating payment: {}", e.getMessage(), e);
             throw e; // Re-throw the exception to propagate it to the caller
         }
     }
+*/
+    
 
+    /* 
+    @Transactional
+    @Override
+    public PaymentDto createPayment(PaymentDto paymentDto) {
+        Payment payment = new Payment();
+        try {
+            Invoice invoice = paymentDto.getInvoice();
+            logger.info("invoice to pay: {}" + invoice);
+            
+            Set<Call> calls = invoice.getCalls();
+            logger.info("Calls contained in invoice: {}", calls);
+            
+            // Update the status of each call to "Paid" and save them
+            for (Call call : calls) {
+                call.setStatus("Paid");
+                callRepository.save(call);
+                logger.info("Call status updated: {}", call);
+            }
+            payment.setAmount(invoice.getTotalAmount());
+            
+            logger.info("Total amount from invoice: {}", payment.getAmount());
+            
+            // Set invoice status to "Paid"
+            invoice.setStatus("Paid");
+            
+            // Save the updated invoice
+            invoiceRepository.save(invoice);
+            logger.info("Updated Invoice: {}", invoice);
+
+            // Save the payment
+            //return paymentRepository.save(payment);
+            return paymentDto;
+        } catch (Exception e) {
+            // Log and handle any exceptions
+            logger.error("Error creating payment: {}", e.getMessage(), e);
+            throw e; // Re-throw the exception to propagate it to the caller
+        }
+    }
+*/
     /* 
     @Override
     public Payment createPayment(Payment payment) {

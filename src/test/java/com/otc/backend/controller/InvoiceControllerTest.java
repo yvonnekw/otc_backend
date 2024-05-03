@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.otc.backend.body.CallDtoGenerator;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -59,10 +60,18 @@ public class InvoiceControllerTest extends TestBase {
 
        String callId = makeCallResponse.getBody();
        String extractedCallId = extractData(callId, "callId");
+       
+        JSONArray callIdsArray = new JSONArray();
+        callIdsArray.put(extractedCallId);
 
-       logger.info("Call id " + extractedCallId);
+        JSONObject jsonRequestBody = new JSONObject();
+        jsonRequestBody.put("callIds", callIdsArray);
 
-        HttpEntity<String> invoiceRequestEntity = new HttpEntity<>(requestBody.toString(), headers);
+        String requestBodyString = jsonRequestBody.toString();
+
+       logger.info("Call id request body string " + requestBodyString);
+
+        HttpEntity<String> invoiceRequestEntity = new HttpEntity<>(requestBodyString, headers);
         ResponseEntity<String> invoiceResponse = restTemplate.exchange("/invoices/create-invoice", HttpMethod.POST, invoiceRequestEntity, String.class);
 
         logger.info("invoice response " + invoiceResponse.getBody());

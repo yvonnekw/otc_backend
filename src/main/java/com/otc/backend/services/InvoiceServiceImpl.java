@@ -41,10 +41,9 @@ public class InvoiceServiceImpl implements InvoiceService {
         try {
             return invoiceRepository.findAll();
         } catch (Exception e) {
-            // Log the exception for debugging purposes
+
             e.printStackTrace();
-            // You can throw a custom exception or return an empty list based on your
-            // application logic
+
             throw new RuntimeException("An error occurred while fetching invoices.", e);
         }
     }
@@ -133,15 +132,12 @@ public class InvoiceServiceImpl implements InvoiceService {
     public InvoiceDTO createInvoiceForCalls(InvoiceDTO invoiceDTO) {
         try {
 
-            // Check if callIds list is null
             if (invoiceDTO.getCallIds() == null) {
-                throw new IllegalArgumentException("CallIds list must not be null.");
+                throw new IllegalArgumentException("CallIds list must not be null, from create invoice for calls: ");
             }
-            // Extract call IDs from the DTO
             List<Long> callIds = invoiceDTO.getCallIds();
-            logger.info("Call ids {}", callIds);
+            logger.info("Call ids from create invoice for calls: {}", callIds);
 
-            // Retrieve calls from the repository using the call IDs
             Set<Call> calls = new HashSet<>();
             for (Long callId : callIds) {
                 Optional<Call> optionalCall = callRepository.findById(callId);
@@ -150,13 +146,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 
             // Calculate total amount
             BigDecimal totalAmount = callService.calculateTotalAmount(calls);
-            logger.info("Total amount calculated: {}", totalAmount);
+            logger.info("Total amount calculated - from create invoice for calls: {}", totalAmount);
 
             // Update status of associated calls
             for (Call call : calls) {
                 call.setStatus("Invoiced");
                 callRepository.save(call);
-                logger.info("Call status updated: {}", call);
+                logger.info("Call status updated - from create invoice for calls : {}", call);
             }
 
             // Save invoice entity
@@ -172,14 +168,12 @@ public class InvoiceServiceImpl implements InvoiceService {
             invoiceDTO.setInvoiceDate(invoice.getInvoiceDate());
             invoiceDTO.setStatus(invoice.getStatus());
             invoiceDTO.setTotalAmount(invoice.getTotalAmount());
-            // You may need to set other fields if they were updated by the repository
 
             return invoiceDTO;
         } catch (Exception e) {
-            // Handle exceptions
-            // Log and throw or return an appropriate error response
-            logger.error("Error creating invoice: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to create invoice", e);
+
+            logger.error("Error creating invoice - from create invoice for calls: {} ", e.getMessage(), e);
+            throw new RuntimeException("Failed to create invoice - from create invoice for calls ", e);
         }
     }
 
