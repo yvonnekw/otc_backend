@@ -2,15 +2,18 @@
 version: '3'
 
 services:
-  app:
-    image: 'otc-backend-springboot-docker-img:latest'
+  otc-backend:
+    image: 'yvonnetest/otc-docker-backend-image:latest'
     build:
       context: .
-    #container_name: otcbackend
+    container_name: otc-backend
     depends_on:
-      - db
+      - postgres
+      - rabbitmq
+      - elasticsearch
+      - pgadmin
     environment:
-       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/otcDb
+       #SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/otcDb
        SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
        SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
        SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
@@ -19,7 +22,8 @@ services:
     networks:
       - otc-network
 
-  db:
+  postgres:
+    container_name: postgres
     image: postgres
     environment:
        POSTGRES_USER: ${POSTGRES_USER}
@@ -34,6 +38,7 @@ services:
       - otc-network
 
   pgadmin:
+    container_name: pgadmin
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
@@ -47,13 +52,15 @@ services:
       - otc-network
 
   frontend:
-    image: 'otc-frontend-vite-react-docker-img:latest'
+    container_name: otc-frontend
+    image: 'yvonnetest/otc-vite-react-frontend-image:latest'
     ports:
       - "2000:2000"
     networks:
       - otc-network
 
   rabbitmq:
+    container_name: rabbitmq
     image: rabbitmq:latest
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
@@ -65,6 +72,7 @@ services:
       - otc-network
 
   elasticsearch:
+    container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
