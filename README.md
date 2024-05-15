@@ -77,11 +77,18 @@ Use the following command to generate the backend Docker image:
 
 `docker image build -t otc-backend-springboot-docker-img .`
 
+##### Frontend repo
+
 Head of into the frontend directory - This command creates the frontend docker image, by executing the following -
 
-`cd frontend`
+Make sure to clone the frontend repo -
 
-To prepare the frontend files for deployment, run the following command:
+https://github.com/yvonnekw/otc_frontend.git
+
+
+`cd otc-frontend`
+
+Execute the following command to containarise the application and create a docker image -
 
 `npm run build`
 
