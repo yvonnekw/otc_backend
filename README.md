@@ -121,3 +121,47 @@ The tests are currently written in Postman. In the future, component and integra
 
 `docker run -p 2000:2000 yvonnetest/otc-vite-react-frontend-image:latest`
 
+## Access pods deployed to kubernetes
+
+Make sure you have docker, kubernetes, k9s and minikube installed. You can google this and follow the instructions.
+
+Use the deployment and services files located in the following repo to deploy the app
+to kubernetes using minikube.
+
+https://github.com/yvonnekw/otc_k8s
+
+### Start minikube
+
+To execute the commands to deployment pods to kubernetes, use the following command to start 
+minikube, after it has successfully been installed.
+
+`minikube start`
+
+And you can also use the following commmand to stop minikube.
+
+`minikube stop`
+
+ ### Log a pod
+
+To log a pod and view messages that it is working and accessable with no errors or investigate for some reason, you need to get your pod name using k9s or 
+
+`kubectl get all`
+
+on your commandline or terminal.
+
+ You can use the command below to log a pod -
+
+` kubectl logs  otc-backend-8449c5fdb4-6bv8p `
+
+### View your deployed clusters on the minikube dashboard
+
+`minikube dashboard`
+
+### Access a service url 
+
+Use the following command to access the url of a service
+ `minikube service otc-backend --url`
+
+where otc-backend  is the same as the service name in your service.yaml file. See more details here -
+
+https://github.com/yvonnekw/otc_k8s
