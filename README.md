@@ -25,6 +25,8 @@ Postman is being used to script all of the tests thus far. Writing component and
 14. [] Repository for components
 15. [] Repository Integration assessments
 16. [] To host the available Postman scripts, create a repository and provide a link to it here.
+17. [] Add a successfully made call message
+18. [] Add a successfully registered user message
 
 ## Seeding of data
 
