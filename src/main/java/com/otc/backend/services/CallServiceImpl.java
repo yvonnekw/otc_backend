@@ -149,6 +149,12 @@ public class CallServiceImpl implements CallService {
         }
     }
 
+
+    public List<Call> getCallsByUsernameAndStatus(String username, String status) {
+        return callRepository.findByUsernameAndStatus(username, status);
+    }
+
+
     /* 
     public Call makeCall(String username, String telephone, CallDto callsDTO) {
         try {
