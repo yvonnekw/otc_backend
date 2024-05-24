@@ -114,12 +114,13 @@ public class InvoiceController {
         }
     }
 */
-  @GetMapping("/all")
+  @GetMapping("/get-all-invoice")
+  @PreAuthorize("hasRole('ADMIN')")
   public List<Invoice> getAllInvoices() {
       return invoiceRepository.findAll();
   }
 
-    @GetMapping("/get-all-invoice")
+    @GetMapping("/get-invoice-callIds")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllInvoicesWithCallIds() {
         try {

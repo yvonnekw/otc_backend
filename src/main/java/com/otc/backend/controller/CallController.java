@@ -103,6 +103,16 @@ public class CallController {
         return ResponseEntity.ok(calls);
     }
 
+    @GetMapping("/user/{username}/calls")
+    public ResponseEntity<List<Call>> getCallsByUsernameAndStatus(
+            @PathVariable String username,
+            @RequestParam String status) {
+        List<Call> calls = callService.getCallsByUsernameAndStatus(username, status);
+        return ResponseEntity.ok(calls);
+    }
+
+
+
     /* 
     @GetMapping("/paid")
     public ResponseEntity<List<Call>> getPaidCalls() {

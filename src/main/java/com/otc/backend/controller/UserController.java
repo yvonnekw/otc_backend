@@ -120,7 +120,7 @@ public class UserController {
     @GetMapping("/all-users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Users>> getUsers() {
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.FOUND);
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @GetMapping("/{username}")

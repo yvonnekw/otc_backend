@@ -19,6 +19,9 @@ public interface CallRepository extends JpaRepository<Call, Long> {
   List<Call> findByUserUsername(String username);
   List<Call> findByUser_Username(String username);
 
+    @Query("SELECT c FROM Call c JOIN c.user u WHERE u.username = :username AND c.status = :status")
+    List<Call> findByUsernameAndStatus(@Param("username") String username, @Param("status") String status);
+
 //List<Call> findByUsernameAndIsPaidTrue(String username);
 //List<Call> findByUser_Username(String username);
 

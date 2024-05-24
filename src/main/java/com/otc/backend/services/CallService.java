@@ -32,6 +32,8 @@ public interface CallService {
 
    BigDecimal calculateTotalAmount(Set<Call> calls);
 
+  List<Call> getCallsByUsernameAndStatus(String username, String status);
+
     //double calculateTotalCost(List<Call> calls);
 
    // public void endCallsAndGenerateInvoice(List<Call> calls);
