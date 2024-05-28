@@ -186,7 +186,7 @@ public class Users implements UserDetails {
 		this.authorities = authorities;
 	}
 
-	/*
+
 	public Users(Long userId, String username, String password, String firstName, String lastName, String emailAddress,
 				 String telephone, Set<Role> authorities, Address address, Boolean enabled, Long verification) {
 		this.userId = userId;
@@ -200,7 +200,7 @@ public class Users implements UserDetails {
 		this.address = address;
 		this.enabled = enabled;
 		this.verification = verification;
-	}*/
+	}
 
 	public Users(String username) {
 		this.username = username;

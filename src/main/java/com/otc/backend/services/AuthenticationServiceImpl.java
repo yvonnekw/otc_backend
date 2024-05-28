@@ -38,6 +38,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
+    /*
     public Users registerUser(String username, String password, String emailAddress, String telephone){
 
         String encodedPassword = passwordEncoder.encode(password);
@@ -48,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authorities.add(userRole);
 
         return userRepository.save(new Users(username, encodedPassword, emailAddress, telephone, authorities));
-    }
+    }*/
 
     public LoginResponseDto loginUser(String username, String password){
 
