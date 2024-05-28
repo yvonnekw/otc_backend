@@ -2,6 +2,7 @@ package com.otc.backend.controller;
 
 import java.util.LinkedHashMap;
 
+import com.otc.backend.response.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +37,17 @@ import com.otc.backend.services.UserService;
 public class AuthenticationController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+
     private final UserService userService;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
-    private RabbitMQJsonProducer rabbitMQJsonProducer;
+    private final RabbitMQJsonProducer rabbitMQJsonProducer;
 
     @Autowired
     private AuthenticationService authenticationService;
 
-   @Autowired
-    public AuthenticationController(UserService userService, TokenService tokenService, AuthenticationManager authenticationManager, RabbitMQJsonProducer rabbitMQJsonProducer){
+    @Autowired
+    public AuthenticationController(UserService userService, TokenService tokenService, AuthenticationManager authenticationManager, RabbitMQJsonProducer rabbitMQJsonProducer) {
         this.userService = userService;
         this.tokenService = tokenService;
         this.authenticationManager = authenticationManager;
@@ -53,87 +55,111 @@ public class AuthenticationController {
     }
 
     @ExceptionHandler({EmailAlreadyTakenException.class})
-    public ResponseEntity<String> handleEmailTaken(){
-        return new ResponseEntity<String>("The email you provided is already taken", HttpStatus.CONFLICT);
+    public ResponseEntity<String> handleEmailTaken() {
+        return new ResponseEntity<>("The email you provided is already taken", HttpStatus.CONFLICT);
+    }
 
+    @ExceptionHandler({UserDoesNotExistException.class})
+    public ResponseEntity<String> handleUserDoesNotExist() {
+        return new ResponseEntity<>("The user you are looking for does not exist.", HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/register")
-    public Users registerUser(@RequestBody RegistrationDto body) {
+    public ResponseEntity<ApiResponse<Users>> registerUser(@RequestBody RegistrationDto body) {
         try {
-       // rabbitMQJsonProducer.sendJsonMessage(body);
-        return userService.registerUser(body);
+            Users newUser = userService.registerUser(body).getData();
+            // rabbitMQJsonProducer.sendJsonMessage(body);
+            ApiResponse<Users> response = new ApiResponse<>(true, "User registered successfully", newUser);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (EmailAlreadyTakenException e) {
+            logger.error("Email already taken: " + e.getMessage(), e);
+            ApiResponse<Users> response = new ApiResponse<>(false, "The email you provided is already taken");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         } catch (Exception e) {
             logger.error("Error occurred during user registration: " + e.getMessage(), e);
-            throw e;
+            ApiResponse<Users> response = new ApiResponse<>(false, "Internal server error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    
     @PostMapping("/login")
-    public LoginResponseDto loginUser(@RequestBody LinkedHashMap<String, String> body){
+    public ResponseEntity<ApiResponse<LoginResponseDto>> loginUser(@RequestBody LinkedHashMap<String, String> body) {
         String username = body.get("username");
         String password = body.get("password");
 
         try {
             Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password));
+                    new UsernamePasswordAuthenticationToken(username, password));
 
-                String token = tokenService.generateJwt(auth);
-                return new LoginResponseDto(userService.getUserByUsername(username), token);
-
-         } catch(RuntimeException e) {  //(AuthenticationException e) {
-            return new LoginResponseDto(null, "");
+            String token = tokenService.generateJwt(auth);
+            Users user = userService.getUserByUsername(username);
+            LoginResponseDto loginResponse = new LoginResponseDto(user, token);
+            ApiResponse<LoginResponseDto> response = new ApiResponse<>(true, "Login successful", loginResponse);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            ApiResponse<LoginResponseDto> response = new ApiResponse<>(false, "Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
-
-        }
-
-    @ExceptionHandler({UserDoesNotExistException.class})
-    public ResponseEntity<String> handleUserDoesNotExist(){
-        return new ResponseEntity<String>("The user you are looking for does not exist.", HttpStatus.NOT_FOUND);
     }
-
     @PutMapping("/update/telephone")
-    public Users updateTelephoneNumber(@RequestBody LinkedHashMap<String, String> body){
-
-        String userName = body.get("username");
-        String phone = body.get("mainTelephone");
-    
-        Users applicationUser = userService.getUserByUsername(userName);
-
-        applicationUser.setTelephone((phone));
-
-        return userService.updateUser(applicationUser);
+    public ResponseEntity<ApiResponse<Users>> updateTelephoneNumber(@RequestBody LinkedHashMap<String, String> body) {
+        try {
+            String userName = body.get("username");
+            String phone = body.get("mainTelephone");
+            Users applicationUser = userService.getUserByUsername(userName);
+            applicationUser.setTelephone(phone);
+            Users updatedUser = userService.updateUser(applicationUser);
+            ApiResponse<Users> response = new ApiResponse<>(true, "Telephone number updated successfully", updatedUser);
+            return ResponseEntity.ok(response);
+        } catch (UserDoesNotExistException e) {
+            ApiResponse<Users> response = new ApiResponse<>(false, "The user you are looking for does not exist.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            logger.error("Error updating telephone number for user: " + body.get("username"), e);
+            ApiResponse<Users> response = new ApiResponse<>(false, "Internal server error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @PostMapping("/email/code")
-    public ResponseEntity<String> createEmailVerification(@RequestBody LinkedHashMap<String, String> body) {
-
-        userService.generateEmailVerification(body.get("username"));
-
-        return new ResponseEntity<String>("Verification code generated, email sent.", HttpStatus.OK);
-
+    public ResponseEntity<ApiResponse<String>> createEmailVerification(@RequestBody LinkedHashMap<String, String> body) {
+        try {
+            userService.generateEmailVerification(body.get("username"));
+            ApiResponse<String> response = new ApiResponse<>(true, "Verification code generated, email sent.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("Error generating email verification code for user: " + body.get("username"), e);
+            ApiResponse<String> response = new ApiResponse<>(false, "Failed to generate email verification code.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
-
     @PutMapping("/update/password")
-    public Users updatePassword(@RequestBody LinkedHashMap<String, String> body) {
-
-        String username = body.get("username");
-        String password = body.get("password");
-
-        return userService.setPassword(username, password);
-
+    public ResponseEntity<ApiResponse<Users>> updatePassword(@RequestBody LinkedHashMap<String, String> body) {
+        try {
+            String username = body.get("username");
+            String password = body.get("password");
+            Users updatedUser = userService.setPassword(username, password);
+            ApiResponse<Users> response = new ApiResponse<>(true, "Password updated successfully", updatedUser);
+            return ResponseEntity.ok(response);
+        } catch (UserDoesNotExistException e) {
+            ApiResponse<Users> response = new ApiResponse<>(false, "The user you are looking for does not exist.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            logger.error("Error updating password for user: " + body.get("username"), e);
+            ApiResponse<Users> response = new ApiResponse<>(false, "Internal server error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
-    
     @GetMapping("/username")
-    public ResponseEntity<String> getUsername(Authentication authentication) {
+    public ResponseEntity<ApiResponse<String>> getUsername(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+            ApiResponse<String> response = new ApiResponse<>(false, "User not authenticated");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
         String username = authentication.getName();
-        return ResponseEntity.ok(username);
+        ApiResponse<String> response = new ApiResponse<>(true, "Username retrieved successfully", username);
+        return ResponseEntity.ok(response);
     }
 }
-
 

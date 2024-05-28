@@ -37,18 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private TokenService tokenService;
-
-    public Users registerUser(String username, String password, String emailAddress, String telephone){
-
-        String encodedPassword = passwordEncoder.encode(password);
-        Role userRole = roleRepository.findByAuthority("USER").get();
-
-        Set<Role> authorities = new HashSet<>();
-
-        authorities.add(userRole);
-
-        return userRepository.save(new Users(username, encodedPassword, emailAddress, telephone, authorities));
-    }
+    
 
     public LoginResponseDto loginUser(String username, String password){
 

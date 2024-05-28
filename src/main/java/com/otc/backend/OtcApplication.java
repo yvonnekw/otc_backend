@@ -49,7 +49,7 @@ public class OtcApplication {
 			callerUser2.setAuthorities(roles2);
 			callerUser2.setFirstName("Admin");
 			callerUser2.setLastName("Smith");
-			callerUser2.setEmailAddress("yodal@email.com");
+			callerUser2.setEmailAddress("email@email.com");
 			callerUser2.setUsername("adminSmith");
 			// callerUser.setPassword("password");
 			callerUser2.setPassword(passwordEncoder.encode("password1"));

@@ -2,11 +2,13 @@ package com.otc.backend.services;
 
 import com.otc.backend.dto.RegistrationDto;
 import com.otc.backend.exception.EmailAlreadyTakenException;
+import com.otc.backend.exception.RoleNotFoundException;
 import com.otc.backend.exception.UserDoesNotExistException;
 import com.otc.backend.models.Role;
 import com.otc.backend.models.Users;
 import com.otc.backend.repository.RoleRepository;
 import com.otc.backend.repository.UserRepository;
+import com.otc.backend.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.ResourceNotFoundException;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,8 +31,6 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-
-   // @Autowired
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -39,50 +40,50 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    //@Autowired
-    public Users registerUser(RegistrationDto registrationDTO) {
-         
-        Users user = new Users();
-    
-        user.setFirstName(registrationDTO.getFirstName());
-        user.setLastName(registrationDTO.getLastName());
-        user.setEmailAddress(registrationDTO.getEmailAdress());
-        user.setTelephone(registrationDTO.getTelephone());
-        //user.setPassword(registrationDTO.getPassword());
-        user.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
-
-      // ApplicationUser encryptPassword = setPassword(registrationDTO.getLastName(), registrationDTO.getPassword());
-
-       // applicationUser.setPassword(encryptPassword.toString());
-
-
-        String name = user.getFirstName() + user.getLastName();
-        boolean nameTaken = true;
-        String tempName = " ";
-
-        while(nameTaken) {
-            tempName = generateUserName(name);
-            
-            if(userRepository.findByUsername(tempName).isEmpty()){
-                nameTaken = false;
-            }
-        }
-        user.setUsername(tempName);
-
-        Set<Role> roles = registrationDTO.getAuthorities();
-        roles.add(roleRepository.findByAuthority("USER").get());
-        registrationDTO.setAuthorities(roles);
-
-        //Set<Role> roles =  (Set<Role>) applicationUser.getAuthorities();
-       // roles.add(roleRepository.findByAuthority("USER").get());
-        //applicationUser.setAuthorities(roles);
+    public ApiResponse<Users> registerUser(RegistrationDto registrationDtoBody){
 
         try {
-            return userRepository.save(user);
+            String firstName = registrationDtoBody.getFirstName();
+            String lastName = registrationDtoBody.getLastName();
+            String emailAddress = registrationDtoBody.getEmailAddress();
+            String password = registrationDtoBody.getPassword();
+            String telephone = registrationDtoBody.getTelephone();
+            String username;
+
+            String name = firstName +lastName;
+            boolean nameTaken = true;
+            String tempName = " ";
+
+            while(nameTaken) {
+                tempName = generateUserName(name);
+
+                if(userRepository.findByUsername(tempName).isEmpty()){
+                    nameTaken = false;
+                }
+            }
+
+            username = tempName;
+
+            if (userRepository.existsByEmailAddress(emailAddress)) {
+                return new ApiResponse<>(false, "Email address is already registered");
+            }
+
+            String encodedPassword = passwordEncoder.encode(password);
+
+            Role userRole = roleRepository.findByAuthority("USER").orElseThrow(() -> new RoleNotFoundException("Role not found"));
+
+            Set<Role> authorities = new HashSet<>();
+            authorities.add(userRole);
+            Users newUser = userRepository.save(new Users(username, encodedPassword, firstName, lastName, emailAddress, telephone, authorities));
+
+            return new ApiResponse<>(true, "User registered successfully", newUser);
         } catch (Exception e) {
-            throw new EmailAlreadyTakenException();
+
+            e.printStackTrace();
+            return new ApiResponse<>(false, "Internal server error");
         }
     }
+
 
     private String generateUserName(String name) {
         long generatedNumber = (long) Math.floor(Math.random() * 1_000_000_000);
@@ -148,6 +149,7 @@ public class UserService implements UserDetailsService {
         userRepository.deleteById(userId);
     }
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Users user = userRepository.findByUsername(username)
@@ -162,26 +164,13 @@ public class UserService implements UserDetailsService {
 
         return userDetails;
     }
-    /* 
-       public List<String> getPhoneNumbersForUser(String username) {
-        Optional<Users> user = userRepository.findByUsername(username);
-        if (user != null) {
-            // Assuming user contains a list of phone numbers
-            return user.getReceiver();
-        } else {
-            throw new NotFoundException();
-        }
-    }*/
 
     public String getUsername(String username) {
-        // Retrieve the user entity from the database
         Optional<Users> user = userRepository.findByUsername(username);
 
-        // Check if the user exists
         if (user != null) {
             return user.get().getUsername();
         } else {
-            // Handle case where user does not exist
             throw new UserDoesNotExistException();
         }
     }
