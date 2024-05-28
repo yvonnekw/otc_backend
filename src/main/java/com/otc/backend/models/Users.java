@@ -137,45 +137,6 @@ public class Users implements UserDetails {
 		this.emailAddress = emailAddress;
 	}
 
-	/*
-	public Users(String password, String firstName, String lastName, String emailAddress, String telephone,
-		 Set<Role> authorities ) {
-		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.emailAddress = emailAddress;
-		this.telephone = telephone;
-		this.authorities = authorities;
-	}*/
-/*
-	public Users(String firstName, String lastName, String emailAddress, String password, String telephone
-				  ) {
-		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.emailAddress = emailAddress;
-		this.telephone = telephone;
-
-	}*/
-/*
-	public Users(String username, String password, String emailAddress, String telephone, Set<Role> authorities) {
-		this.username = username;
-		this.password = password;
-		this.emailAddress = emailAddress;
-		this.telephone = telephone;
-		this.authorities = authorities;
-	}*/
-/*
-	public Users(String username, String password, String firstName, String lastName, String emailAddress,
-				 String telephone) {
-		this.username = username;
-		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.emailAddress = emailAddress;
-		this.telephone = telephone;
-	}
-*/
 	public Users(String username, String password, String firstName, String lastName, String emailAddress, String telephone, Set<Role> authorities) {
 		this.username = username;
 		this.password = password;
