@@ -1,6 +1,7 @@
 package com.otc.backend.body;
 
 import com.github.javafaker.Faker;
+import com.github.javafaker.Friends;
 import com.otc.backend.base.TestBase;
 import com.otc.backend.dto.CallReceiverDto;
 import com.otc.backend.dto.RegistrationDto;
@@ -43,7 +44,9 @@ public class CallReceiverDtoGenerator extends TestBase {
         logger.info("actual result login " + loginResponse);
 
         String telephone = faker.phoneNumber().cellPhone();
-
+        String fullName = faker.name().fullName();
+        String relationship = faker.friends().toString();
+        
         //Optional<Users> userOptional = userRepository.findByUsername(username);
 
        // if (userOptional.isPresent()) {
@@ -56,7 +59,7 @@ public class CallReceiverDtoGenerator extends TestBase {
 
         //return new CallReceiverDto(telephone, new Users(username));
 
-        return new CallReceiverDto(telephone, username);
+        return new CallReceiverDto(telephone, username, fullName, relationship);
 
            // re
        // }

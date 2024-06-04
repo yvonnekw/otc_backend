@@ -72,10 +72,11 @@ public class UserService implements UserDetailsService {
 
             Role userRole = roleRepository.findByAuthority("USER").orElseThrow(() -> new RoleNotFoundException("Role not found"));
 
+
             Set<Role> authorities = new HashSet<>();
             authorities.add(userRole);
             Users newUser = userRepository.save(new Users(username, encodedPassword, firstName, lastName, emailAddress, telephone, authorities));
-
+            newUser.setEnabled(true);
             return new ApiResponse<>(true, "User registered successfully", newUser);
         } catch (Exception e) {
 

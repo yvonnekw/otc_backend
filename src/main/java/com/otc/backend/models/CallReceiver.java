@@ -28,26 +28,30 @@ public class CallReceiver {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long callReceiverId;
     private String telephone;
+    private String fullName;
+    private String relationship;
     
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users user;
 
-    public CallReceiver(Long callReceiverId, String telephone, Users user) {
+    public CallReceiver(Long callReceiverId, String telephone, String fullName, String relationship, Users user) {
         this.callReceiverId = callReceiverId;
         this.telephone = telephone;
+        this.fullName = fullName;
+        this.relationship = relationship;
         this.user = user;
     }
 
     public CallReceiver() {
     }
 
-    public CallReceiver(Long callReceiverId, String telephone) {
-        this.callReceiverId = callReceiverId;
+    public CallReceiver(String telephone, String fullName, String relationship, Users user) {
         this.telephone = telephone;
+        this.fullName = fullName;
+        this.relationship = relationship;
+        this.user = user;
     }
-
-
 
     public Long getCallReceiverId() {
         return callReceiverId;
@@ -70,13 +74,30 @@ public class CallReceiver {
         this.user = user;
     }
 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(String relationship) {
+        this.relationship = relationship;
+    }
+
     @Override
     public String toString() {
-        return "CallReceiver [callReceiverId=" + callReceiverId + ", telephone=" + telephone + ", user=" + user + "]";
+        return "CallReceiver{" +
+                "callReceiverId=" + callReceiverId +
+                ", telephone='" + telephone + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", relationship='" + relationship + '\'' +
+                ", user=" + user +
+                '}';
     }
-  
-   
-
-    
-
 }
