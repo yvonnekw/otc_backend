@@ -30,7 +30,7 @@ public class CallReceiverServiceImpl implements CallReceiverService {
     private final CallReceiverRepository callReceiverRepository;
 
     public CallReceiverServiceImpl(CallRepository callRepository, UserRepository userRepository,
-            CallReceiverRepository callReceiverRepository) {
+                                   CallReceiverRepository callReceiverRepository) {
         this.callRepository = callRepository;
         this.userRepository = userRepository;
         this.callReceiverRepository = callReceiverRepository;
@@ -78,118 +78,5 @@ public class CallReceiverServiceImpl implements CallReceiverService {
     public List<String> findDistinctTelephoneByUserUsername(String username) {
         return callReceiverRepository.findDistinctTelephoneByUserUsername(username);
     }
-
-    /*
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * public boolean checkPhoneNumberExistsForUser(String username, String
-     * telephone) {
-     * return callReceiverRepository.existsByUserUsernameAndTelephone(username,
-     * telephone);
-     * }
-     * 
-     * 
-     * 
-     * public List<CallReceiver> getCallReceiversByUsername(String username) {
-     * return callReceiverRepository.findByUserUsername(username);
-     * }
-     */
-
-    // getDistinctPhoneNumbersByUsername
-
-    /*
-     * public List<String> getDistinctPhoneNumbersForUser(String username) {
-     * return callReceiverRepository.findDistinctTelephoneByUserUsername(username);
-     * }
-     */
-    /*
-     * public List<String> getPhoneNumbersForUser(String username) {
-     * List<CallReceiver> callReceivers =
-     * callReceiverRepository.findByUserUsername(username);
-     * List<String> phoneNumbers = new ArrayList<>();
-     * for (CallReceiver receiver : callReceivers) {
-     * phoneNumbers.add(receiver.getTelephone());
-     * }
-     * return phoneNumbers;
-     * }
-     */
-
-    // public List<CallReceiver> getCallReceiversForUser(String username) {
-    // return callRepository.findByCallUser(username);
-    // }
-
-    /*
-     * 
-     * public Call makeCall(CallDto callDTO) {
-     * Call call = new Call();
-     * Call saveCall = callRepository.save(call);
-     * return (saveCall);
-     * }
-     * 
-     * public Call getCallById(Long callId) {
-     * return
-     * callRepository.findById(callId).orElseThrow(UserDoesNotExistException::new);
-     * }
-     * 
-     * public List<Call> getAllCalls() {
-     * return callRepository.findAll();
-     * }
-     * 
-     * public Call updateCall(Long callId, Call updatedCall){
-     * 
-     * Call call = callRepository.findById(callId).orElseThrow(
-     * () -> new ResourceNotFoundException("Call not found with the given Id : " +
-     * callId)
-     * );
-     * call.setStartTime(updatedCall.getStartTime());
-     * call.setEndTime(updatedCall.getEndTime());
-     * 
-     * Call updatedCallObj = callRepository.save(call);
-     * return updatedCallObj;
-     * }
-     * 
-     * public void deleteCall(Long callId) {
-     * CallUser user = userRepository.findById(callId).orElseThrow(
-     * () -> new ResourceNotFoundException("User not found with the given Id : " +
-     * callId)
-     * );
-     * 
-     * callRepository.deleteById(callId);
-     * }
-     * 
-     * public CallService(CallRepository callsRepository, UserRepository
-     * userRepository){
-     * this.callRepository = callsRepository;
-     * this.userRepository = userRepository;
-     * }
-     * 
-     * public Call makeCall(String username, CallDto callsDTO) throws Exception {
-     * CallUser user =
-     * userRepository.findByUsername(username).orElseThrow(UserDoesNotExistException
-     * ::new);
-     * System.out.println("user name " + username);
-     * 
-     * Call call = new Call();
-     * try {
-     * call.setStartTime(callsDTO.getStartTime());
-     * call.setEndTime(callsDTO.getEndTime());
-     * call.setDuration(callsDTO.getDuration());
-     * call.setCallUser(user);
-     * 
-     * System.out.println("call details " + call);
-     * System.out.println("user details  " + user);
-     * 
-     * return callRepository.save(call);
-     * } catch (Exception e) {
-     * e.getStackTrace();
-     * }
-     * 
-     * return null;
-     * }
-     */
 
 }
