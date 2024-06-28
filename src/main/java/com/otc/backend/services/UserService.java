@@ -72,10 +72,11 @@ public class UserService implements UserDetailsService {
 
             Role userRole = roleRepository.findByAuthority("USER").orElseThrow(() -> new RoleNotFoundException("Role not found"));
 
+
             Set<Role> authorities = new HashSet<>();
             authorities.add(userRole);
             Users newUser = userRepository.save(new Users(username, encodedPassword, firstName, lastName, emailAddress, telephone, authorities));
-
+            newUser.setEnabled(true);
             return new ApiResponse<>(true, "User registered successfully", newUser);
         } catch (Exception e) {
 
@@ -173,6 +174,21 @@ public class UserService implements UserDetailsService {
         } else {
             throw new UserDoesNotExistException();
         }
+    }
+
+    public String getUserFirstName(String username) {
+       
+        return userRepository.findFirstNameByUsername(username);
+    }
+
+    public String getUserLastName(String username) {
+    
+        return userRepository.findLastNameByUsername(username);
+    }
+
+    public String getUserEmail(String username) {
+      
+        return userRepository.findEmailByUsername(username);
     }
 
 

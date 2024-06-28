@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import com.otc.backend.response.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,6 @@ import com.otc.backend.services.AuthenticationService;
 import com.otc.backend.services.TokenService;
 import com.otc.backend.services.UserService;
 
-
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin("*")
@@ -47,19 +47,20 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @Autowired
-    public AuthenticationController(UserService userService, TokenService tokenService, AuthenticationManager authenticationManager, RabbitMQJsonProducer rabbitMQJsonProducer) {
+    public AuthenticationController(UserService userService, TokenService tokenService,
+            AuthenticationManager authenticationManager, RabbitMQJsonProducer rabbitMQJsonProducer) {
         this.userService = userService;
         this.tokenService = tokenService;
         this.authenticationManager = authenticationManager;
         this.rabbitMQJsonProducer = rabbitMQJsonProducer;
     }
 
-    @ExceptionHandler({EmailAlreadyTakenException.class})
+    @ExceptionHandler({ EmailAlreadyTakenException.class })
     public ResponseEntity<String> handleEmailTaken() {
         return new ResponseEntity<>("The email you provided is already taken", HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler({UserDoesNotExistException.class})
+    @ExceptionHandler({ UserDoesNotExistException.class })
     public ResponseEntity<String> handleUserDoesNotExist() {
         return new ResponseEntity<>("The user you are looking for does not exist.", HttpStatus.NOT_FOUND);
     }
@@ -68,9 +69,19 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse<Users>> registerUser(@RequestBody RegistrationDto body) {
         try {
             Users newUser = userService.registerUser(body).getData();
-            // rabbitMQJsonProducer.sendJsonMessage(body);
-            ApiResponse<Users> response = new ApiResponse<>(true, "User registered successfully", newUser);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+            try {
+                rabbitMQJsonProducer.sendJsonMessage(body);
+                ApiResponse<Users> response = new ApiResponse<>(true,
+                        "User registered successfully. Message sent to RabbitMQ.", newUser);
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            } catch (AmqpException e) {
+                logger.error("Error sending message to RabbitMQ: " + e.getMessage(), e);
+                ApiResponse<Users> response = new ApiResponse<>(true,
+                        "User registered successfully, but failed to notify RabbitMQ.", newUser,
+                        "Failed to send message to RabbitMQ.");
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            }
         } catch (EmailAlreadyTakenException e) {
             logger.error("Email already taken: " + e.getMessage(), e);
             ApiResponse<Users> response = new ApiResponse<>(false, "The email you provided is already taken");
@@ -101,6 +112,7 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
     }
+
     @PutMapping("/update/telephone")
     public ResponseEntity<ApiResponse<Users>> updateTelephoneNumber(@RequestBody LinkedHashMap<String, String> body) {
         try {
@@ -122,7 +134,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/email/code")
-    public ResponseEntity<ApiResponse<String>> createEmailVerification(@RequestBody LinkedHashMap<String, String> body) {
+    public ResponseEntity<ApiResponse<String>> createEmailVerification(
+            @RequestBody LinkedHashMap<String, String> body) {
         try {
             userService.generateEmailVerification(body.get("username"));
             ApiResponse<String> response = new ApiResponse<>(true, "Verification code generated, email sent.");
@@ -133,6 +146,7 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
     @PutMapping("/update/password")
     public ResponseEntity<ApiResponse<Users>> updatePassword(@RequestBody LinkedHashMap<String, String> body) {
         try {
@@ -150,6 +164,7 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
     @GetMapping("/username")
     public ResponseEntity<ApiResponse<String>> getUsername(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -162,4 +177,3 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 }
-

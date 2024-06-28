@@ -4,6 +4,14 @@ public class ApiResponse <T> {
     private boolean success;
     private String message;
     private T data;
+    private String rabbitMQStatus;
+
+    public ApiResponse(boolean success, String message, T data, String rabbitMQStatus) {
+        this.success = success;
+        this.message = message;
+        this.data = data;
+        this.rabbitMQStatus = rabbitMQStatus;
+    }
 
     public ApiResponse(boolean success, String message, T data) {
         this.success = success;
@@ -15,7 +23,6 @@ public class ApiResponse <T> {
         this.success = success;
         this.message = message;
     }
-
     // Getters and setters
     public boolean isSuccess() {
         return success;
@@ -40,4 +47,14 @@ public class ApiResponse <T> {
     public void setData(T data) {
         this.data = data;
     }
+
+    public String getRabbitMQStatus() {
+        return rabbitMQStatus;
+    }
+
+    public void setRabbitMQStatus(String rabbitMQStatus) {
+        this.rabbitMQStatus = rabbitMQStatus;
+    }
+
+    
 }
