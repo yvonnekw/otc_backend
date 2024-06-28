@@ -22,24 +22,35 @@ public class TokenService {
     @Autowired
     private JwtDecoder jwtDecoder;
 
+    //@Autowired
+    // private UserService userService;
+
     public TokenService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder){
         this.jwtEncoder = jwtEncoder;
         this.jwtDecoder = jwtDecoder;
+       // this.userService = userService;
     }
 
     public String generateJwt(Authentication auth) {
 
         Instant now = Instant.now();
-
         String scope = auth.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(" "));
+            
+        String roles = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(" "));
+
+    
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuer("self")
             .issuedAt(now)
             .subject(auth.getName())
-            .claim("scope", scope)
+                .claim("scope", scope)
+                .claim("username", auth.getName())
+                .claim("roles", roles)
             .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
@@ -49,6 +60,11 @@ public class TokenService {
         Jwt decoded = jwtDecoder.decode(token);
         String username = decoded.getSubject();
         return username;
+    }
+
+    public String getRolesFromToken(String token) {
+        Jwt decoded = jwtDecoder.decode(token);
+        return decoded.getClaimAsString("roles");
     }
 
     @Override

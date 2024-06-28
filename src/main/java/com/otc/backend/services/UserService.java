@@ -176,5 +176,20 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public String getUserFirstName(String username) {
+       
+        return userRepository.findFirstNameByUsername(username);
+    }
+
+    public String getUserLastName(String username) {
+    
+        return userRepository.findLastNameByUsername(username);
+    }
+
+    public String getUserEmail(String username) {
+      
+        return userRepository.findEmailByUsername(username);
+    }
+
 
 }
