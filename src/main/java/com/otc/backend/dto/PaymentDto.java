@@ -12,6 +12,10 @@ public class PaymentDto {
     private String securityNumber;
     private String status;
     private Long invoiceId;
+    private String username;
+
+    public PaymentDto() {
+    }
 
     public PaymentDto(String paymentDate, String fullNameOnPaymentCard, String cardNumber, String expiringDate, String issueNumber, String securityNumber, String status, Long invoiceId) {
         this.paymentDate = paymentDate;
@@ -22,6 +26,14 @@ public class PaymentDto {
         this.securityNumber = securityNumber;
         this.status = status;
         this.invoiceId = invoiceId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getInvoiceId() {
@@ -117,6 +129,7 @@ public class PaymentDto {
                 ", securityNumber='" + securityNumber + '\'' +
                 ", status='" + status + '\'' +
                 ", invoiceId=" + invoiceId +
+                ", username='" + username + '\'' +
                 '}';
     }
 }

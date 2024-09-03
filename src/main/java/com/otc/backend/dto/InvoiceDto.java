@@ -2,7 +2,7 @@ package com.otc.backend.dto;
 
 import java.util.List;
 
-public class InvoiceDTO {
+public class InvoiceDto {
     
 
     private Long invoiceId;
@@ -10,20 +10,29 @@ public class InvoiceDTO {
     private String status; // Status of the invoice (e.g., "Invoiced", "Paid", "Overdue")
     private String totalAmount; // Total amount of the invoice
     private List<Long> callIds;
+    private String username;
 
-    public InvoiceDTO() {
+    public InvoiceDto() {
     }
 
-    public InvoiceDTO(Long invoiceId) {
+    public InvoiceDto(Long invoiceId) {
         this.invoiceId = invoiceId;
     }
 
-    public InvoiceDTO(String invoiceDate, String status, String totalAmount,
+    public InvoiceDto(String invoiceDate, String status, String totalAmount,
                       List<Long> callIds) {
         this.invoiceDate = invoiceDate;
         this.status = status;
         this.totalAmount = totalAmount;
         this.callIds = callIds;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getStatus() {
@@ -65,10 +74,13 @@ public class InvoiceDTO {
 
     @Override
     public String toString() {
-        return "InvoiceDTO [invoiceId=" + invoiceId + ", invoiceDate=" + invoiceDate + ", status=" + status
-                + ", totalAmount=" + totalAmount + ", callIds=" + callIds + "]";
+        return "InvoiceDto{" +
+                "invoiceId=" + invoiceId +
+                ", invoiceDate='" + invoiceDate + '\'' +
+                ", status='" + status + '\'' +
+                ", totalAmount='" + totalAmount + '\'' +
+                ", callIds=" + callIds +
+                ", username='" + username + '\'' +
+                '}';
     }
-
-    
-    
 }

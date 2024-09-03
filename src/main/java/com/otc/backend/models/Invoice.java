@@ -5,20 +5,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "invoice")
@@ -36,6 +25,16 @@ public class Invoice {
     @ManyToMany
     @JoinTable(name = "invoice_calls", joinColumns = @JoinColumn(name = "invoice_id"), inverseJoinColumns = @JoinColumn(name = "call_id"))
     private Set<Call> calls = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
+    private Users user;
+
+    public List<Long> getCallIds() {
+        return calls.stream()
+                .map(Call::getCallId)
+                .collect(Collectors.toList());
+    }
 
     /* 
     @ElementCollection
@@ -65,6 +64,13 @@ public class Invoice {
         this.calls = calls;
     }
 
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
 
     public String getInvoiceDate() {
         return invoiceDate;
@@ -110,14 +116,15 @@ public class Invoice {
         this.status = status;
     }
 
-
     @Override
     public String toString() {
-        return "Invoice [invoiceId=" + invoiceId + ", invoiceDate=" + invoiceDate + ", status=" + status
-                + ", totalAmount=" + totalAmount + ", callIds=" + calls + "]";
+        return "Invoice{" +
+                "invoiceId=" + invoiceId +
+                ", invoiceDate='" + invoiceDate + '\'' +
+                ", status='" + status + '\'' +
+                ", totalAmount='" + totalAmount + '\'' +
+                ", calls=" + calls +
+                ", user=" + user +
+                '}';
     }
-
-
-   
-    
 }

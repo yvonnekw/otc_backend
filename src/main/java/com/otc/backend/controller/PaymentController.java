@@ -82,6 +82,12 @@ public class PaymentController {
         // return ResponseEntity.ok("User deleted successfully.");
     }
 
+    @GetMapping("/username/{username}")
+    public ResponseEntity<List<PaymentDto>> getPaymentsByUsername(@PathVariable String username) {
+        List<PaymentDto> payments = paymentService.getPaymentsByUsername(username);
+        return ResponseEntity.ok(payments);
+    }
+
     /* 
     @GetMapping("/paid-calls/{username}")
     public ResponseEntity<List<Call>> getPaidCallsByUsername(@PathVariable String username) {

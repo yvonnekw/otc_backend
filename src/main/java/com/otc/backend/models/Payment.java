@@ -37,6 +37,10 @@ public class Payment {
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
 
+    @ManyToOne
+    @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
+    private Users user;
+
     public Payment() {
     }
 
@@ -52,6 +56,14 @@ public class Payment {
         this.securityNumber = securityNumber;
         this.status = status;
         this.invoice = invoice;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 
     public String getCardNumber() {
@@ -137,11 +149,18 @@ public class Payment {
 
     @Override
     public String toString() {
-        return "Payment [paymentId=" + paymentId + ", amount=" + amount + ", paymentDate=" + paymentDate
-                + ", fullNameOnPaymentCard=" + fullNameOnPaymentCard + ", cardNumber=" + cardNumber + ", expiringDate="
-                + expiringDate + ", issueNumber=" + issueNumber + ", securityNumber=" + securityNumber + ", status="
-                + status + ", invoice=" + invoice + "]";
+        return "Payment{" +
+                "paymentId=" + paymentId +
+                ", amount='" + amount + '\'' +
+                ", paymentDate='" + paymentDate + '\'' +
+                ", fullNameOnPaymentCard='" + fullNameOnPaymentCard + '\'' +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", expiringDate='" + expiringDate + '\'' +
+                ", issueNumber='" + issueNumber + '\'' +
+                ", securityNumber='" + securityNumber + '\'' +
+                ", status='" + status + '\'' +
+                ", invoice=" + invoice +
+                ", user=" + user +
+                '}';
     }
-
-    
 }

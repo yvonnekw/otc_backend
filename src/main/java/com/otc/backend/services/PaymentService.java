@@ -21,5 +21,7 @@ public interface PaymentService {
 
     public void deletePayment(Long paymentId);
 
-   // public List<Call> getPaidCallsByUsername(String username); 
+    List<PaymentDto> getPaymentsByUsername(String username);
+
+    // public List<Call> getPaidCallsByUsername(String username); 
 }

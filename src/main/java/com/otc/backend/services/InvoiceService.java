@@ -1,13 +1,11 @@
 package com.otc.backend.services;
 
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
-import com.otc.backend.dto.InvoiceDTO;
-import com.otc.backend.models.Call;
+import com.otc.backend.dto.InvoiceDto;
 import com.otc.backend.models.Invoice;
+import org.springframework.http.ResponseEntity;
 
 public interface InvoiceService {
 
@@ -23,13 +21,18 @@ public interface InvoiceService {
 
     Invoice createInvoice(Invoice invoice);
 
-    List<InvoiceDTO> getAllInvoicesWithCallIds();
+    List<InvoiceDto> getAllInvoicesWithCallIds();
 
     //Invoice createInvoiceForCalls(Set<Call> calls);
     //Invoice createInvoiceForCalls(Invoice invoice);
-    InvoiceDTO createInvoiceForCalls(InvoiceDTO invoiceDTO);
+    InvoiceDto createInvoiceForCalls(InvoiceDto invoiceDTO);
 
-   // BigDecimal createInvoiceForCalls(Set<Call> calls);
+    List<InvoiceDto> getInvoicesByUsername(String username);
+
+    //ResponseEntity<List<InvoiceDto>> getInvoicesByUsername(String username);
+    //List<InvoiceDto> getInvoicesByUsername(String username);
+
+    // BigDecimal createInvoiceForCalls(Set<Call> calls);
 
    // List<Call> getAllPaidCalls();
 

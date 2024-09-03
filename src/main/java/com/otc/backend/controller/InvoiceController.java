@@ -1,11 +1,11 @@
 package com.otc.backend.controller;
 
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.otc.backend.dto.CallDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,17 +14,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.otc.backend.dto.InvoiceDTO;
-import com.otc.backend.models.Call;
+import com.otc.backend.dto.InvoiceDto;
 import com.otc.backend.models.Invoice;
+import com.otc.backend.models.Call;
 import com.otc.backend.repository.InvoiceRepository;
 import com.otc.backend.services.InvoiceService;
-import com.otc.backend.services.InvoiceServiceImpl;
 
 @RestController
 @CrossOrigin("*")
@@ -55,11 +53,11 @@ public class InvoiceController {
 
 
         @PostMapping("/create-invoice")
-        public ResponseEntity<InvoiceDTO> createInvoice(@RequestBody InvoiceDTO invoiceDTO) {
+        public ResponseEntity<InvoiceDto> createInvoice(@RequestBody InvoiceDto invoiceDTO) {
             try {
 
                 logger.info("Invoice data coming in from create invoice controller: " + invoiceDTO);
-                InvoiceDTO createdInvoice = invoiceService.createInvoiceForCalls(invoiceDTO);
+                InvoiceDto createdInvoice = invoiceService.createInvoiceForCalls(invoiceDTO);
                 logger.info("Invoice created from create invoice controller: " + createdInvoice);
 
                 return ResponseEntity.ok(createdInvoice);
@@ -69,6 +67,12 @@ public class InvoiceController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
         }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<List<InvoiceDto>> getInvoicesByUsername(@PathVariable String username) {
+        List<InvoiceDto> invoices = invoiceService.getInvoicesByUsername(username);
+        return ResponseEntity.ok(invoices);
+    }
 
         /* 
         @PostMapping("/create-invoice")
@@ -124,7 +128,7 @@ public class InvoiceController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllInvoicesWithCallIds() {
         try {
-            List<InvoiceDTO> invoicesWithCallIds = invoiceService.getAllInvoicesWithCallIds();
+            List<InvoiceDto> invoicesWithCallIds = invoiceService.getAllInvoicesWithCallIds();
             return ResponseEntity.ok(invoicesWithCallIds);
         } catch (Exception e) {
             // Log the exception for debugging purposes
@@ -136,6 +140,7 @@ public class InvoiceController {
     }
 
     @GetMapping("/{invoiceId}")
+    @PreAuthorize("hasRole('ADMIN', USER)")
     public ResponseEntity<Invoice> getInvoiceById(@PathVariable Long invoiceId) {
         Invoice invoice = invoiceService.getInvoiceById(invoiceId);
         if (invoice != null) {
@@ -150,6 +155,15 @@ public class InvoiceController {
         invoiceService.deleteInvoice(invoiceId);
         return ResponseEntity.noContent().build();
     }
+/*
+    @GetMapping("/{username}")
+    public ResponseEntity<List<InvoiceDto>> getInvoicesByUsername(@PathVariable String username) {
+        List<InvoiceDto> invoices = invoiceService.getInvoicesByUsername(username);
+        if (invoices.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Return 204 No Content if no invoices are found
+        }
+        return ResponseEntity.ok(invoices); // Return 200 OK with the list of invoices
+    }*/
 
     /* 
     @PostMapping("/create-invoice")
