@@ -22,14 +22,6 @@ public interface CallService {
 
     public List<Call> getCallsByUsername(String username);
 
-    //public List<Call> getUnpaidCallsByUsername(String username);
-
-   // void endCallsAndGenerateInvoice(List<Call> calls);
-
-   //CompletedCallDto convertToCompletedCallDto(CurrentCall currentCall);
-    
-   //BigDecimal calculateNetCost(Set<Call> calls);
-
    BigDecimal calculateTotalAmount(Set<Call> calls);
 
   List<Call> getCallsByUsernameAndStatus(String username, String status);

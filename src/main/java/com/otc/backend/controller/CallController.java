@@ -2,6 +2,14 @@ package com.otc.backend.controller;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import com.otc.backend.exception.CallReceiverCreationException;
+import com.otc.backend.models.CallReceiver;
+import com.otc.backend.response.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,6 +34,7 @@ import com.otc.backend.services.CallService;
 @CrossOrigin("*")
 public class CallController {
 
+    private static final Logger logger = LoggerFactory.getLogger(CallController.class);
     private final CallService callService;
 
     private final RabbitMQJsonProducer rabbitMQJsonProducer;
@@ -66,7 +75,58 @@ public class CallController {
     }
 
     @PostMapping("/make-call")
+    public ResponseEntity<ApiResponse<Call>> callsController(@RequestBody LinkedHashMap<String, String> body) {
+        try {
+            // Extracting request parameters
+            String userName = body.get("username");
+            String startTime = body.get("startTime");
+            String endTime = body.get("endTime");
+            String discountForCalls = body.get("discountForCalls");
+            String telephone = body.get("telephone");
+
+            // Validate input parameters
+            if (userName == null || startTime == null || endTime == null || discountForCalls == null || telephone == null) {
+                return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Missing required fields."));
+            }
+
+            // Create CallDto and set values
+            CallDto callsDto = new CallDto();
+            callsDto.setStartTime(startTime);
+            callsDto.setEndTime(endTime);
+            callsDto.setDiscountForCalls(discountForCalls);
+
+            // Call service to create a new call
+            Call call = callService.makeCall(userName, telephone, callsDto);
+
+            try {
+                // Send message to RabbitMQ
+                rabbitMQJsonProducer.sendJsonMessage(call);
+                ApiResponse<Call> response = new ApiResponse<>(true, "Call created successfully.",
+                        call, "Message sent to RabbitMQ successfully.");
+                return ResponseEntity.ok(response);
+            } catch (AmqpException e) {
+                logger.error("Error sending message to RabbitMQ: " + e.getMessage());
+                ApiResponse<Call> response = new ApiResponse<>(true,
+                        "Call was created successfully, but failed to notify RabbitMQ.", call,
+                        "Failed to send message to RabbitMQ.");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
+
+        } catch (CallReceiverCreationException e) {
+            logger.error("Error creating call receiver: " + e.getMessage());
+            ApiResponse<Call> response = new ApiResponse<>(false, "Call receiver could not be registered. The phone may already be registered.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e) {
+            logger.error("Error creating new call: " + e.getMessage());
+            ApiResponse<Call> response = new ApiResponse<>(false, "An internal error occurred. Please try again later.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+/*
+    @PostMapping("/make-call")
     public Call callsController(@RequestBody LinkedHashMap<String, String> body) throws Exception {
+        try {
         String userName = body.get("username");
         String startTime = body.get("startTime");
         String endTime = body.get("endTime");
@@ -80,12 +140,35 @@ public class CallController {
         callsDto.setDiscountForCalls(discountForCalls);
 
         Call call = callService.makeCall(userName, telephone, callsDto);
-
+        try {
         rabbitMQJsonProducer.sendJsonMessage(call);
+            ApiResponse<Call> response = new ApiResponse<>(true, "call created successfully.",
+                    call, "Message sent to RabbitMQ successfully.");
+            return ResponseEntity.ok(call<response>);
+        } catch (AmqpException e) {
+            logger.error("Error sending message to RabbitMQ: " + e.getMessage());
+            e.printStackTrace();
+            ApiResponse<Call> response = new ApiResponse<>(true,
+                    "Call was created successfully, but failed to notify RabbitMQ.", call,
+                    "Failed to send message to RabbitMQ.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+        } catch (CallReceiverCreationException e) {
+            logger.error("Error creating call : " + e.getMessage());
+            e.printStackTrace();
+            ApiResponse<CallReceiver> response = new ApiResponse<>(false, "Call Receiver can NOT be registered. The phone may already be registered.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e) {
+            logger.error("Error creating new call : " + e.getMessage());
+            e.printStackTrace();
+            ApiResponse<CallReceiver> response = new ApiResponse<>(false, "An internal error occurred.");
 
-        return call;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+
+
     }
-
+*/
     /* 
     @GetMapping("/user/{username}")
     public ResponseEntity<List<Call>> getCallsByUsername(@PathVariable String username) {

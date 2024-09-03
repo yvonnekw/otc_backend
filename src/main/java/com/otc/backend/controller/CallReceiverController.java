@@ -41,7 +41,7 @@ import com.otc.backend.services.UserService;
 @CrossOrigin("*")
 public class CallReceiverController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CallReceiverController.class);
 
     private final RabbitMQJsonProducer rabbitMQJsonProducer;
     private final CallReceiverService callReceiverService;

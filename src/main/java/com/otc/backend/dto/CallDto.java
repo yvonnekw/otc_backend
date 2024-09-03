@@ -10,7 +10,7 @@ import com.otc.backend.models.Users;
 public class CallDto {
 
     private static final BigDecimal RATE_PER_SECOND = new BigDecimal("0.01");
-
+    private Long callId;
     private String startTime;
     private String endTime;
     private String duration;
@@ -38,6 +38,14 @@ public class CallDto {
         this.status = status;
         this.callReceiverId = callReceiverId;
         this.callUser = callUser;
+    }
+
+    public Long getCallId() {
+        return callId;
+    }
+
+    public void setCallId(Long callId) {
+        this.callId = callId;
     }
 
     public String getStatus() {
@@ -137,8 +145,22 @@ public class CallDto {
         this.duration = duration;
     }
 
-
-
-  
-
+    @Override
+    public String toString() {
+        return "CallDto{" +
+                "callId=" + callId +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", duration='" + duration + '\'' +
+                ", costPerSecond='" + costPerSecond + '\'' +
+                ", discountForCalls='" + discountForCalls + '\'' +
+                ", vat='" + vat + '\'' +
+                ", netCost='" + netCost + '\'' +
+                ", grossCost='" + grossCost + '\'' +
+                ", callDate='" + callDate + '\'' +
+                ", status='" + status + '\'' +
+                ", callReceiverId=" + callReceiverId +
+                ", callUser=" + callUser +
+                '}';
+    }
 }

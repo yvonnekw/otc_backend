@@ -4,6 +4,7 @@ package com.otc.backend.models;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,20 +12,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import java.time.Duration;
 
 @Entity
 @Table(name = "call")
 public class Call {
-    
+
     // Rate charged per second for the call
     private static final BigDecimal RATE_PER_SECOND = new BigDecimal("0.01");
 
     // Tax rate applied to the call
-    private static final BigDecimal TAX_RATE = new BigDecimal("0.2");
+    private static final BigDecimal TAX_RATE = new BigDecimal("20");
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long callId;
     private String startTime;
     private String endTime;
@@ -40,16 +42,16 @@ public class Call {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users user;
-    
+
     @ManyToOne
     @JoinColumn(name = "receiver_id")
     private CallReceiver receiver;
- 
+
     public Call() {
     }
 
     public Call(String startTime, String endTime, String duration, String costPerSecond, String discountForCalls,
-            String vat, String netCost, String grossCost, String callDate, String status, Users user, CallReceiver receiver) {
+                String vat, String netCost, String grossCost, String callDate, String status, Users user, CallReceiver receiver) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.duration = duration;
@@ -65,7 +67,6 @@ public class Call {
     }
 
 
-
     public Call(String startTime, String endTime, String discountForCalls, Users user, CallReceiver receiver) {
         this.startTime = startTime;
         this.endTime = endTime;
@@ -76,8 +77,8 @@ public class Call {
 
 
     public Call(Long callId, String startTime, String endTime, String duration, String costPerSecond,
-            String discountForCalls, String vat, String netCost, String grossCost, String totalCost, String callDate,
-            String status, Users user, CallReceiver receiver) {
+                String discountForCalls, String vat, String netCost, String grossCost, String totalCost, String callDate,
+                String status, Users user, CallReceiver receiver) {
         this.callId = callId;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -206,14 +207,8 @@ public class Call {
 
             System.out.println("Start time in calculateDurationInSeconds: " + startTime);
             System.out.println("End time in calculateDurationInSeconds: " + endTime);
-            // Convert startTime and endTime to LocalTime
-          // LocalTime start = LocalTime.parse(startTime);
-            //System.out.println("Start time in calculateDurationInSeconds: " + start);
-          // LocalTime end = LocalTime.parse(endTime);
-           // System.out.println("End time in calculateDurationInSeconds: " + end);
 
-            // Calculate the duration of the call in seconds
-           long durationSeconds = Duration.between(startTime, endTime).getSeconds();
+            long durationSeconds = Duration.between(startTime, endTime).getSeconds();
 
             return durationSeconds;
         } catch (Exception e) {
@@ -246,7 +241,7 @@ public class Call {
             BigDecimal vat = TAX_RATE;
 
             // Calculate VAT amount
-            BigDecimal vatAmount = netCost.multiply(vat);
+            BigDecimal vatAmount = netCost.multiply(vat).divide(BigDecimal.valueOf(100));
 
             return vatAmount;
         } catch (Exception e) {
@@ -255,50 +250,60 @@ public class Call {
         }
     }
 
-    public BigDecimal calculateGrossCost(BigDecimal netCost, BigDecimal vatAmount) {
+    public BigDecimal calculateGrossCost(long durationSeconds) {
         try {
-            // Calculate gross cost
-            BigDecimal grossCost = netCost.add(vatAmount);
+            BigDecimal costPerSecond = (RATE_PER_SECOND);
+
+            setCostPerSecond(costPerSecond.toString());
+
+            BigDecimal costPerSecondDecimal = (costPerSecond);
+
+            BigDecimal grossCost = costPerSecondDecimal
+                    .multiply(BigDecimal.valueOf(durationSeconds));
+
+            System.out.println("grossCost " + grossCost);
             return grossCost;
+
         } catch (Exception e) {
             e.printStackTrace();
-            return BigDecimal.ZERO; // Handle error appropriately in your code
+            return BigDecimal.ZERO;
         }
     }
 
 
-    public BigDecimal calculateNetCost(long durationSeconds) {
+    public BigDecimal calculateNetCost(BigDecimal grossCost, String discount) {
         try {
 
-            //calculateDurationInSeconds();
-            // Calculate the duration of the call in seconds
-          //  long durationSeconds = calculateDurationInSeconds(startTime, endTime);
+            BigDecimal vat = TAX_RATE.multiply(grossCost).divide(BigDecimal.valueOf(100));
+            System.out.println("vat  " + vat);
+            setVat(vat.toString());
+            BigDecimal netCost = new BigDecimal("0.00");
+            System.out.println("discount for calls  " + discount);
+            System.out.println("vat cal  " + vat);
 
-          // Convert costPerSecond to BigDecimal
-            
-          BigDecimal costPerSecond = (RATE_PER_SECOND);
-          // setCostPerSecond = parse.valueOf(costPerSecond);
-          // this.costPerSecond = new BigDecimal(costPerSecond).toString();
-          // setCostPerSecond(costPerSecond).toString();
-         
-          setCostPerSecond(costPerSecond.toString());
+            BigDecimal discounts = new BigDecimal(discount);
 
-          //System.out.print.valueOf(setCostPerSecond(costPerSecond.toString()));
-            
-          BigDecimal costPerSecondDecimal = (costPerSecond);
+            if (discounts.compareTo(BigDecimal.ZERO) > 0) {
 
-            // Calculate the net cost of the call
-            BigDecimal netCost = costPerSecondDecimal
-                    .multiply(BigDecimal.valueOf(durationSeconds))
-                    .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+                BigDecimal calculateDiscount = grossCost.multiply(discounts).divide(BigDecimal.valueOf(100));
+                System.out.println("netCost With Discount " + calculateDiscount);
+
+                netCost = grossCost.subtract(calculateDiscount).add(vat);
+
+            } else {
+                netCost = grossCost.add(vat);
+            }
+
+            System.out.println("net cost " + netCost);
 
             return netCost;
+
         } catch (Exception e) {
             e.printStackTrace();
-            return BigDecimal.ZERO; // Handle error appropriately in your code
+            return BigDecimal.ZERO;
         }
 
-    
+
     }
 
     @Override
@@ -308,7 +313,6 @@ public class Call {
                 + ", netCost=" + netCost + ", grossCost=" + grossCost + ", callDate=" + callDate + ", status=" + status
                 + ", user=" + user + ", receiver=" + receiver + "]";
     }
-  
-    
+
 
 }

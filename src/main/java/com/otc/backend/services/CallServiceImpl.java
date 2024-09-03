@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,21 +43,21 @@ public class CallServiceImpl implements CallService {
     private final CallRepository callRepository;
     private final UserRepository userRepository;
     private final CallReceiverRepository callReceiverRepository;
-   // private final InvoiceService invoiceService;
+    // private final InvoiceService invoiceService;
     //private final CurrentCallRepository currentCallRepository;
     private final RabbitMQJsonProducer rabbitMQJsonProducer;
-     //private final InvoiceRepository invoiceRepository;
+    //private final InvoiceRepository invoiceRepository;
 
     public CallServiceImpl(CallRepository callsRepository, UserRepository userRepository,
-            CallReceiverRepository callReceiverRepository, 
-             RabbitMQJsonProducer rabbitMQJsonProducer) {
+                           CallReceiverRepository callReceiverRepository,
+                           RabbitMQJsonProducer rabbitMQJsonProducer) {
         this.callRepository = callsRepository;
         this.userRepository = userRepository;
         this.callReceiverRepository = callReceiverRepository;
-       // this.invoiceService = invoiceService;
-       // this.currentCallRepository = currentCallRepository;
+        // this.invoiceService = invoiceService;
+        // this.currentCallRepository = currentCallRepository;
         this.rabbitMQJsonProducer = rabbitMQJsonProducer;
-       // this.invoiceRepository = invoiceRepository;
+        // this.invoiceRepository = invoiceRepository;
     }
 
     public Call getCallById(Long callId) {
@@ -94,59 +95,45 @@ public class CallServiceImpl implements CallService {
             CallReceiver callReceiver = callReceiverRepository.findByTelephone(telephone)
                     .orElseThrow(() -> new CallReceiverNotFoundException());
 
-            // Parse start and end times into LocalTime objects
             LocalTime startTime = LocalTime.parse(callsDTO.getStartTime());
             LocalTime endTime = LocalTime.parse(callsDTO.getEndTime());
 
-            // Calculate the duration between start and end times
-            // long durationSeconds = Duration.between(startTime, endTime).getSeconds();
             long durationSeconds = call.calculateDurationInSeconds(startTime, endTime);
 
             System.out.println("duration in seconds " + durationSeconds);
 
             String discount = callsDTO.getDiscountForCalls();
 
-            // Convert costPerSecond to BigDecimal
-           // BigDecimal costPerSecondDecimal = new BigDecimal(call.getCostPerSecond());
+            if (discount.isEmpty()) {
+                discount = "0";
 
-            //System.out.println("cost per seconds " + costPerSecondDecimal);
+                System.out.println("discount " + discount);
 
-            // Calculate the net cost of the call
-           // BigDecimal netCost = costPerSecondDecimal
-                   // .multiply(BigDecimal.valueOf(durationSeconds))
-                   // .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
-            netCost = call.calculateNetCost(durationSeconds);
+                BigDecimal grossCost = call.calculateGrossCost(durationSeconds);
 
-            // Apply discount if available
-            BigDecimal netCostAfterDiscount = call.applyDiscount(netCost, discount);
+                netCost = call.calculateNetCost(grossCost, discount);
 
-            // Calculate VAT amount
-            BigDecimal vatAmount = call.calculateVATAmount(netCostAfterDiscount);
+                BigDecimal netCostAfterDiscount = (netCost);
 
-            System.out.println("vat amount " + vatAmount);
+                String callDate = LocalDateTime.now().toString();
 
-            // Calculate gross cost
-            BigDecimal grossCost = call.calculateGrossCost(netCostAfterDiscount, vatAmount);
+                String costPerSecond = call.getCostPerSecond();
 
-            String callDate = LocalDateTime.now().toString();
+                System.out.println("costPerSecond from makecall " + costPerSecond);
 
-            String costPerSecond = call.getCostPerSecond();
+                Call enterCall = new Call(startTime.toString(), endTime.toString(), String.valueOf(durationSeconds),
+                        costPerSecond, callsDTO.getDiscountForCalls(), call.getVat(),
+                        netCostAfterDiscount.toString(), grossCost.toString(),
+                        callDate, "Pending Invoice",
+                        user, callReceiver);
 
-            System.out.println("costPerSecond from makecall " + costPerSecond);
-
-            // Create the Call entity and set its properties
-            Call enterCall = new Call(startTime.toString(), endTime.toString(), String.valueOf(durationSeconds),
-                    costPerSecond, callsDTO.getDiscountForCalls(), vatAmount.toString(),
-                    netCostAfterDiscount.toString(), grossCost.toString(), 
-                    callDate, "Pending Invoice",
-                    user, callReceiver);
-
-            // Save the call entity
-            return callRepository.save(enterCall);
+                return callRepository.save(enterCall);
+            }
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception details
+            e.printStackTrace();
             throw new CallCreationException();
         }
+        return  null;
     }
 
 
@@ -227,6 +214,7 @@ public class CallServiceImpl implements CallService {
 
     public BigDecimal calculateTotalAmount(Set<Call> calls) {
         BigDecimal totalAmount = BigDecimal.ZERO;
+        System.out.println("netCost in calTotalAOUNT " + netCost);
         for (Call call : calls) {
             //BigDecimal netCostString = netCost;
             if (netCost != null) {
@@ -264,13 +252,13 @@ return callRepository.findUnpaidCallsByUsername(username);
     
    }*/
 
-   // public void processPaymentForCall(Call call) {
-        // Logic to retrieve the invoice associated with the call
-       // Invoice invoice = call.getInvoice(); // Assuming each call has an associated invoice
+    // public void processPaymentForCall(Call call) {
+    // Logic to retrieve the invoice associated with the call
+    // Invoice invoice = call.getInvoice(); // Assuming each call has an associated invoice
 
-        // Process payment for the invoice
-       // invoiceService.processPaymentForInvoice(invoice);
-   // }
+    // Process payment for the invoice
+    // invoiceService.processPaymentForInvoice(invoice);
+    // }
 /* 
       // Helper method to calculate the total amount from a set of calls
     private BigDecimal calculateTotalAmount(Set<Call> calls) {
@@ -328,7 +316,6 @@ return callRepository.findUnpaidCallsByUsername(username);
     }
 
     */
-    
 
 
     // Helper method to calculate the net cost for the calls associated with the
@@ -431,34 +418,34 @@ public void endCallsAndGenerateInvoice(List<Call> calls) {
 
     /*
      * public Call makeCall(String username, String telephone, CallDto callsDTO) {
-     * 
+     *
      * try {
      * Users user = userRepository.findByUsername(username)
      * .orElseThrow(() -> new UserDoesNotExistException());
-     * 
+     *
      * CallReceiver callReceiver = callReceiverRepository.findByTelephone(telephone)
      * .orElseThrow(() -> new CallReceiverNotFoundException());
-     * 
+     *
      * CurrentCall currentCall = new CurrentCall();
-     * 
+     *
      * currentCall.setStartTime(callsDTO.getStartTime());
      * currentCall.setEndTime(callsDTO.getEndTime());
      * currentCall.setUser(user);
-     * 
-     * 
+     *
+     *
      * // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-     * 
-     * 
+     *
+     *
      * Call call = new Call();
-     * 
+     *
      * //LocalDateTime endTime = LocalDateTime.parse(callsDTO.getEndTime(),
      * formatter);
-     * 
+     *
      * // LocalDateTime setTime =
      * formatter.parseLocalDateTime(callsDTO.getEndTime());
-     * 
+     *
      * String endTime = LocalDateTime.now().toString();
-     * 
+     *
      * call.setStartTime(callsDTO.getStartTime());
      * call.setEndTime(callsDTO.getEndTime());
      * call.setDuration(callsDTO.getDuration());
@@ -473,15 +460,15 @@ public void endCallsAndGenerateInvoice(List<Call> calls) {
      * call.setUser(user);
      * call.setReceiver(callReceiver);
      * currentCall.getCalls().add(call);
-     * 
+     *
      * currentCallRepository.save(currentCall);
-     * 
+     *
      * // Uncomment the following line if you want to add CallUsers to the set
      * // callUsers.add(UserRepository.findByCallUser(callUsers).get());
-     * 
+     *
      * System.out.println("Call details: " + call);
      * System.out.println("User details: " + user);
-     * 
+     *
      * return callRepository.save(call);
      * } catch (UserDoesNotExistException | CallReceiverNotFoundException e) {
      * throw e; // Rethrow the exception to be handled at a higher level
@@ -489,7 +476,7 @@ public void endCallsAndGenerateInvoice(List<Call> calls) {
      * e.printStackTrace(); // Log the exception details
      * throw new CallCreationException();
      * }
-     * 
+     *
      * }
      */
 
@@ -498,25 +485,25 @@ public void endCallsAndGenerateInvoice(List<Call> calls) {
      * try {
      * Users user = userRepository.findByUsername(username)
      * .orElseThrow(() -> new UserDoesNotExistException());
-     * 
+     *
      * CallReceiver callReceiver = callReceiverRepository.findByTelephone(telephone)
      * .orElseThrow(() -> new CallReceiverNotFoundException());
-     * 
+     *
      * // Parse start and end times into LocalTime objects
      * LocalTime startTime = LocalTime.parse(callsDTO.getStartTime());
      * LocalTime endTime = LocalTime.parse(callsDTO.getEndTime());
-     * 
+     *
      * // Calculate the duration between start and end times
      * Duration duration = Duration.between(startTime, endTime);
-     * 
+     *
      * // Convert the duration to the desired format, e.g., minutes
      * long durationMinutes = duration.toMinutes();
-     * 
+     *
      * CurrentCall currentCall = new CurrentCall();
      * currentCall.setStartTime(callsDTO.getStartTime());
      * currentCall.setEndTime(callsDTO.getEndTime());
      * currentCall.setUser(user);
-     * 
+     *
      * Call call = new Call();
      * call.setStartTime(callsDTO.getStartTime());
      * call.setEndTime(callsDTO.getEndTime());
@@ -532,12 +519,12 @@ public void endCallsAndGenerateInvoice(List<Call> calls) {
      * call.setUser(user);
      * call.setReceiver(callReceiver);
      * currentCall.getCalls().add(call);
-     * 
+     *
      * currentCallRepository.save(currentCall);
-     * 
+     *
      * System.out.println("Call details: " + call);
      * System.out.println("User details: " + user);
-     * 
+     *
      * return callRepository.save(call);
      * } catch (UserDoesNotExistException | CallReceiverNotFoundException e) {
      * throw e; // Rethrow the exception to be handled at a higher level
@@ -546,7 +533,7 @@ public void endCallsAndGenerateInvoice(List<Call> calls) {
      * throw new CallCreationException();
      * }
      * }
-     * 
+     *
      */
 
 }
