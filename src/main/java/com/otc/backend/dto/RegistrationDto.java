@@ -125,10 +125,17 @@ public class RegistrationDto {
 
     @Override
     public String toString() {
-        return "RegistrationDto [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName
-                + ", emailAddress=" + emailAddress + ", username=" + username + ", password=" + password
-                + ", telephone=" + telephone + ", authorities=" + authorities + "]";
+        return "RegistrationDto{" +
+                "userId=" + userId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", telephone='" + telephone + '\'' +
+                ", authorities=" + authorities +
+                '}';
     }
 
-    
+
 }

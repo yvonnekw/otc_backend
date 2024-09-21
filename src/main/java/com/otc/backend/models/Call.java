@@ -308,11 +308,20 @@ public class Call {
 
     @Override
     public String toString() {
-        return "Call [callId=" + callId + ", startTime=" + startTime + ", endTime=" + endTime + ", duration=" + duration
-                + ", costPerMinute=" + costPerSecond + ", discountForCalls=" + discountForCalls + ", vat=" + vat
-                + ", netCost=" + netCost + ", grossCost=" + grossCost + ", callDate=" + callDate + ", status=" + status
-                + ", user=" + user + ", receiver=" + receiver + "]";
+        return "Call{" +
+                "callId=" + callId +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", duration='" + duration + '\'' +
+                ", costPerSecond='" + costPerSecond + '\'' +
+                ", discountForCalls='" + discountForCalls + '\'' +
+                ", vat='" + vat + '\'' +
+                ", netCost='" + netCost + '\'' +
+                ", grossCost='" + grossCost + '\'' +
+                ", callDate='" + callDate + '\'' +
+                ", status='" + status + '\'' +
+                ", user=" + user +
+                ", receiver=" + receiver +
+                '}';
     }
-
-
 }

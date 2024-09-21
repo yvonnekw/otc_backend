@@ -39,7 +39,7 @@ public class OtcApplication {
 			callerUser.setLastName("Pinky");
 			callerUser.setEmailAddress("yodal@email.com");
 			callerUser.setUsername("yodalpinky1");
-			//callerUser.setPassword("password");
+			callerUser.setTelephone("09876543235");
 			callerUser.setPassword(passwordEncoder.encode("password"));
 			callerUser.setEnabled(true);
 
@@ -51,7 +51,7 @@ public class OtcApplication {
 			callerUser2.setLastName("Smith");
 			callerUser2.setEmailAddress("email@email.com");
 			callerUser2.setUsername("adminSmith");
-			// callerUser.setPassword("password");
+			callerUser.setTelephone("07898765453");;
 			callerUser2.setPassword(passwordEncoder.encode("password1"));
 			callerUser2.setEnabled(true);
 

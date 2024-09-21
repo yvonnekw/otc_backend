@@ -79,4 +79,8 @@ public class CallReceiverServiceImpl implements CallReceiverService {
         return callReceiverRepository.findDistinctTelephoneByUserUsername(username);
     }
 
+    public List<CallReceiver> getAllCallReceivers() {
+        return callReceiverRepository.findAll();
+    }
+
 }

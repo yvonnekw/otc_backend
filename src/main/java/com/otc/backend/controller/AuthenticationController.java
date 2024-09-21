@@ -26,7 +26,7 @@ import com.otc.backend.dto.RegistrationDto;
 import com.otc.backend.exception.EmailAlreadyTakenException;
 import com.otc.backend.exception.UserDoesNotExistException;
 import com.otc.backend.models.Users;
-import com.otc.backend.publisher.RabbitMQJsonProducer;
+//import com.otc.backend.publisher.RabbitMQJsonProducer;
 import com.otc.backend.services.AuthenticationService;
 import com.otc.backend.services.TokenService;
 import com.otc.backend.services.UserService;
@@ -41,18 +41,18 @@ public class AuthenticationController {
     private final UserService userService;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
-    private final RabbitMQJsonProducer rabbitMQJsonProducer;
-
+    //private final RabbitMQJsonProducer rabbitMQJsonProducer;
+//, RabbitMQJsonProducer rabbitMQJsonProducer
     @Autowired
     private AuthenticationService authenticationService;
 
     @Autowired
     public AuthenticationController(UserService userService, TokenService tokenService,
-            AuthenticationManager authenticationManager, RabbitMQJsonProducer rabbitMQJsonProducer) {
+            AuthenticationManager authenticationManager) {
         this.userService = userService;
         this.tokenService = tokenService;
         this.authenticationManager = authenticationManager;
-        this.rabbitMQJsonProducer = rabbitMQJsonProducer;
+        //this.rabbitMQJsonProducer = rabbitMQJsonProducer;
     }
 
     @ExceptionHandler({ EmailAlreadyTakenException.class })
@@ -71,15 +71,14 @@ public class AuthenticationController {
             Users newUser = userService.registerUser(body).getData();
 
             try {
-                rabbitMQJsonProducer.sendJsonMessage(body);
-                ApiResponse<Users> response = new ApiResponse<>(true,
-                        "User registered successfully. Message sent to RabbitMQ.", newUser);
+                //rabbitMQJsonProducer.sendJsonMessage(body);
+               ApiResponse<Users> response = new ApiResponse<>(true,
+                        "User registered successfully.", newUser);
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
             } catch (AmqpException e) {
-                logger.error("Error sending message to RabbitMQ: " + e.getMessage(), e);
+               // logger.error("Error sending message to RabbitMQ: " + e.getMessage(), e);
                 ApiResponse<Users> response = new ApiResponse<>(true,
-                        "User registered successfully, but failed to notify RabbitMQ.", newUser,
-                        "Failed to send message to RabbitMQ.");
+                        "User registered successfully.", newUser);
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
             }
         } catch (EmailAlreadyTakenException e) {

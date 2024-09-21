@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.otc.backend.dto.CallDto;
 import com.otc.backend.models.Call;
-import com.otc.backend.publisher.RabbitMQJsonProducer;
+//import com.otc.backend.publisher.RabbitMQJsonProducer;
 import com.otc.backend.services.CallService;
 
 
@@ -37,11 +37,12 @@ public class CallController {
     private static final Logger logger = LoggerFactory.getLogger(CallController.class);
     private final CallService callService;
 
-    private final RabbitMQJsonProducer rabbitMQJsonProducer;
+   // private final RabbitMQJsonProducer rabbitMQJsonProducer;
+// RabbitMQJsonProducer rabbitMQJsonProducer
 
-    public CallController(CallService callService,  RabbitMQJsonProducer rabbitMQJsonProducer) {
+    public CallController(CallService callService) {
         this.callService = callService;
-        this.rabbitMQJsonProducer = rabbitMQJsonProducer;
+        //this.rabbitMQJsonProducer = rabbitMQJsonProducer;
     }
 
     @GetMapping("{id}")
@@ -100,15 +101,15 @@ public class CallController {
 
             try {
                 // Send message to RabbitMQ
-                rabbitMQJsonProducer.sendJsonMessage(call);
+               // rabbitMQJsonProducer.sendJsonMessage(call);
                 ApiResponse<Call> response = new ApiResponse<>(true, "Call created successfully.",
-                        call, "Message sent to RabbitMQ successfully.");
+                        call);
                 return ResponseEntity.ok(response);
             } catch (AmqpException e) {
                 logger.error("Error sending message to RabbitMQ: " + e.getMessage());
                 ApiResponse<Call> response = new ApiResponse<>(true,
-                        "Call was created successfully, but failed to notify RabbitMQ.", call,
-                        "Failed to send message to RabbitMQ.");
+                        "Call was created successfully, but failed to notify RabbitMQ.", call
+                   );
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
             }
 

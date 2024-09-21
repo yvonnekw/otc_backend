@@ -37,5 +37,6 @@ public interface CallReceiverService {
 
     public List<CallReceiver> getCallReceiversByUsername(String username);
 
-    
+
+    List<CallReceiver> getAllCallReceivers();
 }

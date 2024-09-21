@@ -36,7 +36,9 @@ class CallControllerTest extends TestBase {
 
         logger.info("call receiver response body " + responseBody);
         String telephone = extractData(responseBody, "telephone");
-        String username = extractData(responseBody, "username");
+        logger.info("extracted telephone number " + telephone);
+        String username = extract(responseBody, "username");
+        logger.info("extracted username " + username);
 
         JSONObject requestBody = callDtoGenerator.makeCallDto(telephone, username);
 

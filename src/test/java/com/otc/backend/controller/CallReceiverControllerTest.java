@@ -16,6 +16,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.github.javafaker.Faker;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional

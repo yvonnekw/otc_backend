@@ -34,11 +34,12 @@ class UserControllerTest {
         //@Container
        // @ServiceConnection
         //static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:16");
-    /*
+
         @Container
         public DockerComposeContainer<?> environment =
                 new DockerComposeContainer<>(new File(System.getProperty("user.dir")+"/docker-compose.yml"))
-                        .withLocalCompose(true);*/
+                        .withLocalCompose(true);
+        */
     @Autowired
     TestRestTemplate restTemplate;
 

@@ -69,11 +69,13 @@ class AuthenticationControllerTest extends TestBase {
         RegistrationDto registrationDto = registrationDtoGenerator.generateRandomRegistrationDto();
         ResponseEntity<String> response = registerUser(registrationDto, headers);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
         String registrationResponseBody = response.getBody();
         assertNotNull(registrationResponseBody);
         String username = extractUsernameFromRegistrationResponse(registrationResponseBody);
+        logger.info("username extracted after registration  "+ username);
+        logger.info("username before registration  "+ registrationResponseBody);
 
         String loginResponse = loginUserAndGetToken(username, registrationDto.getPassword());
 

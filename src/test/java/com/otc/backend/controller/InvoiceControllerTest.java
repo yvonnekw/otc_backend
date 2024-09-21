@@ -44,7 +44,7 @@ public class InvoiceControllerTest extends TestBase {
 
         logger.info("call receiver response body " + responseBody);
         String telephone = extractData(responseBody, "telephone");
-        String username = extractData(responseBody, "username");
+        String username = extract(responseBody, "username");
 
         JSONObject requestBody = callDtoGenerator.makeCallDto(telephone, username);
 
@@ -60,6 +60,9 @@ public class InvoiceControllerTest extends TestBase {
 
         String callId = makeCallResponse.getBody();
         String extractedCallId = extractData(callId, "callId");
+       //String username = extract(callId, "username");
+
+        logger.info("extracted call ID " + extractedCallId);
 
         JSONArray callIdsArray = new JSONArray();
         callIdsArray.put(extractedCallId);
@@ -67,9 +70,16 @@ public class InvoiceControllerTest extends TestBase {
         JSONObject jsonRequestBody = new JSONObject();
         jsonRequestBody.put("callIds", callIdsArray);
 
-        String requestBodyString = jsonRequestBody.toString();
+        //String requestBodyString = jsonRequestBody.toString();
 
-        logger.info("Call id request body string " + requestBodyString);
+        logger.info("Call id request body string " + callIdsArray);
+
+        String requestBodyString = "{"
+                + "\"username\": \"" + username + "\","
+                + "\"callIds\": " + callIdsArray
+                + "}";
+
+        logger.info("full request body " + requestBodyString);
 
         HttpEntity<String> invoiceRequestEntity = new HttpEntity<>(requestBodyString, headers);
         ResponseEntity<String> invoiceResponse = restTemplate.exchange("/invoices/create-invoice", HttpMethod.POST,

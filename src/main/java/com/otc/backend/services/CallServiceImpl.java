@@ -10,6 +10,7 @@ import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ import com.otc.backend.models.CallReceiver;
 
 import com.otc.backend.models.Invoice;
 import com.otc.backend.models.Users;
-import com.otc.backend.publisher.RabbitMQJsonProducer;
-import com.otc.backend.publisher.RabbitMQProducer;
+//import com.otc.backend.publisher.RabbitMQJsonProducer;
+//import com.otc.backend.publisher.RabbitMQProducer;
 import com.otc.backend.models.Role;
 import com.otc.backend.repository.CallReceiverRepository;
 import com.otc.backend.repository.CallRepository;
@@ -42,21 +43,23 @@ public class CallServiceImpl implements CallService {
     BigDecimal netCost;
     private final CallRepository callRepository;
     private final UserRepository userRepository;
+    @Autowired
     private final CallReceiverRepository callReceiverRepository;
     // private final InvoiceService invoiceService;
     //private final CurrentCallRepository currentCallRepository;
-    private final RabbitMQJsonProducer rabbitMQJsonProducer;
+    //private final RabbitMQJsonProducer rabbitMQJsonProducer;
     //private final InvoiceRepository invoiceRepository;
+    // RabbitMQJsonProducer rabbitMQJsonProducer
 
     public CallServiceImpl(CallRepository callsRepository, UserRepository userRepository,
-                           CallReceiverRepository callReceiverRepository,
-                           RabbitMQJsonProducer rabbitMQJsonProducer) {
+                           CallReceiverRepository callReceiverRepository
+                          ) {
         this.callRepository = callsRepository;
         this.userRepository = userRepository;
         this.callReceiverRepository = callReceiverRepository;
         // this.invoiceService = invoiceService;
         // this.currentCallRepository = currentCallRepository;
-        this.rabbitMQJsonProducer = rabbitMQJsonProducer;
+        //this.rabbitMQJsonProducer = rabbitMQJsonProducer;
         // this.invoiceRepository = invoiceRepository;
     }
 
@@ -86,6 +89,55 @@ public class CallServiceImpl implements CallService {
         callRepository.deleteById(callId);
     }
 
+    @Transactional
+    public Call makeCall(String username, String telephone, CallDto callsDTO) {
+        try {
+            Call call = new Call();
+            // Find the user
+            Users user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UserDoesNotExistException());
+
+            // Find the call receiver
+            CallReceiver callReceiver = callReceiverRepository.findByTelephone(telephone)
+                    .orElseThrow(() -> new CallReceiverNotFoundException());
+
+            // Parse start and end times
+            LocalTime startTime = LocalTime.parse(callsDTO.getStartTime());
+            LocalTime endTime = LocalTime.parse(callsDTO.getEndTime());
+
+            // Calculate duration
+            long durationSeconds = call.calculateDurationInSeconds(startTime, endTime);
+            System.out.println("Duration in seconds: " + durationSeconds);
+
+            // Calculate costs
+            String discount = callsDTO.getDiscountForCalls().isEmpty() ? "0" : callsDTO.getDiscountForCalls();
+            BigDecimal grossCost = call.calculateGrossCost(durationSeconds).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal netCost = call.calculateNetCost(grossCost, discount).setScale(2, RoundingMode.HALF_UP);
+
+            // Create the Call entity
+            String callDate = LocalDateTime.now().toString();
+            String costPerSecond = call.getCostPerSecond();
+
+            Call enterCall = new Call(
+                    startTime.toString(), endTime.toString(), String.valueOf(durationSeconds),
+                    costPerSecond, discount, call.getVat(),
+                    netCost.toString(), grossCost.toString(),
+                    callDate, "Pending Invoice",
+                    user, callReceiver
+            );
+
+            // Save and return the call
+            return callRepository.save(enterCall);
+
+        } catch (Exception e) {
+            System.err.println("Error creating call: " + e.getMessage());
+            e.printStackTrace();
+            throw new CallCreationException("Failed to create call due to: " + e.getMessage());
+        }
+    }
+
+    /*
+    @Transactional
     public Call makeCall(String username, String telephone, CallDto callsDTO) {
         try {
             Call call = new Call();
@@ -136,7 +188,7 @@ public class CallServiceImpl implements CallService {
         return  null;
     }
 
-
+*/
     public List<Call> getCallsByUsernameAndStatus(String username, String status) {
         return callRepository.findByUsernameAndStatus(username, status);
     }

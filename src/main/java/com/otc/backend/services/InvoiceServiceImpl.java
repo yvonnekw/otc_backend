@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import com.otc.backend.models.Users;
 import com.otc.backend.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -135,6 +136,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
     }
 
+    @Transactional
     public InvoiceDto createInvoiceForCalls(InvoiceDto invoiceDTO) {
         try {
             // Validate that callIds are provided
