@@ -141,6 +141,82 @@ public class InvoiceServiceImpl implements InvoiceService {
         try {
             // Validate that callIds are provided
             if (invoiceDTO.getCallIds() == null) {
+                throw new IllegalArgumentException("CallIds list must not be null, from create invoice for calls.");
+            }
+
+            // Validate that the username is provided
+            if (invoiceDTO.getUsername() == null || invoiceDTO.getUsername().isEmpty()) {
+                throw new IllegalArgumentException("Username must not be null or empty, from create invoice for calls.");
+            }
+
+            // Fetch the user from the database
+            Users user = userRepository.findByUsername(invoiceDTO.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + invoiceDTO.getUsername()));
+
+            List<Long> callIds = invoiceDTO.getCallIds();
+            logger.info("Call IDs from create invoice for calls: {}", callIds);
+
+            // Validate that all callIds exist
+            Set<Call> calls = new HashSet<>();
+            for (Long callId : callIds) {
+                Optional<Call> optionalCall = callRepository.findById(callId);
+                if (optionalCall.isPresent()) {
+                    calls.add(optionalCall.get());
+                } else {
+                    throw new IllegalArgumentException("Call not found with ID: " + callId + " from create invoice for calls.");
+                }
+            }
+
+            // Check if an invoice already exists for these calls
+            Optional<Invoice> existingInvoice = invoiceRepository.findInvoiceByCallsIn(calls);
+            if (existingInvoice.isPresent()) {
+                Invoice invoice = existingInvoice.get();
+                logger.info("Invoice already exists for the given calls: {}", invoice.getInvoiceId());
+                throw new IllegalArgumentException("Invoice already exists with ID: " + invoice.getInvoiceId());
+            }
+
+            // Calculate the total amount from the netCost of the calls
+            BigDecimal totalAmount = calls.stream()
+                    .map(call -> new BigDecimal(call.getNetCost()))  // Extract the netCost from each call
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);       // Sum up all the netCost values
+
+            logger.info("Total amount calculated from calls: {}", totalAmount);
+
+            // Update status of associated calls
+            for (Call call : calls) {
+                call.setStatus("Invoiced");
+                callRepository.save(call);
+                logger.info("Call status updated - from create invoice for calls: {}", call);
+            }
+
+            // Save the invoice entity
+            Invoice invoice = new Invoice();
+            invoice.setInvoiceDate(LocalDateTime.now().toString());
+            invoice.setStatus("Invoiced");
+            invoice.setTotalAmount(totalAmount.toString());  // Save the calculated total amount
+            invoice.setCalls(calls);
+            invoice.setUser(user); // Set the user on the invoice
+            invoice = invoiceRepository.save(invoice);
+
+            // Update the InvoiceDTO with the saved invoice details
+            invoiceDTO.setInvoiceId(invoice.getInvoiceId());
+            invoiceDTO.setInvoiceDate(invoice.getInvoiceDate());
+            invoiceDTO.setStatus(invoice.getStatus());
+            invoiceDTO.setTotalAmount(invoice.getTotalAmount());
+
+            return invoiceDTO;
+        } catch (Exception e) {
+            logger.error("Error creating invoice: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to create invoice.", e);
+        }
+    }
+
+    /*
+    @Transactional
+    public InvoiceDto createInvoiceForCalls(InvoiceDto invoiceDTO) {
+        try {
+            // Validate that callIds are provided
+            if (invoiceDTO.getCallIds() == null) {
                 throw new IllegalArgumentException("CallIds list must not be null, from create invoice for calls: ");
             }
 
@@ -176,7 +252,8 @@ public class InvoiceServiceImpl implements InvoiceService {
             }
 
             // Calculate total amount
-            BigDecimal totalAmount = callService.calculateTotalAmount(calls);
+            //BigDecimal totalAmount = callService.calculateTotalAmount(calls);
+            BigDecimal totalAmount = calls.get;
             logger.info("Total amount calculated - from create invoice for calls: {}", totalAmount);
 
             // Update status of associated calls
@@ -208,6 +285,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
     }
 
+    */
     public List<InvoiceDto> getInvoicesByUsername(String username) {
         // Ensure the user exists before fetching the invoices
         Users user = userRepository.findByUsername(username)
