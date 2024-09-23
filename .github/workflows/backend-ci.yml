@@ -16,16 +16,16 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      rabbitmq:
-        image: rabbitmq:latest
+      #rabbitmq:
+      #image: rabbitmq:latest
         #image: ghcr.io/pedersen/rabbitmq-action:latest
-        options: --name my-rabbitmq --publish 5672:5672
-        env:
-          RABBITMQ_DEFAULT_USER: ${{ secrets.RABBITMQ_USERNAME }}
-          RABBITMQ_DEFAULT_PASS: ${{ secrets.RABBITMQ_PASSWORD }}
-        ports:
-          - 5673:5672
-          - 15673:15672
+      #options: --name my-rabbitmq --publish 5672:5672
+      #env:
+      #RABBITMQ_DEFAULT_USER: ${{ secrets.RABBITMQ_USERNAME }}
+      #RABBITMQ_DEFAULT_PASS: ${{ secrets.RABBITMQ_PASSWORD }}
+      #ports:
+      #- 5673:5672
+      #- 15673:15672
         #options: --health-cmd "rabbitmq-diagnostics -q ping"
         #command: rabbitmq-server
 
