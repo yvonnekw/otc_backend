@@ -48,19 +48,19 @@ public class AuthenticationController {
 
     @Autowired
     public AuthenticationController(UserService userService, TokenService tokenService,
-            AuthenticationManager authenticationManager) {
+                                    AuthenticationManager authenticationManager) {
         this.userService = userService;
         this.tokenService = tokenService;
         this.authenticationManager = authenticationManager;
         //this.rabbitMQJsonProducer = rabbitMQJsonProducer;
     }
 
-    @ExceptionHandler({ EmailAlreadyTakenException.class })
+    @ExceptionHandler({EmailAlreadyTakenException.class})
     public ResponseEntity<String> handleEmailTaken() {
         return new ResponseEntity<>("The email you provided is already taken", HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler({ UserDoesNotExistException.class })
+    @ExceptionHandler({UserDoesNotExistException.class})
     public ResponseEntity<String> handleUserDoesNotExist() {
         return new ResponseEntity<>("The user you are looking for does not exist.", HttpStatus.NOT_FOUND);
     }
@@ -72,11 +72,10 @@ public class AuthenticationController {
 
             try {
                 //rabbitMQJsonProducer.sendJsonMessage(body);
-               ApiResponse<Users> response = new ApiResponse<>(true,
+                ApiResponse<Users> response = new ApiResponse<>(true,
                         "User registered successfully.", newUser);
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
             } catch (AmqpException e) {
-               // logger.error("Error sending message to RabbitMQ: " + e.getMessage(), e);
                 ApiResponse<Users> response = new ApiResponse<>(true,
                         "User registered successfully.", newUser);
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);

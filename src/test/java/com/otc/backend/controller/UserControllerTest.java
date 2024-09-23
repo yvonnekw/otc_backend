@@ -24,6 +24,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
@@ -45,9 +46,7 @@ class UserControllerTest {
 
     @Test
     void shouldFindAllUsers() {
-        //user/all-users
         Users[] user = restTemplate.getForObject("/user/all-users", Users[].class);
-       // assertThat(user.length).isEqualTo(2);
         logger.info("user details " + Arrays.toString(user));
         assertThat(user.length).isNotNull();
         assertThat(Arrays.stream(user).findFirst()).isPresent();
@@ -55,9 +54,9 @@ class UserControllerTest {
 
     @Test
     void shouldFindUserByUsername() {
-       ResponseEntity<Users> response = restTemplate.exchange("/user/yodalpinky1", HttpMethod.GET,  null, Users.class);
-       assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-       assertThat(response.getBody()).isNotNull();
+        ResponseEntity<Users> response = restTemplate.exchange("/user/yodalpinky1", HttpMethod.GET, null, Users.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
     }
 
 }

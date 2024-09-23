@@ -5,7 +5,7 @@ import java.util.Set;
 import org.springframework.data.elasticsearch.annotations.Document;
 import com.otc.backend.models.Role;
 
-@Document(indexName ="user")
+@Document(indexName = "user")
 public class RegistrationDto {
 
     private long userId;
@@ -14,7 +14,7 @@ public class RegistrationDto {
     private String emailAddress;
     private String username;
     private String password;
-	private String telephone;
+    private String telephone;
     private Set<Role> authorities;
 
     public long getUserId() {
@@ -41,7 +41,7 @@ public class RegistrationDto {
         this.authorities = authorities;
     }
 
-    public RegistrationDto(){
+    public RegistrationDto() {
         super();
     }
 
@@ -70,12 +70,12 @@ public class RegistrationDto {
     }
 
     public RegistrationDto(String username, String password, Set<Role> authoritie) {
-		this.username = username;
-		this.password = password;
-	}
+        this.username = username;
+        this.password = password;
+    }
 
     public RegistrationDto(String firstName, String lastName, String emailAddress, String password,
-            String telephone, Set<Role> authorities) {
+                           String telephone, Set<Role> authorities) {
         super();
 
         this.firstName = firstName;
@@ -87,9 +87,9 @@ public class RegistrationDto {
     }
 
     public RegistrationDto(String username, String firstName, String lastName, String emailAddress, String password,
-                           String telephone,  Set<Role> authorities) {
+                           String telephone, Set<Role> authorities) {
         super();
-         this.username = username;
+        this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -98,23 +98,23 @@ public class RegistrationDto {
         this.authorities = authorities;
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return this.username;
     }
 
-    public void setUsername(String username){
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getPassword(){
+    public String getPassword() {
         return this.password;
     }
 
-    public void setPassword(String password){
+    public void setPassword(String password) {
         this.password = password;
     }
 
-   
+
     public String getTelephone() {
         return telephone;
     }
@@ -136,6 +136,4 @@ public class RegistrationDto {
                 ", authorities=" + authorities +
                 '}';
     }
-
-
 }

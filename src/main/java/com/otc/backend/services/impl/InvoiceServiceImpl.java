@@ -1,4 +1,4 @@
-package com.otc.backend.services;
+package com.otc.backend.services.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,10 +11,11 @@ import java.util.stream.Collectors;
 
 import com.otc.backend.models.Users;
 import com.otc.backend.repository.UserRepository;
+import com.otc.backend.services.CallService;
+import com.otc.backend.services.InvoiceService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -139,17 +140,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Transactional
     public InvoiceDto createInvoiceForCalls(InvoiceDto invoiceDTO) {
         try {
-            // Validate that callIds are provided
             if (invoiceDTO.getCallIds() == null) {
                 throw new IllegalArgumentException("CallIds list must not be null, from create invoice for calls.");
             }
 
-            // Validate that the username is provided
             if (invoiceDTO.getUsername() == null || invoiceDTO.getUsername().isEmpty()) {
                 throw new IllegalArgumentException("Username must not be null or empty, from create invoice for calls.");
             }
 
-            // Fetch the user from the database
             Users user = userRepository.findByUsername(invoiceDTO.getUsername())
                     .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + invoiceDTO.getUsername()));
 

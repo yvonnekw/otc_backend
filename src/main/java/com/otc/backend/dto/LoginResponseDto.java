@@ -6,20 +6,20 @@ public class LoginResponseDto {
     private Users user;
     private String token;
 
-    public LoginResponseDto(){
+    public LoginResponseDto() {
         super();
     }
 
-    public LoginResponseDto(Users user, String token){
+    public LoginResponseDto(Users user, String token) {
         this.user = user;
         this.token = token;
     }
 
-    public Users getUser(){
+    public Users getUser() {
         return this.user;
     }
 
-    public void setUser(Users user){
+    public void setUser(Users user) {
         this.user = user;
     }
 

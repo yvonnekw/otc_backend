@@ -60,12 +60,11 @@ public class PaymentController {
 
             return ResponseEntity.ok(createdPayment);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Error creating payment - payment controller: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
     }
 
     @PutMapping("/{paymentId}")
@@ -78,8 +77,6 @@ public class PaymentController {
     public ResponseEntity<?> deletePayment(@PathVariable Long paymentId) {
         paymentService.deletePayment(paymentId);
         return ResponseEntity.noContent().build();
-
-        // return ResponseEntity.ok("User deleted successfully.");
     }
 
     @GetMapping("/username/{username}")
@@ -87,12 +84,4 @@ public class PaymentController {
         List<PaymentDto> payments = paymentService.getPaymentsByUsername(username);
         return ResponseEntity.ok(payments);
     }
-
-    /* 
-    @GetMapping("/paid-calls/{username}")
-    public ResponseEntity<List<Call>> getPaidCallsByUsername(@PathVariable String username) {
-        List<Call> paidCalls = paymentService.getPaidCallsByUsername(username);
-        return ResponseEntity.ok(paidCalls);
-    }*/
-    
 }

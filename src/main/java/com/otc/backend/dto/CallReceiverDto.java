@@ -10,31 +10,26 @@ public class CallReceiverDto {
 
     public CallReceiverDto() {
     }
-/* 
-    public CallReceiverDto(String telephone, String username) {
+
+    public CallReceiverDto(String telephone, String username, String fullName, String relationship) {
         this.telephone = telephone;
         this.username = username;
-    }*/
+        this.fullName = fullName;
+        this.relationship = relationship;
+    }
 
-public CallReceiverDto(String telephone, String username, String fullName, String relationship) {
-    this.telephone = telephone;
-    this.username = username;
-    this.fullName = fullName;
-    this.relationship = relationship;
-}
-    
-public CallReceiverDto(Long callReceiverId, String telephone, String username, String fullName, String relationship) {
-    this.callReceiverId = callReceiverId;
-    this.telephone = telephone;
-    this.username = username;
-    this.fullName = fullName;
-    this.relationship = relationship;
-}
+    public CallReceiverDto(Long callReceiverId, String telephone, String username, String fullName, String relationship) {
+        this.callReceiverId = callReceiverId;
+        this.telephone = telephone;
+        this.username = username;
+        this.fullName = fullName;
+        this.relationship = relationship;
+    }
 
     public CallReceiverDto(String fullName2, String telephone2) {
         this.fullName = fullName2;
         this.telephone = telephone2;
-}
+    }
 
     public Long getCallReceiverId() {
         return callReceiverId;

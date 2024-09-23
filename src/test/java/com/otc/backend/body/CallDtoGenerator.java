@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.otc.backend.dto.CallDto;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,6 +15,7 @@ public class CallDtoGenerator {
     public CallDtoGenerator() {
         this.faker = new Faker();
     }
+
     public JSONObject makeCallDto(String telephone, String username) throws JSONException {
         String startTime = formatTime(faker.date().past(1, java.util.concurrent.TimeUnit.DAYS));
         String endTime = formatTime(faker.date().future(1, java.util.concurrent.TimeUnit.DAYS));

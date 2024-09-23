@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import com.otc.backend.models.Role;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Integer>{
+public interface RoleRepository extends JpaRepository<Role, Integer> {
     Optional<Role> findByAuthority(String authority);
-    //Set<Role> findByAuthority(String authority);
 }

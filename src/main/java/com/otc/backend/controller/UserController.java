@@ -28,7 +28,6 @@ import com.otc.backend.services.UserService;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-
 @RestController
 @RequestMapping("/user")
 @CrossOrigin("*")
@@ -44,14 +43,14 @@ public class UserController {
     //RabbitMQProducer rabbitMQProducer,
     //RabbitMQJsonProducer rabbitMQJsonProducer
 
-   // @Autowired
+    // @Autowired
     public UserController(UserService userService, TokenService tokenService) {
         this.tokenService = tokenService;
         this.userService = userService;
         //this.rabbitMQProducer = rabbitMQProducer;
-       // this.rabbitMQJsonProducer = rabbitMQJsonProducer;
+        // this.rabbitMQJsonProducer = rabbitMQJsonProducer;
     }
-    
+
     @PostMapping("/mess-publisher")
     public ResponseEntity<String> sendJsonMessage(@RequestBody Users user) {
         //rabbitMQJsonProducer.sendJsonMessage(user);
@@ -63,22 +62,22 @@ public class UserController {
         String username = "";
         Users user;
 
-        if(token.substring(0,6).equals("Bearer")) {
+        if (token.substring(0, 6).equals("Bearer")) {
             String strippedToken = token.substring(7);
             username = tokenService.getUsernameFromToken(strippedToken);
         }
         try {
             user = userService.getUserByUsername(username);
-        } catch(Exception e) {
+        } catch (Exception e) {
             user = null;
         }
-        
+
         return user;
     }
 
     @GetMapping("/hello")
     public ResponseEntity<String> helloUserController(@RequestParam("message") String message) {
-       // rabbitMQProducer.sendMessage(message);
+        // rabbitMQProducer.sendMessage(message);
         // return "User access level";
         return ResponseEntity.ok("Message sent to RabbitMQ");
     }
@@ -91,7 +90,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Users>> getAllUsers(){
+    public ResponseEntity<List<Users>> getAllUsers() {
         List<Users> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
@@ -99,17 +98,17 @@ public class UserController {
     @Transactional
     @PutMapping("/update/{username}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<Users> updateUser(@PathVariable("username") String username, @RequestBody Users updatedUser){
-       Users userDto = userService.updateUser(username, updatedUser);
-       return ResponseEntity.ok(userDto);
+    public ResponseEntity<Users> updateUser(@PathVariable("username") String username, @RequestBody Users updatedUser) {
+        Users userDto = userService.updateUser(username, updatedUser);
+        return ResponseEntity.ok(userDto);
     }
 
     @Transactional
     @DeleteMapping("/delete/{username}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteUser(@PathVariable("username") String username){
-       userService.deleteUser(username);
-       return ResponseEntity.ok("User deleted successfully.");
+    public ResponseEntity<String> deleteUser(@PathVariable("username") String username) {
+        userService.deleteUser(username);
+        return ResponseEntity.ok("User deleted successfully.");
     }
 
     @GetMapping("/users")
@@ -122,7 +121,7 @@ public class UserController {
     List<String> phoneNumbers = callReceiverService.getPhoneNumbersForUser(username);
     return ResponseEntity.ok(phoneNumbers);
     }*/
-    
+
     @GetMapping("/all-users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Users>> getUsers() {
@@ -141,6 +140,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching user");
         }
     }
-
-    
 }

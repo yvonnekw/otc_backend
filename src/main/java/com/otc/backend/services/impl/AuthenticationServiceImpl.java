@@ -1,8 +1,7 @@
-package com.otc.backend.services;
+package com.otc.backend.services.impl;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.otc.backend.services.AuthenticationService;
+import com.otc.backend.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,9 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.otc.backend.dto.LoginResponseDto;
-import com.otc.backend.models.Address;
-import com.otc.backend.models.Users;
-import com.otc.backend.models.Role;
 import com.otc.backend.repository.RoleRepository;
 import com.otc.backend.repository.UserRepository;
 
@@ -37,20 +33,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private TokenService tokenService;
-    
 
-    public LoginResponseDto loginUser(String username, String password){
 
-        try{
+    public LoginResponseDto loginUser(String username, String password) {
+
+        try {
             Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
+                    new UsernamePasswordAuthenticationToken(username, password)
             );
 
             String token = tokenService.generateJwt(auth);
 
             return new LoginResponseDto(userRepository.findByUsername(username).get(), token);
 
-        } catch(AuthenticationException e){
+        } catch (AuthenticationException e) {
             return new LoginResponseDto(null, "");
         }
     }

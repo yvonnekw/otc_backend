@@ -88,6 +88,4 @@ public class Image {
         return "Image [imageId=" + imageId + ", imageName=" + imageName + ", imageType=" + imageType + ", imagePath="
                 + imagePath + ", imageURL=" + imageURL + "]";
     }
-
-    
 }

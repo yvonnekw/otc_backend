@@ -131,16 +131,19 @@ public class CallDto {
     public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
+
     public String getEndTime() {
         return endTime;
     }
+
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
+
     public String getDuration() {
         return duration;
     }
- 
+
     public void setDuration(String duration) {
         this.duration = duration;
     }

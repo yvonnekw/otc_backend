@@ -85,7 +85,6 @@ public class UserService implements UserDetailsService {
         }
     }
 
-
     private String generateUserName(String name) {
         long generatedNumber = (long) Math.floor(Math.random() * 1_000_000_000);
         return name + generatedNumber;
@@ -134,19 +133,12 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
 
         existingUser.setUsername(updatedUser.getUsername());
-        //existingUser.setLastName(updatedUser.getLastName());
-        //existingUser.setFirstName(updatedUser.getFirstName());
-        //existingUser.setEmailAddress(updatedUser.getEmailAddress());
-        //existingUser.setTelephone(updatedUser.getTelephone());
-
         return userRepository.save(existingUser);
     }
 
     public Users updateUser(String username, Users updatedUser) {
         Users existingUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
-
-        //existingUser.setUsername(updatedUser.getUsername());
         existingUser.setLastName(updatedUser.getLastName());
         existingUser.setFirstName(updatedUser.getFirstName());
         existingUser.setEmailAddress(updatedUser.getEmailAddress());
@@ -203,6 +195,4 @@ public class UserService implements UserDetailsService {
 
         return userRepository.findEmailByUsername(username);
     }
-
-
 }

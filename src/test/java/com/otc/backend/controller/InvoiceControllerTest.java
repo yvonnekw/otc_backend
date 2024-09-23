@@ -60,8 +60,6 @@ public class InvoiceControllerTest extends TestBase {
 
         String callId = makeCallResponse.getBody();
         String extractedCallId = extractData(callId, "callId");
-       //String username = extract(callId, "username");
-
         logger.info("extracted call ID " + extractedCallId);
 
         JSONArray callIdsArray = new JSONArray();
@@ -69,8 +67,6 @@ public class InvoiceControllerTest extends TestBase {
 
         JSONObject jsonRequestBody = new JSONObject();
         jsonRequestBody.put("callIds", callIdsArray);
-
-        //String requestBodyString = jsonRequestBody.toString();
 
         logger.info("Call id request body string " + callIdsArray);
 

@@ -66,71 +66,6 @@ public class TestBase {
         }
     }
 
-
-    /*
-    protected String extractUsernameFromRegistrationResponse(String registrationResponseBody) {
-        try {
-
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            JsonNode rootNode = objectMapper.readTree(registrationResponseBody);
-            // Check if the "username" field exists and is not null
-            JsonNode usernameNode = rootNode.get("username");
-            if (usernameNode != null && !usernameNode.isNull()) {
-                return usernameNode.asText(); // Safely call asText()
-            } else {
-                // Handle the case where "username" is missing or null
-                System.out.println("Username field is missing or null in the response.");
-                return null;
-
-            //String extractedUsername;
-            //extractedUsername = rootNode.get("username").asText();
-
-            //return extractedUsername;
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-            return null;
-        }
-    } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-*/
-    /*
-        protected String extractTokenFromLoginResponse(String loginResponseBody) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            JsonNode rootNode = objectMapper.readTree(loginResponseBody);
-
-            JsonNode dataNode = rootNode.get("data");
-            if (dataNode != null && !dataNode.isNull()) {
-                //JsonNode userNode = rootNode.get("user");
-               // if (userNode != null && !userNode.isNull()) {
-                    JsonNode tokenNode = rootNode.get("token");
-
-
-                    if (tokenNode != null && !tokenNode.isNull()) {
-
-                        return tokenNode.asText();
-                    } else {
-
-                        return null;
-                    }
-                //}
-            }
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-            return null;
-        }
-            return loginResponseBody;
-        }
-*/
     protected String extractTokenFromLoginResponse(String loginResponseBody) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -171,7 +106,7 @@ public class TestBase {
         return extractTokenFromLoginResponse(loginResponse.getBody());
     }
 
-    protected ResponseEntity<String> addCallReceiver(){
+    protected ResponseEntity<String> addCallReceiver() {
         headers.setContentType(MediaType.APPLICATION_JSON);
         RegistrationDto registrationDto = registrationDtoGenerator.generateRandomRegistrationDto();
         ResponseEntity<String> response = registerUser(registrationDto, headers);
@@ -187,9 +122,8 @@ public class TestBase {
         String fullName = faker.name().fullName();
         String relationship = faker.friends().toString();
 
-        System.out.println("Full name "+ fullName + "relationship " + relationship);
+        System.out.println("Full name " + fullName + "relationship " + relationship);
 
-        //String requestBody = "{\"telephone\": \"" + telephone + "\", \"Full Name\": \"" + fullName + "\", \"Relationship\": \"" + relationship + "\", \"username\": \"" + username + "\"}";
         String requestBody = "{\"telephone\": \"" + telephone +
                 "\", \"Full Name\": \"" + fullName +
                 "\", \"Relationship\": \"" + relationship +
@@ -252,6 +186,7 @@ public class TestBase {
             return null;
         }
     }
+
     protected String extractData(String responseBody, String fieldName) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -307,23 +242,4 @@ public class TestBase {
 
         return null;
     }
-
-
-    /*
-    protected String extractData(String responseBody, String fieldName) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(responseBody);
-
-            JsonNode dataNode = rootNode.get("data");
-
-            if (dataNode != null && !dataNode.isNull()) {
-                return dataNode.get(fieldName).asText();
-            }
-
-        } catch (Exception e) {
-            logger.error("Error extracting {} data from response body", fieldName, e);
-            return null;
-        }
-    }*/
 }

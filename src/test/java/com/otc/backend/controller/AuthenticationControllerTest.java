@@ -2,12 +2,8 @@ package com.otc.backend.controller;
 
 import com.otc.backend.base.TestBase;
 import com.otc.backend.body.RegistrationDtoGenerator;
-import com.otc.backend.body.TestDataProvider;
 import com.otc.backend.dto.RegistrationDto;
-import com.otc.backend.models.Role;
-import com.otc.backend.models.Users;
 import com.otc.backend.repository.RoleRepository;
-import com.otc.backend.services.PaymentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,18 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonNode;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.File;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.LinkedHashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 

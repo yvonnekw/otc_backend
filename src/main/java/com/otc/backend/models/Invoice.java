@@ -16,11 +16,9 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long invoiceId;
     private String invoiceDate;
-    //private String amount;
-    //  private boolean isPaid;
-    private String status; // Status of the invoice (e.g., "Invoiced", "Paid", "Overdue")
-  
-    private String totalAmount; // Total amount of the invoice
+    private String status;
+
+    private String totalAmount;
 
     @ManyToMany
     @JoinTable(name = "invoice_calls", joinColumns = @JoinColumn(name = "invoice_id"), inverseJoinColumns = @JoinColumn(name = "call_id"))
@@ -35,22 +33,6 @@ public class Invoice {
                 .map(Call::getCallId)
                 .collect(Collectors.toList());
     }
-
-    /* 
-    @ElementCollection
-    @CollectionTable(name = "invoice_calls", joinColumns = @JoinColumn(name = "invoice_id"))
-    @Column(name = "call_id")
-    private Set<Call> calls = new HashSet<>(); // IDs of the related calls
-    */
-   
-   // @ManyToMany
-   // @JoinTable(name = "invoice_call", joinColumns = @JoinColumn(name = "invoice_id"), inverseJoinColumns = @JoinColumn(name = "call_id"))
-   // private Set<Call> calls = new HashSet<>();
-
-    // Associate the invoice directly with the current call
-    //@OneToOne
-   // @JoinColumn(name = "current_call_id")
-   // private CurrentCall currentCall;
 
     public Invoice() {
     }

@@ -25,12 +25,12 @@ import jakarta.persistence.Table;
 public class CallReceiver {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long callReceiverId;
     private String telephone;
     private String fullName;
     private String relationship;
-    
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users user;
@@ -56,12 +56,15 @@ public class CallReceiver {
     public Long getCallReceiverId() {
         return callReceiverId;
     }
+
     public void setCallReceiverId(Long callReceiverId) {
         this.callReceiverId = callReceiverId;
     }
+
     public String getTelephone() {
         return telephone;
     }
+
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }

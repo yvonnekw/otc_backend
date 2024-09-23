@@ -35,5 +35,4 @@ public class PaymentDtoGenerator {
         return dateFormat.format(date);
     }
 
-
 }

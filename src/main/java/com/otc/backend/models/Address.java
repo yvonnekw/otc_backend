@@ -19,22 +19,21 @@ import jakarta.persistence.Table;
 public class Address {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer addressId;
-  
-     @Column(nullable = false, columnDefinition = "varchar(150)", unique = false)
-     private String address1;
 
-     @Column(nullable = true, columnDefinition = "varchar(150)", unique = false)
-     private String address2;
+    @Column(nullable = false, columnDefinition = "varchar(150)", unique = false)
+    private String address1;
 
-     @Column(nullable = true, columnDefinition = "varchar(150)", unique = false)
-     private String address3;
+    @Column(nullable = true, columnDefinition = "varchar(150)", unique = false)
+    private String address2;
+
+    @Column(nullable = true, columnDefinition = "varchar(150)", unique = false)
+    private String address3;
 
     @Column(nullable = false, columnDefinition = "varchar(150)", unique = false)
     private String postcode;
 
-    //mention
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -47,15 +46,7 @@ public class Address {
     public void setCallerUser(Users callerUser) {
         this.callerUser = callerUser;
     }
-/* 
-    public CallerUser getUser() {
-        return applicationUser;
-    }
 
-    public void setUser(CallerUser applicationUser) {
-        this.applicationUser = applicationUser;
-    }
-*/
     public Integer getAddressId() {
         return addressId;
     }

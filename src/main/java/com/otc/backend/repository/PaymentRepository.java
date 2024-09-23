@@ -8,9 +8,6 @@ import com.otc.backend.models.Payment;
 import java.util.List;
 
 @Repository
-public interface PaymentRepository extends JpaRepository<Payment, Long>{
+public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findByUserUsername(String username);
-    
-
-    
 }

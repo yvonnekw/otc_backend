@@ -20,11 +20,8 @@ import jakarta.persistence.Table;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-   // @Column(name = "payment_id")
     private Long paymentId;
-   // @Column(name = "amount")
     private String amount;
-   // @Column(name = "payment_date")
     private String paymentDate;
     private String fullNameOnPaymentCard;
     private String cardNumber;
@@ -45,7 +42,7 @@ public class Payment {
     }
 
     public Payment(Long paymentId, String amount, String paymentDate, String fullNameOnPaymentCard, String cardNumber,
-            String expiringDate, String issueNumber, String securityNumber, String status, Invoice invoice) {
+                   String expiringDate, String issueNumber, String securityNumber, String status, Invoice invoice) {
         this.paymentId = paymentId;
         this.amount = amount;
         this.paymentDate = paymentDate;

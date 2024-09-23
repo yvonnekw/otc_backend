@@ -70,8 +70,6 @@ public class CallReceiverController {
         try {
             String telephone = callReceiverDTO.getTelephone();
             String username = callReceiverDTO.getUsername();
-            // String fullName = callReceiverDTO.getFullName();
-            // String relationship = callReceiverDTO.getRelationship();
 
             logger.info("Received request to register call receiver for user: " + username);
 
@@ -95,7 +93,7 @@ public class CallReceiverController {
                 e.printStackTrace();
                 ApiResponse<CallReceiver> response = new ApiResponse<>(true,
                         "Phone number registered successfully, but failed to notify RabbitMQ.", callReceiver
-                       );
+                );
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
             }
         } catch (CallReceiverCreationException e) {
@@ -158,100 +156,10 @@ public class CallReceiverController {
                     dto.setFullName(callReceiver.getFullName());
                     dto.setTelephone(callReceiver.getTelephone());
                     dto.setRelationship(callReceiver.getRelationship());
-                    // Add other fields as needed
                     return dto;
                 })
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(callReceiverDtos);
     }
-
-    /*
-     * @GetMapping("/phone-numbers/{username}")
-     * public ResponseEntity<List<CallReceiver>>
-     * getDistinctPhoneNumbersForUser(@PathVariable String username) {
-     * List<CallReceiver> phoneNumbers =
-     * callReceiverService.getCallReceiversByUsername(username);
-     * return new ResponseEntity<>(phoneNumbers, HttpStatus.OK);
-     * }
-     */
-    /*
-     * @GetMapping("/phone-numbers/{username}")
-     * public ResponseEntity<List<String>>
-     * findDistinctTelephoneByUserUsername(@PathVariable String username) {
-     * List<String> phoneNumbers =
-     * callReceiverService.getCallReceiversByUsername(username);
-     * return new ResponseEntity<>(phoneNumbers, HttpStatus.OK);
-     * }
-     *
-     *
-     * @GetMapping("/phone-numbers")
-     * public ResponseEntity<List<String>>
-     * findDistinctTelephoneByUserUsername(@RequestParam String username) {
-     * System.out.println("username " + username);
-     * if (username == null || username.isEmpty()) {
-     * return ResponseEntity.badRequest().build();
-     * }
-     *
-     * List<String> phoneNumbers =
-     * callReceiverService.findDistinctTelephoneByUserUsername(username);
-     *
-     * System.out.println("phone numbers " + phoneNumbers);
-     * return ResponseEntity.ok(phoneNumbers);
-     *
-     */
-
-    /*
-     * @GetMapping("/phone-exists")
-     * public ResponseEntity<Boolean> checkPhoneNumberExists(
-     *
-     * @RequestParam String username,
-     *
-     * @RequestParam String telephone) {
-     *
-     * // Check if either username or phoneNumber is missing
-     * if (username == null || username.isEmpty() || telephone == null ||
-     * telephone.isEmpty()) {
-     * return ResponseEntity.badRequest().build();
-     * }
-     *
-     * // Perform the check for phone number existence
-     * boolean exists = callReceiverService.checkPhoneNumberExistsForUser(username,
-     * telephone);
-     * System.out.println("yes or no  " + exists);
-     * return ResponseEntity.ok(exists);
-     * }
-     *
-     */
-
-    /*
-     * @GetMapping("/tele")
-     * public ResponseEntity<List<String>>
-     * getDistinctPhoneNumbersForUser(@RequestBody LinkedHashMap<String, String>
-     * body) {
-     * //List<String> phoneNumbers =
-     * callReceiverService.getDistinctPhoneNumbersForUser(username);
-     * // return ResponseEntity.ok(phoneNumbers);
-     * //String username = requestBody.get("username");
-     * String username = body.get("username");
-     * if (username == null) {
-     * return ResponseEntity.badRequest().build();
-     * }
-     *
-     * List<String> phoneNumbers =
-     * callReceiverService.getDistinctPhoneNumbersForUser(username);
-     * return ResponseEntity.ok(phoneNumbers);
-     * }
-     *
-     * /*
-     *
-     * @GetMapping("/phone-numbers/{username}")
-     * public ResponseEntity<List<String>>
-     * getDistinctPhoneNumbersForUser(@PathVariable String username) {
-     * List<String> phoneNumbers =
-     * callReceiverService.getDistinctPhoneNumbersForUser(username);
-     * return new ResponseEntity<>(phoneNumbers, HttpStatus.OK);
-     * }
-     */
-
 }
