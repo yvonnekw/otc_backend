@@ -1,20 +1,14 @@
-package com.otc.backend.services;
+package com.otc.backend.services.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.ResourceNotFoundException;
+import com.otc.backend.services.CallReceiverService;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import com.otc.backend.controller.CallReceiverController;
-import com.otc.backend.dto.CallDto;
 import com.otc.backend.dto.CallReceiverDto;
-import com.otc.backend.dto.RegistrationDto;
 import com.otc.backend.exception.CallReceiverCreationException;
 import com.otc.backend.exception.UserDoesNotExistException;
-import com.otc.backend.models.Call;
 import com.otc.backend.models.CallReceiver;
 import com.otc.backend.models.Users;
 import com.otc.backend.repository.CallReceiverRepository;
@@ -77,6 +71,10 @@ public class CallReceiverServiceImpl implements CallReceiverService {
 
     public List<String> findDistinctTelephoneByUserUsername(String username) {
         return callReceiverRepository.findDistinctTelephoneByUserUsername(username);
+    }
+
+    public List<CallReceiver> getAllCallReceivers() {
+        return callReceiverRepository.findAll();
     }
 
 }

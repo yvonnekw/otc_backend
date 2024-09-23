@@ -4,14 +4,14 @@ public class ApiResponse <T> {
     private boolean success;
     private String message;
     private T data;
-    private String rabbitMQStatus;
-
-    public ApiResponse(boolean success, String message, T data, String rabbitMQStatus) {
+   // private String rabbitMQStatus;
+ //String rabbitMQStatus)
+ /*   public ApiResponse(boolean success, String message, T data ) {
         this.success = success;
         this.message = message;
         this.data = data;
-        this.rabbitMQStatus = rabbitMQStatus;
-    }
+        //this.rabbitMQStatus = rabbitMQStatus;
+    }*/
 
     public ApiResponse(boolean success, String message, T data) {
         this.success = success;
@@ -48,13 +48,13 @@ public class ApiResponse <T> {
         this.data = data;
     }
 
-    public String getRabbitMQStatus() {
-        return rabbitMQStatus;
-    }
+    //public String getRabbitMQStatus() {
+        //return rabbitMQStatus;
+    //}
 
-    public void setRabbitMQStatus(String rabbitMQStatus) {
-        this.rabbitMQStatus = rabbitMQStatus;
-    }
+    //public void setRabbitMQStatus(String rabbitMQStatus) {
+       // this.rabbitMQStatus = rabbitMQStatus;
+    //}
 
     
 }

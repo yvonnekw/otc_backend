@@ -30,12 +30,11 @@ import com.otc.backend.services.InvoiceService;
 public class InvoiceController {
 
     private static final Logger logger = LoggerFactory.getLogger(InvoiceController.class);
-    //@Autowired
+
     private final InvoiceService invoiceService;
-   // @Autowired
+
     private final InvoiceRepository invoiceRepository;
 
-    //@Autowired
     public InvoiceController(InvoiceService invoiceService, InvoiceRepository invoiceRepository) {
         this.invoiceService = invoiceService;
         this.invoiceRepository = invoiceRepository;
@@ -43,30 +42,31 @@ public class InvoiceController {
 
     @PostMapping("/create-in")
     public ResponseEntity<String> createInvoices(@RequestBody Invoice invoice) {
-        //try {
-            // Log the received set of calls
-            System.out.println("Received calls: body "+ invoice);
 
-            return new ResponseEntity<>( HttpStatus.CREATED);
+        System.out.println("Received calls: body " + invoice);
 
-        };
+        return new ResponseEntity<>(HttpStatus.CREATED);
+
+    }
+
+    ;
 
 
-        @PostMapping("/create-invoice")
-        public ResponseEntity<InvoiceDto> createInvoice(@RequestBody InvoiceDto invoiceDTO) {
-            try {
+    @PostMapping("/create-invoice")
+    public ResponseEntity<InvoiceDto> createInvoice(@RequestBody InvoiceDto invoiceDTO) {
+        try {
 
-                logger.info("Invoice data coming in from create invoice controller: " + invoiceDTO);
-                InvoiceDto createdInvoice = invoiceService.createInvoiceForCalls(invoiceDTO);
-                logger.info("Invoice created from create invoice controller: " + createdInvoice);
+            logger.info("Invoice data coming in from create invoice controller: " + invoiceDTO);
+            InvoiceDto createdInvoice = invoiceService.createInvoiceForCalls(invoiceDTO);
+            logger.info("Invoice created from create invoice controller: " + createdInvoice);
 
-                return ResponseEntity.ok(createdInvoice);
-            } catch (Exception e) {
-                System.err.println("Error creating invoice from create invoice controller: " + e.getMessage());
-                e.printStackTrace();
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
+            return ResponseEntity.ok(createdInvoice);
+        } catch (Exception e) {
+            System.err.println("Error creating invoice from create invoice controller: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
 
     @GetMapping("/username/{username}")
     public ResponseEntity<List<InvoiceDto>> getInvoicesByUsername(@PathVariable String username) {
@@ -74,55 +74,11 @@ public class InvoiceController {
         return ResponseEntity.ok(invoices);
     }
 
-        /* 
-        @PostMapping("/create-invoice")
-        public ResponseEntity<Invoice> createInvoice(@RequestBody Invoice invoice) {
-            //Invoice createdInvoice = invoiceService.createInvoice(invoice);
-            //return ResponseEntity.ok(createdInvoice);
-            try {
-                // Call the service method to create the invoice
-                //Invoice createdInvoice = invoiceService.createInvoice(invoice);
-                Invoice createdInvoice = invoiceService.createInvoiceForCalls(invoice);
-                System.out.println("Invoice created: " + createdInvoice);
-
-                // Return the created invoice with HTTP status code 200 (OK)
-                return ResponseEntity.ok(createdInvoice);
-            } catch (Exception e) {
-                // Log any exceptions that occur during invoice creation
-                System.err.println("Error creating invoice: " + e.getMessage());
-                e.printStackTrace(); // Print the stack trace for detailed error information
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-        }
-     */
-
-/* 
-    @PostMapping("/create-invoice")
-    public ResponseEntity<Invoice> createInvoice(@RequestBody Set<Call> calls) {
-        try {
-            // Log the received set of calls
-            System.out.println("Received calls: " + calls);
-
-            // Call the service method to create the invoice
-            System.out.println("Creating invoice...");
-            Invoice invoice = invoiceService.createInvoiceForCalls(calls);
-           // System.out.println("Invoice created: " + invoice);
-
-            // Return the created invoice with HTTP status code 201 (Created)
-            return new ResponseEntity<>(invoice, HttpStatus.CREATED);
-        } catch (Exception e) {
-            // Log any exceptions that occur during invoice creation
-            System.err.println("Error creating invoice: " + e.getMessage());
-            e.printStackTrace(); // Print the stack trace for detailed error information
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/get-all-invoice")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Invoice> getAllInvoices() {
+        return invoiceRepository.findAll();
     }
-*/
-  @GetMapping("/get-all-invoice")
-  @PreAuthorize("hasRole('ADMIN')")
-  public List<Invoice> getAllInvoices() {
-      return invoiceRepository.findAll();
-  }
 
     @GetMapping("/get-invoice-callIds")
     @PreAuthorize("hasRole('ADMIN')")
@@ -155,52 +111,4 @@ public class InvoiceController {
         invoiceService.deleteInvoice(invoiceId);
         return ResponseEntity.noContent().build();
     }
-/*
-    @GetMapping("/{username}")
-    public ResponseEntity<List<InvoiceDto>> getInvoicesByUsername(@PathVariable String username) {
-        List<InvoiceDto> invoices = invoiceService.getInvoicesByUsername(username);
-        if (invoices.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Return 204 No Content if no invoices are found
-        }
-        return ResponseEntity.ok(invoices); // Return 200 OK with the list of invoices
-    }*/
-
-    /* 
-    @PostMapping("/create-invoice")
-    public ResponseEntity<Invoice> createInvoice(@RequestBody Invoice invoice) {
-        Invoice createdInvoice = invoiceService.createInvoice(invoice);
-        return ResponseEntity.ok(createdInvoice);
-    }
-
-    */
-/* 
-    @PutMapping("/{invoiceId}")
-    public ResponseEntity<Invoice> updateInvoice(@PathVariable Long invoiceId, @RequestBody Invoice invoiceDetails) {
-        Invoice updatedInvoice = invoiceService.updateInvoice(invoiceId, invoiceDetails);
-        return ResponseEntity.ok(updatedInvoice);
-    }*/
-
-  /*
- * @GetMapping("/get-all-invoice")
- * public ResponseEntity<List<Invoice>> getAllInvoices() {
- * List<Invoice> invoices = invoiceService.getAllInvoices();
- * return ResponseEntity.ok(invoices);
- * }
- */
-/*
- * @GetMapping("/get-all-invoice")
- * public ResponseEntity<?> getAllInvoices() {
- * try {
- * List<Invoice> invoices = invoiceService.getAllInvoices();
- * return ResponseEntity.ok(invoices);
- * } catch (Exception e) {
- * // Log the exception for debugging purposes
- * e.printStackTrace();
- * // Return an error response entity
- * return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
- * .body("An error occurred while fetching invoices.");
- * }
- * }
- */
-    
 }

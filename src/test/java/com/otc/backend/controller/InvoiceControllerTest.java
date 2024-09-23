@@ -22,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 
 import com.otc.backend.base.TestBase;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
@@ -30,6 +32,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public class InvoiceControllerTest extends TestBase {
 
     public static final Logger logger = LoggerFactory.getLogger(AuthenticationControllerTest.class);
+
+    @Container
+    static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:16");
 
     @Autowired
     TestRestTemplate restTemplate;
@@ -44,7 +49,7 @@ public class InvoiceControllerTest extends TestBase {
 
         logger.info("call receiver response body " + responseBody);
         String telephone = extractData(responseBody, "telephone");
-        String username = extractData(responseBody, "username");
+        String username = extract(responseBody, "username");
 
         JSONObject requestBody = callDtoGenerator.makeCallDto(telephone, username);
 
@@ -60,6 +65,7 @@ public class InvoiceControllerTest extends TestBase {
 
         String callId = makeCallResponse.getBody();
         String extractedCallId = extractData(callId, "callId");
+        logger.info("extracted call ID " + extractedCallId);
 
         JSONArray callIdsArray = new JSONArray();
         callIdsArray.put(extractedCallId);
@@ -67,9 +73,14 @@ public class InvoiceControllerTest extends TestBase {
         JSONObject jsonRequestBody = new JSONObject();
         jsonRequestBody.put("callIds", callIdsArray);
 
-        String requestBodyString = jsonRequestBody.toString();
+        logger.info("Call id request body string " + callIdsArray);
 
-        logger.info("Call id request body string " + requestBodyString);
+        String requestBodyString = "{"
+                + "\"username\": \"" + username + "\","
+                + "\"callIds\": " + callIdsArray
+                + "}";
+
+        logger.info("full request body " + requestBodyString);
 
         HttpEntity<String> invoiceRequestEntity = new HttpEntity<>(requestBodyString, headers);
         ResponseEntity<String> invoiceResponse = restTemplate.exchange("/invoices/create-invoice", HttpMethod.POST,

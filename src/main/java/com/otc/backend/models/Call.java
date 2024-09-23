@@ -19,10 +19,8 @@ import java.time.Duration;
 @Table(name = "call")
 public class Call {
 
-    // Rate charged per second for the call
     private static final BigDecimal RATE_PER_SECOND = new BigDecimal("0.01");
 
-    // Tax rate applied to the call
     private static final BigDecimal TAX_RATE = new BigDecimal("20");
 
     @Id
@@ -201,7 +199,6 @@ public class Call {
     }
 
 
-    //Calculations of a call
     public long calculateDurationInSeconds(LocalTime startTime, LocalTime endTime) {
         try {
 
@@ -213,40 +210,7 @@ public class Call {
             return durationSeconds;
         } catch (Exception e) {
             e.printStackTrace();
-            return -1; // Handle error appropriately in your code
-        }
-    }
-
-
-    public BigDecimal applyDiscount(BigDecimal netCost, String discount) {
-        try {
-            // Convert discountForCalls to BigDecimal
-            BigDecimal discounts = new BigDecimal(discount);
-
-            // Apply discount if available
-            if (discounts.compareTo(BigDecimal.ZERO) > 0) {
-                netCost = netCost.subtract(netCost.multiply(discounts));
-            }
-
-            return netCost;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return netCost; // Handle error appropriately in your code
-        }
-    }
-
-    public BigDecimal calculateVATAmount(BigDecimal netCost) {
-        try {
-            // Convert vat to BigDecimal
-            BigDecimal vat = TAX_RATE;
-
-            // Calculate VAT amount
-            BigDecimal vatAmount = netCost.multiply(vat).divide(BigDecimal.valueOf(100));
-
-            return vatAmount;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return BigDecimal.ZERO; // Handle error appropriately in your code
+            return -1;
         }
     }
 
@@ -308,11 +272,20 @@ public class Call {
 
     @Override
     public String toString() {
-        return "Call [callId=" + callId + ", startTime=" + startTime + ", endTime=" + endTime + ", duration=" + duration
-                + ", costPerMinute=" + costPerSecond + ", discountForCalls=" + discountForCalls + ", vat=" + vat
-                + ", netCost=" + netCost + ", grossCost=" + grossCost + ", callDate=" + callDate + ", status=" + status
-                + ", user=" + user + ", receiver=" + receiver + "]";
+        return "Call{" +
+                "callId=" + callId +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", duration='" + duration + '\'' +
+                ", costPerSecond='" + costPerSecond + '\'' +
+                ", discountForCalls='" + discountForCalls + '\'' +
+                ", vat='" + vat + '\'' +
+                ", netCost='" + netCost + '\'' +
+                ", grossCost='" + grossCost + '\'' +
+                ", callDate='" + callDate + '\'' +
+                ", status='" + status + '\'' +
+                ", user=" + user +
+                ", receiver=" + receiver +
+                '}';
     }
-
-
 }

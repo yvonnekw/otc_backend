@@ -11,7 +11,7 @@ import com.otc.backend.models.Payment;
 
 public interface PaymentService {
 
-    public List<Payment> getAllPayments(); 
+    public List<Payment> getAllPayments();
 
     public Payment getPaymentById(Long paymentId);
 
@@ -22,6 +22,4 @@ public interface PaymentService {
     public void deletePayment(Long paymentId);
 
     List<PaymentDto> getPaymentsByUsername(String username);
-
-    // public List<Call> getPaidCallsByUsername(String username); 
 }

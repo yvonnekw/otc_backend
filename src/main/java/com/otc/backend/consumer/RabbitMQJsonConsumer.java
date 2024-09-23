@@ -10,7 +10,7 @@ import com.otc.backend.dto.RegistrationDto;
 import com.otc.backend.models.Call;
 import com.otc.backend.models.Users;
 
-
+/*
 @Service
 public class RabbitMQJsonConsumer {
 
@@ -37,3 +37,4 @@ public class RabbitMQJsonConsumer {
         LOGGER.info(String.format("Received JSON message -> %s", body.toString()));
     }
 }
+*/

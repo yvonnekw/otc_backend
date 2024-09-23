@@ -46,27 +46,8 @@ public class CallReceiverDtoGenerator extends TestBase {
         String telephone = faker.phoneNumber().cellPhone();
         String fullName = faker.name().fullName();
         String relationship = faker.friends().toString();
-        
-        //Optional<Users> userOptional = userRepository.findByUsername(username);
-
-       // if (userOptional.isPresent()) {
-
-         //   Users user = userOptional.get();
-           // logger.info("user details with get username " + user);
-           // return new CallReceiverDto(faker.phoneNumber().cellPhone(), user);
-
-       // CallReceiverDto requestBody = String.format("{\"telephone\": \"%s\", \"username\": \"%s\"}", telephone, username);
-
-        //return new CallReceiverDto(telephone, new Users(username));
 
         return new CallReceiverDto(telephone, username, fullName, relationship);
-
-           // re
-       // }
-     //   else {
-           // logger.error("User with username " + username + " not found");
-            //return null;
-        //}
     }
 
 }

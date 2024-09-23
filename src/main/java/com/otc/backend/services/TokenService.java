@@ -22,13 +22,9 @@ public class TokenService {
     @Autowired
     private JwtDecoder jwtDecoder;
 
-    //@Autowired
-    // private UserService userService;
-
     public TokenService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder){
         this.jwtEncoder = jwtEncoder;
         this.jwtDecoder = jwtDecoder;
-       // this.userService = userService;
     }
 
     public String generateJwt(Authentication auth) {
@@ -41,8 +37,6 @@ public class TokenService {
         String roles = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
-
-    
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuer("self")

@@ -7,12 +7,12 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.otc.backend.consumer.RabbitMQConsumer;
+//import com.otc.backend.consumer.RabbitMQConsumer;
 import com.otc.backend.dto.RegistrationDto;
 import com.otc.backend.models.Call;
 import com.otc.backend.models.CallReceiver;
 import com.otc.backend.models.Users;
-
+/*
 @Service
 public class RabbitMQJsonProducer {
 
@@ -56,3 +56,4 @@ public class RabbitMQJsonProducer {
       }
 
 }
+*/

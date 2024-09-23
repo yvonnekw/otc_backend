@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonNode;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 
 public class TestBase {
@@ -40,20 +42,26 @@ public class TestBase {
 
     protected String extractUsernameFromRegistrationResponse(String registrationResponseBody) {
         try {
-            // Create an ObjectMapper instance
             ObjectMapper objectMapper = new ObjectMapper();
-
-            // Parse the JSON response string into a JsonNode
             JsonNode rootNode = objectMapper.readTree(registrationResponseBody);
 
-            String extractedUsername;
-            extractedUsername = rootNode.get("username").asText();
+            JsonNode dataNode = rootNode.get("data");
 
-            return extractedUsername;
+            if (dataNode != null && !dataNode.isNull()) {
+
+                JsonNode usernameNode = dataNode.get("username");
+                if (usernameNode != null && !usernameNode.isNull()) {
+                    return usernameNode.asText();
+                } else {
+                    System.out.println("Username field is missing or null in the response.");
+                    return null;
+                }
+            } else {
+                System.out.println("Data field is missing or null in the response.");
+                return null;
+            }
         } catch (Exception e) {
-
             e.printStackTrace();
-
             return null;
         }
     }
@@ -64,19 +72,22 @@ public class TestBase {
 
             JsonNode rootNode = objectMapper.readTree(loginResponseBody);
 
-            JsonNode tokenNode = rootNode.get("token");
+            JsonNode dataNode = rootNode.get("data");
 
-            if (tokenNode != null && !tokenNode.isNull()) {
-
-                return tokenNode.asText();
+            if (dataNode != null && !dataNode.isNull()) {
+                JsonNode tokenNode = dataNode.get("token");
+                if (tokenNode != null && !tokenNode.isNull()) {
+                    return tokenNode.asText();
+                } else {
+                    System.out.println("Token field is missing or null in the response.");
+                    return null;
+                }
             } else {
-
+                System.out.println("Data field is missing or null in the response.");
                 return null;
             }
         } catch (Exception e) {
-
             e.printStackTrace();
-
             return null;
         }
     }
@@ -95,7 +106,7 @@ public class TestBase {
         return extractTokenFromLoginResponse(loginResponse.getBody());
     }
 
-    protected ResponseEntity<String> addCallReceiver(){
+    protected ResponseEntity<String> addCallReceiver() {
         headers.setContentType(MediaType.APPLICATION_JSON);
         RegistrationDto registrationDto = registrationDtoGenerator.generateRandomRegistrationDto();
         ResponseEntity<String> response = registerUser(registrationDto, headers);
@@ -108,8 +119,17 @@ public class TestBase {
         logger.info("actual result login " + loginResponse);
 
         String telephone = faker.phoneNumber().cellPhone();
+        String fullName = faker.name().fullName();
+        String relationship = faker.friends().toString();
 
-        String requestBody = "{\"telephone\": \"" + telephone + "\", \"username\": \"" + username + "\"}";
+        System.out.println("Full name " + fullName + "relationship " + relationship);
+
+        String requestBody = "{\"telephone\": \"" + telephone +
+                "\", \"Full Name\": \"" + fullName +
+                "\", \"Relationship\": \"" + relationship +
+                "\", \"username\": \"" + username + "\"}";
+
+
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<String> calReceiverResponse = restTemplate.exchange("/call-receiver/add-receiver", HttpMethod.POST, requestEntity, String.class);
@@ -171,10 +191,55 @@ public class TestBase {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(responseBody);
-            return rootNode.get(fieldName).asText();
+
+            JsonNode dataNode = rootNode.get("data");
+
+            if (dataNode != null && !dataNode.isNull()) {
+                JsonNode fieldNode = dataNode.get(fieldName);
+
+                if (fieldNode != null && !fieldNode.isNull()) {
+                    return fieldNode.asText();
+                } else {
+                    logger.warn("Field '{}' not found in 'data' node", fieldName);
+                }
+            } else {
+                logger.warn("'data' field is null or not present in response body");
+            }
+
         } catch (Exception e) {
             logger.error("Error extracting {} data from response body", fieldName, e);
-            return null;
         }
+
+        return null;
+    }
+
+    protected String extract(String responseBody, String fieldName) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(responseBody);
+
+            JsonNode dataNode = rootNode.get("data");
+
+            if (dataNode != null && !dataNode.isNull()) {
+                JsonNode userNode = dataNode.get("user");
+
+                if (userNode != null && !userNode.isNull()) {
+                    JsonNode fieldNode = userNode.get(fieldName);
+
+                    if (fieldNode != null && !fieldNode.isNull()) {
+                        return fieldNode.asText();
+                    } else {
+                        logger.warn("Field '{}' not found in 'data' node", fieldName);
+                    }
+                } else {
+                    logger.warn("'data' field is null or not present in response body");
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error("Error extracting {} data from response body", fieldName, e);
+        }
+
+        return null;
     }
 }

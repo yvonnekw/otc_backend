@@ -19,24 +19,9 @@ public class Role implements GrantedAuthority {
     private Integer roleId;
     private String authority;
 
-    //new
-   // @ManyToMany(mappedBy = "roles")
-    //private Collection<Users> users = new HashSet<>();
-
     public Role(){
         super();
     }
-
-    /* 
-    public Collection<Users> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Collection<Users> users) {
-        this.users = users;
-    }
-
-    */
 
     public Role(String authority) {
         this.authority = authority;
@@ -46,13 +31,6 @@ public class Role implements GrantedAuthority {
         this.roleId = roleId;
         this.authority = authority;
     }
-
-    /* 
-    public String getName() {
-        return name != null ? name : "";
-    }
-    */
-    
 
     @Override
     public String getAuthority() {

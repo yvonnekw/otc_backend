@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.otc.backend.dto.CallDto;
 import com.otc.backend.models.Call;
-import com.otc.backend.publisher.RabbitMQJsonProducer;
+//import com.otc.backend.publisher.RabbitMQJsonProducer;
 import com.otc.backend.services.CallService;
 
 
@@ -37,11 +37,12 @@ public class CallController {
     private static final Logger logger = LoggerFactory.getLogger(CallController.class);
     private final CallService callService;
 
-    private final RabbitMQJsonProducer rabbitMQJsonProducer;
+    // private final RabbitMQJsonProducer rabbitMQJsonProducer;
+// RabbitMQJsonProducer rabbitMQJsonProducer
 
-    public CallController(CallService callService,  RabbitMQJsonProducer rabbitMQJsonProducer) {
+    public CallController(CallService callService) {
         this.callService = callService;
-        this.rabbitMQJsonProducer = rabbitMQJsonProducer;
+        //this.rabbitMQJsonProducer = rabbitMQJsonProducer;
     }
 
     @GetMapping("{id}")
@@ -77,38 +78,34 @@ public class CallController {
     @PostMapping("/make-call")
     public ResponseEntity<ApiResponse<Call>> callsController(@RequestBody LinkedHashMap<String, String> body) {
         try {
-            // Extracting request parameters
             String userName = body.get("username");
             String startTime = body.get("startTime");
             String endTime = body.get("endTime");
             String discountForCalls = body.get("discountForCalls");
             String telephone = body.get("telephone");
 
-            // Validate input parameters
             if (userName == null || startTime == null || endTime == null || discountForCalls == null || telephone == null) {
                 return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Missing required fields."));
             }
 
-            // Create CallDto and set values
             CallDto callsDto = new CallDto();
             callsDto.setStartTime(startTime);
             callsDto.setEndTime(endTime);
             callsDto.setDiscountForCalls(discountForCalls);
 
-            // Call service to create a new call
             Call call = callService.makeCall(userName, telephone, callsDto);
 
             try {
                 // Send message to RabbitMQ
-                rabbitMQJsonProducer.sendJsonMessage(call);
+                // rabbitMQJsonProducer.sendJsonMessage(call);
                 ApiResponse<Call> response = new ApiResponse<>(true, "Call created successfully.",
-                        call, "Message sent to RabbitMQ successfully.");
+                        call);
                 return ResponseEntity.ok(response);
             } catch (AmqpException e) {
                 logger.error("Error sending message to RabbitMQ: " + e.getMessage());
                 ApiResponse<Call> response = new ApiResponse<>(true,
-                        "Call was created successfully, but failed to notify RabbitMQ.", call,
-                        "Failed to send message to RabbitMQ.");
+                        "Call was created successfully, but failed to notify RabbitMQ.", call
+                );
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
             }
 
@@ -123,62 +120,6 @@ public class CallController {
         }
     }
 
-/*
-    @PostMapping("/make-call")
-    public Call callsController(@RequestBody LinkedHashMap<String, String> body) throws Exception {
-        try {
-        String userName = body.get("username");
-        String startTime = body.get("startTime");
-        String endTime = body.get("endTime");
-        String discountForCalls = body.get("discountForCalls");
-        String telephone = body.get("telephone");
-
-        CallDto callsDto = new CallDto();
-
-        callsDto.setStartTime(startTime);
-        callsDto.setEndTime(endTime);
-        callsDto.setDiscountForCalls(discountForCalls);
-
-        Call call = callService.makeCall(userName, telephone, callsDto);
-        try {
-        rabbitMQJsonProducer.sendJsonMessage(call);
-            ApiResponse<Call> response = new ApiResponse<>(true, "call created successfully.",
-                    call, "Message sent to RabbitMQ successfully.");
-            return ResponseEntity.ok(call<response>);
-        } catch (AmqpException e) {
-            logger.error("Error sending message to RabbitMQ: " + e.getMessage());
-            e.printStackTrace();
-            ApiResponse<Call> response = new ApiResponse<>(true,
-                    "Call was created successfully, but failed to notify RabbitMQ.", call,
-                    "Failed to send message to RabbitMQ.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-        } catch (CallReceiverCreationException e) {
-            logger.error("Error creating call : " + e.getMessage());
-            e.printStackTrace();
-            ApiResponse<CallReceiver> response = new ApiResponse<>(false, "Call Receiver can NOT be registered. The phone may already be registered.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        } catch (Exception e) {
-            logger.error("Error creating new call : " + e.getMessage());
-            e.printStackTrace();
-            ApiResponse<CallReceiver> response = new ApiResponse<>(false, "An internal error occurred.");
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-
-
-    }
-*/
-    /* 
-    @GetMapping("/user/{username}")
-    public ResponseEntity<List<Call>> getCallsByUsername(@PathVariable String username) {
-        try {
-            List<Call> calls = callService.getCallsByUsername(username);
-            return new ResponseEntity<>(calls, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }*/
 
     @GetMapping
     public ResponseEntity<List<Call>> getCallsByUsername(@RequestParam String username) {
@@ -194,186 +135,4 @@ public class CallController {
         return ResponseEntity.ok(calls);
     }
 
-
-
-    /* 
-    @GetMapping("/paid")
-    public ResponseEntity<List<Call>> getPaidCalls() {
-        List<Call> paidCalls = invoiceService.getAllPaidCalls();
-        return ResponseEntity.ok(paidCalls);
-    }
-
-    
-    @GetMapping("/unpaid")
-    public ResponseEntity<List<Call>> getUnpaidCalls() {
-        List<Call> unpaidCalls = invoiceService.getAllUnpaidCalls();
-        return ResponseEntity.ok(unpaidCalls);
-    }
-
-    @GetMapping("/unpaid/username")
-    public ResponseEntity<List<Call>> getUnpaidCallsByUsername(@RequestParam String username) {
-        List<Call> unpaidCalls = callService.getUnpaidCallsByUsername(username);
-        return ResponseEntity.ok(unpaidCalls);
-    }
-    */
-
-    /* 
-    //come back to this
-    @PostMapping("/end-calls")
-    public ResponseEntity<String> endCalls(@RequestBody List<Call> calls) {
-        // Call the service to end the calls and trigger invoice generation
-        // callService.endCallsAndGenerateInvoice(calls);
-
-        return ResponseEntity.ok("Calls ended successfully");
-    }
-
-    */
-    /* 
-
-    @PostMapping("/completed")
-    public ResponseEntity<String> triggerCallsCompletedEvent(@RequestBody CallsCompletedEvent callsCompletedEvent) {
-        // Handle the event by processing the completed calls
-        List<CurrentCall> completedCalls = callsCompletedEvent.getCompletedCalls();
-        String username = null;
-        List<CompletedCallDto> completedCallDtos = new ArrayList<>();
-
-        // Extract the username from the first completed call if available
-        if (completedCalls != null && !completedCalls.isEmpty()) {
-            CurrentCall firstCompletedCall = completedCalls.get(0);
-            Users user = firstCompletedCall.getUser();
-            if (user != null) {
-                username = user.getUsername();
-
-                // Log the extracted username
-                System.out.println("Extracted username: " + username);
-
-                // Convert each CurrentCall to CompletedCallDto
-                for (CurrentCall currentCall : completedCalls) {
-                    // Check if the user associated with the current call is not null
-                    Users currentUser = currentCall.getUser();
-                    if (currentUser != null) {
-                        String extractedUsername = currentUser.getUsername(); // Use the existing variable
-                        // Convert the current call to a CompletedCallDto
-                        CompletedCallDto completedCallDto = callService.convertToCompletedCallDto(currentCall);
-                        completedCallDtos.add(completedCallDto);
-
-                        // Create an invoice for the completed call
-                        //Invoice invoice = createInvoiceForCall(currentCall);
-
-                    } else {
-                        // Log that user is null for the current call
-                        System.out.println("User is null for current call");
-                    }
-                }
-            } else {
-                // Log that user is null for the first completed call
-                System.out.println("User is null for the first completed call");
-            }
-        } else {
-            // Log that completedCalls is null or empty
-            System.out.println("Completed calls list is null or empty");
-        }
-
-        // Further processing based on the completed calls
-
-        return ResponseEntity.ok("Calls completed event triggered successfully");
-    }
-    
-    */
-    /* 
-    @PostMapping("/completed")
-    public ResponseEntity<String> triggerCallsCompletedEvent(@RequestBody CallsCompletedEvent callsCompletedEvent) {
-       
-        // Handle the event by processing the completed calls
-        List<CurrentCall> completedCalls = callsCompletedEvent.getCompletedCalls();
-        String username = null;
-        List<CompletedCallDto> completedCallDtos = new ArrayList<>();
-    
-        // Extract the username from the first completed call if available
-        if (!completedCalls.isEmpty()) {
-            username = completedCalls.get(0).getUser().getUsername();
-            
-            // Convert each CurrentCall to CompletedCallDto
-            for (CurrentCall currentCall : completedCalls) {
-    
-            CompletedCallDto completedCallDto = callService.convertToCompletedCallDto(currentCall);
-                //CompletedCallDto completedCallDto = convertToCompletedCallDto(currentCall);
-                completedCallDtos.add(completedCallDto);
-            }
-    }
-    
-    // Trigger any necessary actions based on the completed calls
-    
-    return ResponseEntity.ok("Calls completed event triggered successfully");
-    }
-    
-    */
-    /* 
-    @PostMapping("/completed")
-    public ResponseEntity<String> triggerCallsCompletedEvent(@RequestBody CallsCompletedEvent callsCompletedEvent) {
-        // Handle the event by processing the completed calls
-        List<CurrentCall> completedCalls = callsCompletedEvent.getCompletedCalls();
-        String username = null;
-    
-        // Extract the username from the first completed call if available
-        if (!completedCalls.isEmpty()) {
-            username = completedCalls.get(0).getUser().getUsername();
-        }
-    
-        // Trigger any necessary actions based on the completed calls
-    
-        return ResponseEntity.ok("Calls completed event triggered successfully");
-    }*/
-    /* 
-    @GetMapping("/paid")
-    public ResponseEntity<List<Call>> getPaidCallsForUser(@RequestParam Long userId) {
-        List<Call> paidCalls = callService.findPaidCallsByUserId(userId);
-        return ResponseEntity.ok(paidCalls);
-    }
-    */
-
-    /* 
-    @GetMapping("/receivers/{username}")
-    public ResponseEntity<List<Call>> getCallReceiversForUser(@PathVariable String username) {
-        try {
-            List<Call> callReceivers = callService.getCallReceiversForUser(username);
-            return new ResponseEntity<>(callReceivers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }*/
-
-    /* 
-    @GetMapping("/receivers/{username}")
-    public ResponseEntity<List<CallReceiver>> getCallReceiversForUser(@PathVariable String username) {
-        try {
-            List<CallReceiver> callReceivers = callService.getCallReceiversForUser(username);
-            return new ResponseEntity<>(callReceivers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    */
-    /* 
-    @GetMapping("/callReceivers/${username}")
-    public ResponseEntity<List<Call>> getCallReceiversForUser(@PathVariable String username) {
-        try {
-            List<Call> calls = callService.getCallReceiversForUser(username);
-            return new ResponseEntity<>(calls, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }*/
-
-    /* 
-    @GetMapping("/callReceivers/{username}")
-    public ResponseEntity<List<CallReceiver>> getCallReceiversForUser(@PathVariable String username) {
-        try {
-            List<CallReceiver> callReceivers = callService.getCallReceiversForUser(username);
-            return new ResponseEntity<>(callReceivers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    */
 }

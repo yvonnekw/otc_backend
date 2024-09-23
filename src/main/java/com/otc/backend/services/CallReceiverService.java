@@ -1,7 +1,6 @@
 package com.otc.backend.services;
 
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,5 +36,6 @@ public interface CallReceiverService {
 
     public List<CallReceiver> getCallReceiversByUsername(String username);
 
-    
+
+    List<CallReceiver> getAllCallReceivers();
 }

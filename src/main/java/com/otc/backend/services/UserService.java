@@ -40,7 +40,7 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public ApiResponse<Users> registerUser(RegistrationDto registrationDtoBody){
+    public ApiResponse<Users> registerUser(RegistrationDto registrationDtoBody) {
 
         try {
             String firstName = registrationDtoBody.getFirstName();
@@ -50,14 +50,14 @@ public class UserService implements UserDetailsService {
             String telephone = registrationDtoBody.getTelephone();
             String username;
 
-            String name = firstName +lastName;
+            String name = firstName + lastName;
             boolean nameTaken = true;
             String tempName = " ";
 
-            while(nameTaken) {
+            while (nameTaken) {
                 tempName = generateUserName(name);
 
-                if(userRepository.findByUsername(tempName).isEmpty()){
+                if (userRepository.findByUsername(tempName).isEmpty()) {
                     nameTaken = false;
                 }
             }
@@ -85,7 +85,6 @@ public class UserService implements UserDetailsService {
         }
     }
 
-
     private String generateUserName(String name) {
         long generatedNumber = (long) Math.floor(Math.random() * 1_000_000_000);
         return name + generatedNumber;
@@ -97,16 +96,16 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-   public Users setPassword(String username, String password) {
-     Users user = userRepository.findByUsername(username).orElseThrow(UserDoesNotExistException::new);
-      String encodedPassword = passwordEncoder.encode(password);
-      user.setPassword(encodedPassword);
-         return userRepository.save(user);
+    public Users setPassword(String username, String password) {
+        Users user = userRepository.findByUsername(username).orElseThrow(UserDoesNotExistException::new);
+        String encodedPassword = passwordEncoder.encode(password);
+        user.setPassword(encodedPassword);
+        return userRepository.save(user);
     }
 
-   private Long generatedVerificationNumber() {
-         long generatedNumber = (long)Math.floor(Math.random() * 100_000_000);
-         return  generatedNumber;
+    private Long generatedVerificationNumber() {
+        long generatedNumber = (long) Math.floor(Math.random() * 100_000_000);
+        return generatedNumber;
     }
 
     public Users getUserByUsername(String userName) {
@@ -129,25 +128,31 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public Users updateUser(Long userId, Users updatedUser){
+    public Users updateUserUsername(String username, Users updatedUser) {
+        Users existingUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
 
-        Users user = userRepository.findById(userId).orElseThrow(
-            () -> new ResourceNotFoundException("Call not found with the given Id : " + userId)
-        );
-        user.setFirstName(updatedUser.getFirstName());
-        user.setLastName(updatedUser.getLastName());
-
-        Users updatedUserObj = userRepository.save(user);
-       return updatedUserObj;
-
+        existingUser.setUsername(updatedUser.getUsername());
+        return userRepository.save(existingUser);
     }
 
-    public void deleteUser(Long userId) {
-        Users user = userRepository.findById(userId).orElseThrow(
-            () -> new ResourceNotFoundException("User not found with the given Id : " + userId)
+    public Users updateUser(String username, Users updatedUser) {
+        Users existingUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+        existingUser.setLastName(updatedUser.getLastName());
+        existingUser.setFirstName(updatedUser.getFirstName());
+        existingUser.setEmailAddress(updatedUser.getEmailAddress());
+        existingUser.setTelephone(updatedUser.getTelephone());
+
+        return userRepository.save(existingUser);
+    }
+
+    public void deleteUser(String username) {
+        Users user = userRepository.findByUsername(username).orElseThrow(
+                () -> new ResourceNotFoundException("User not found with the given Id : " + username)
         );
 
-        userRepository.deleteById(userId);
+        userRepository.deleteByUsername(username);
     }
 
 
@@ -177,19 +182,17 @@ public class UserService implements UserDetailsService {
     }
 
     public String getUserFirstName(String username) {
-       
+
         return userRepository.findFirstNameByUsername(username);
     }
 
     public String getUserLastName(String username) {
-    
+
         return userRepository.findLastNameByUsername(username);
     }
 
     public String getUserEmail(String username) {
-      
+
         return userRepository.findEmailByUsername(username);
     }
-
-
 }

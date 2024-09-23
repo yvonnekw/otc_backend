@@ -7,8 +7,8 @@ public class InvoiceDto {
 
     private Long invoiceId;
     private String invoiceDate;
-    private String status; // Status of the invoice (e.g., "Invoiced", "Paid", "Overdue")
-    private String totalAmount; // Total amount of the invoice
+    private String status;
+    private String totalAmount;
     private List<Long> callIds;
     private String username;
 

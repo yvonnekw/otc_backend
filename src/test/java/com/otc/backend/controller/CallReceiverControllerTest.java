@@ -12,35 +12,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.github.javafaker.Faker;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 class CallReceiverControllerTest extends TestBase {
-/*
-    private static final Logger logger = LoggerFactory.getLogger(CallReceiverControllerTest.class);
 
-    private static final Faker faker = new Faker();
-    @Autowired
-    TestRestTemplate restTemplate;
-
-    @Autowired
-    CallReceiverDtoGenerator callReceiverDtoGenerator;
-
-    HttpHeaders headers = new HttpHeaders();
-
-    @Autowired
-    RegistrationDtoGenerator registrationDtoGenerator;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    */
-
+    @Container
+    static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:16");
     @Test
+
     public void addCallReceiverTest(){
         ResponseEntity<String> callReceiverResponse = addCallReceiver();
         assertEquals(HttpStatus.OK, callReceiverResponse.getStatusCode());

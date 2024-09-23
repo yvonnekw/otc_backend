@@ -10,11 +10,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.otc.backend.exception.CallReceiverCreationException;
 import com.otc.backend.response.ApiResponse;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +33,7 @@ import com.otc.backend.dto.CallReceiverDto;
 import com.otc.backend.models.Call;
 import com.otc.backend.models.CallReceiver;
 import com.otc.backend.models.Users;
-import com.otc.backend.publisher.RabbitMQJsonProducer;
+//import com.otc.backend.publisher.RabbitMQJsonProducer;
 import com.otc.backend.services.CallReceiverService;
 import com.otc.backend.services.CallService;
 import com.otc.backend.services.UserService;
@@ -43,12 +45,13 @@ public class CallReceiverController {
 
     private static final Logger logger = LoggerFactory.getLogger(CallReceiverController.class);
 
-    private final RabbitMQJsonProducer rabbitMQJsonProducer;
+    //private final RabbitMQJsonProducer rabbitMQJsonProducer;
     private final CallReceiverService callReceiverService;
 
-    public CallReceiverController(CallReceiverService callReceiverService, RabbitMQJsonProducer rabbitMQJsonProducer) {
+    //, RabbitMQJsonProducer rabbitMQJsonProducer
+    public CallReceiverController(CallReceiverService callReceiverService) {
         this.callReceiverService = callReceiverService;
-        this.rabbitMQJsonProducer = rabbitMQJsonProducer;
+        //this.rabbitMQJsonProducer = rabbitMQJsonProducer;
     }
 
     @GetMapping("/call")
@@ -67,15 +70,13 @@ public class CallReceiverController {
         try {
             String telephone = callReceiverDTO.getTelephone();
             String username = callReceiverDTO.getUsername();
-           // String fullName = callReceiverDTO.getFullName();
-           // String relationship = callReceiverDTO.getRelationship();
 
             logger.info("Received request to register call receiver for user: " + username);
 
             if (callReceiverService.isPhoneNumberRegisteredForUser(username, telephone)) {
                 ApiResponse<CallReceiver> response = new ApiResponse<>(false,
                         "Phone number is already registered for the user. Please register another phone number."
-                        );
+                );
                 return ResponseEntity.badRequest().body(response);
             }
 
@@ -83,16 +84,16 @@ public class CallReceiverController {
             logger.info("Call receiver registered successfully: " + callReceiver);
 
             try {
-                rabbitMQJsonProducer.sendJsonMessage(callReceiver);
+                //rabbitMQJsonProducer.sendJsonMessage(callReceiver);
                 ApiResponse<CallReceiver> response = new ApiResponse<>(true, "Phone number registered successfully.",
-                        callReceiver, "Message sent to RabbitMQ successfully.");
+                        callReceiver);
                 return ResponseEntity.ok(response);
             } catch (AmqpException e) {
-                logger.error("Error sending message to RabbitMQ: " + e.getMessage());
+                //logger.error("Error sending message to RabbitMQ: " + e.getMessage());
                 e.printStackTrace();
                 ApiResponse<CallReceiver> response = new ApiResponse<>(true,
-                        "Phone number registered successfully, but failed to notify RabbitMQ.", callReceiver,
-                        "Failed to send message to RabbitMQ.");
+                        "Phone number registered successfully, but failed to notify RabbitMQ.", callReceiver
+                );
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
             }
         } catch (CallReceiverCreationException e) {
@@ -104,7 +105,7 @@ public class CallReceiverController {
             logger.error("Error registering new call receiver: " + e.getMessage());
             e.printStackTrace();
             ApiResponse<CallReceiver> response = new ApiResponse<>(false, "An internal error occurred.");
-          
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -122,107 +123,43 @@ public class CallReceiverController {
         return ResponseEntity.ok(phoneNumbers);
     }
 
+    @Transactional
     @GetMapping("/call-receivers")
-public ResponseEntity<List<CallReceiverDto>> getCallReceiversByUsername(@RequestParam String username) {
-    if (username == null || username.isEmpty()) {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<List<CallReceiverDto>> getCallReceiversByUsername(@RequestParam String username) {
+        if (username == null || username.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<CallReceiver> callReceivers = callReceiverService.getCallReceiversByUsername(username);
+
+        // Convert CallReceiver objects to CallReceiverDTO objects containing only fullName and telephone
+        List<CallReceiverDto> callReceiverDtos = callReceivers.stream()
+                .map(callReceiver -> new CallReceiverDto(callReceiver.getFullName(), callReceiver.getTelephone()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(callReceiverDtos);
     }
 
-    List<CallReceiver> callReceivers = callReceiverService.getCallReceiversByUsername(username);
-    
-    // Convert CallReceiver objects to CallReceiverDTO objects containing only fullName and telephone
-    List<CallReceiverDto> callReceiverDtos = callReceivers.stream()
-            .map(callReceiver -> new CallReceiverDto(callReceiver.getFullName(), callReceiver.getTelephone()))
-            .collect(Collectors.toList());
+    @Transactional
+    @GetMapping("/get-all-receivers")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<CallReceiverDto>> getCallReceiversByUsername() {
 
-    return ResponseEntity.ok(callReceiverDtos);
-}
-    /*
-     * @GetMapping("/phone-numbers/{username}")
-     * public ResponseEntity<List<CallReceiver>>
-     * getDistinctPhoneNumbersForUser(@PathVariable String username) {
-     * List<CallReceiver> phoneNumbers =
-     * callReceiverService.getCallReceiversByUsername(username);
-     * return new ResponseEntity<>(phoneNumbers, HttpStatus.OK);
-     * }
-     */
-    /*
-     * @GetMapping("/phone-numbers/{username}")
-     * public ResponseEntity<List<String>>
-     * findDistinctTelephoneByUserUsername(@PathVariable String username) {
-     * List<String> phoneNumbers =
-     * callReceiverService.getCallReceiversByUsername(username);
-     * return new ResponseEntity<>(phoneNumbers, HttpStatus.OK);
-     * }
-     * 
-     * 
-     * @GetMapping("/phone-numbers")
-     * public ResponseEntity<List<String>>
-     * findDistinctTelephoneByUserUsername(@RequestParam String username) {
-     * System.out.println("username " + username);
-     * if (username == null || username.isEmpty()) {
-     * return ResponseEntity.badRequest().build();
-     * }
-     * 
-     * List<String> phoneNumbers =
-     * callReceiverService.findDistinctTelephoneByUserUsername(username);
-     * 
-     * System.out.println("phone numbers " + phoneNumbers);
-     * return ResponseEntity.ok(phoneNumbers);
-     * 
-     */
+        List<CallReceiver> callReceivers = callReceiverService.getAllCallReceivers();
 
-    /*
-     * @GetMapping("/phone-exists")
-     * public ResponseEntity<Boolean> checkPhoneNumberExists(
-     * 
-     * @RequestParam String username,
-     * 
-     * @RequestParam String telephone) {
-     * 
-     * // Check if either username or phoneNumber is missing
-     * if (username == null || username.isEmpty() || telephone == null ||
-     * telephone.isEmpty()) {
-     * return ResponseEntity.badRequest().build();
-     * }
-     * 
-     * // Perform the check for phone number existence
-     * boolean exists = callReceiverService.checkPhoneNumberExistsForUser(username,
-     * telephone);
-     * System.out.println("yes or no  " + exists);
-     * return ResponseEntity.ok(exists);
-     * }
-     * 
-     */
+        // Map CallReceiver entities to CallReceiverDto
+        List<CallReceiverDto> callReceiverDtos = callReceivers.stream()
+                .map(callReceiver -> {
+                    // Convert CallReceiver to CallReceiverDto (adjust mapping logic as needed)
+                    CallReceiverDto dto = new CallReceiverDto();
+                    dto.setCallReceiverId(callReceiver.getCallReceiverId());
+                    dto.setFullName(callReceiver.getFullName());
+                    dto.setTelephone(callReceiver.getTelephone());
+                    dto.setRelationship(callReceiver.getRelationship());
+                    return dto;
+                })
+                .collect(Collectors.toList());
 
-    /*
-     * @GetMapping("/tele")
-     * public ResponseEntity<List<String>>
-     * getDistinctPhoneNumbersForUser(@RequestBody LinkedHashMap<String, String>
-     * body) {
-     * //List<String> phoneNumbers =
-     * callReceiverService.getDistinctPhoneNumbersForUser(username);
-     * // return ResponseEntity.ok(phoneNumbers);
-     * //String username = requestBody.get("username");
-     * String username = body.get("username");
-     * if (username == null) {
-     * return ResponseEntity.badRequest().build();
-     * }
-     * 
-     * List<String> phoneNumbers =
-     * callReceiverService.getDistinctPhoneNumbersForUser(username);
-     * return ResponseEntity.ok(phoneNumbers);
-     * }
-     * 
-     * /*
-     * 
-     * @GetMapping("/phone-numbers/{username}")
-     * public ResponseEntity<List<String>>
-     * getDistinctPhoneNumbersForUser(@PathVariable String username) {
-     * List<String> phoneNumbers =
-     * callReceiverService.getDistinctPhoneNumbersForUser(username);
-     * return new ResponseEntity<>(phoneNumbers, HttpStatus.OK);
-     * }
-     */
-
+        return ResponseEntity.ok(callReceiverDtos);
+    }
 }

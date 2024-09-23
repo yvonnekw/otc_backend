@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,6 +24,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class CallControllerTest extends TestBase {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationControllerTest.class);
+
+    @Container
+    static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:16");
 
     @Autowired
     TestRestTemplate restTemplate;
@@ -36,7 +41,9 @@ class CallControllerTest extends TestBase {
 
         logger.info("call receiver response body " + responseBody);
         String telephone = extractData(responseBody, "telephone");
-        String username = extractData(responseBody, "username");
+        logger.info("extracted telephone number " + telephone);
+        String username = extract(responseBody, "username");
+        logger.info("extracted username " + username);
 
         JSONObject requestBody = callDtoGenerator.makeCallDto(telephone, username);
 
@@ -47,10 +54,4 @@ class CallControllerTest extends TestBase {
 
         assertEquals(HttpStatus.OK, makeCallResponse.getStatusCode());
     }
-
-   
-
-
-
-
 }

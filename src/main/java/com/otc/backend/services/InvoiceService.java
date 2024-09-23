@@ -13,8 +13,6 @@ public interface InvoiceService {
 
     Invoice getInvoiceById(Long invoiceId);
 
-   // Invoice createInvoice(Long invoiceId);
-
     Invoice updateInvoice(Long invoiceId, Invoice invoiceDetails);
 
     void deleteInvoice(Long invoiceId);
@@ -23,30 +21,8 @@ public interface InvoiceService {
 
     List<InvoiceDto> getAllInvoicesWithCallIds();
 
-    //Invoice createInvoiceForCalls(Set<Call> calls);
-    //Invoice createInvoiceForCalls(Invoice invoice);
     InvoiceDto createInvoiceForCalls(InvoiceDto invoiceDTO);
 
     List<InvoiceDto> getInvoicesByUsername(String username);
 
-    //ResponseEntity<List<InvoiceDto>> getInvoicesByUsername(String username);
-    //List<InvoiceDto> getInvoicesByUsername(String username);
-
-    // BigDecimal createInvoiceForCalls(Set<Call> calls);
-
-   // List<Call> getAllPaidCalls();
-
-   // List<Call> getAllUnpaidCalls();
-
-   //void generateInvoiceForCalls(List<Call> calls);
-
-   // void triggerInvoiceCreation(String username, InvoiceWithCallIdsDTO invoiceWithCallIdsDTO);
-    //List<Invoice> getAllInvoices();
-
-    //List<Invoice> findAllInvoicesWithCallsAndUser();
-
-    //List<Invoice> findAllInvoiceCallsUser();
-
-    ///List<Invoice> findAllInvoicesWithCallsAndUsers();
-    
 }

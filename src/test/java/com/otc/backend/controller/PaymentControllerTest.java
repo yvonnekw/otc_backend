@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,11 +27,15 @@ class PaymentControllerTest extends TestBase {
 
     private static final Logger logger = LoggerFactory.getLogger(UserControllerTest.class);
 
+    @Container
+    static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:16");
+
     @Autowired
     TestRestTemplate restTemplate;
 
     @Test
     void createPayment() throws JSONException {
+
         CallDtoGenerator callDtoGenerator = new CallDtoGenerator();
         ResponseEntity<String> callReceiverResponse = addCallReceiver();
         assertEquals(HttpStatus.OK, callReceiverResponse.getStatusCode());
@@ -38,14 +44,15 @@ class PaymentControllerTest extends TestBase {
 
         logger.info("call receiver response body " + responseBody);
         String telephone = extractData(responseBody, "telephone");
-        String username = extractData(responseBody, "username");
+        String username = extract(responseBody, "username");
 
         JSONObject requestBody = callDtoGenerator.makeCallDto(telephone, username);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody.toString(), headers);
-        ResponseEntity<String> makeCallResponse = restTemplate.exchange("/calls/make-call", HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> makeCallResponse = restTemplate.exchange("/calls/make-call", HttpMethod.POST,
+                requestEntity, String.class);
 
         assertEquals(HttpStatus.OK, makeCallResponse.getStatusCode());
 
@@ -53,8 +60,7 @@ class PaymentControllerTest extends TestBase {
 
         String callId = makeCallResponse.getBody();
         String extractedCallId = extractData(callId, "callId");
-
-        logger.info("Call id " + extractedCallId);
+        logger.info("extracted call ID " + extractedCallId);
 
         JSONArray callIdsArray = new JSONArray();
         callIdsArray.put(extractedCallId);
@@ -62,19 +68,25 @@ class PaymentControllerTest extends TestBase {
         JSONObject jsonRequestBody = new JSONObject();
         jsonRequestBody.put("callIds", callIdsArray);
 
-        String requestBodyString = jsonRequestBody.toString();
+        logger.info("Call id request body string " + callIdsArray);
 
-        logger.info("Call id request body string " + requestBodyString);
+        String requestBodyString = "{"
+                + "\"username\": \"" + username + "\","
+                + "\"callIds\": " + callIdsArray
+                + "}";
+
+        logger.info("full request body " + requestBodyString);
 
         HttpEntity<String> invoiceRequestEntity = new HttpEntity<>(requestBodyString, headers);
-        ResponseEntity<String> invoiceResponse = restTemplate.exchange("/invoices/create-invoice", HttpMethod.POST, invoiceRequestEntity, String.class);
+        ResponseEntity<String> invoiceResponse = restTemplate.exchange("/invoices/create-invoice", HttpMethod.POST,
+                invoiceRequestEntity, String.class);
 
         logger.info("invoice response " + invoiceResponse.getBody());
 
         assertEquals(HttpStatus.OK, invoiceResponse.getStatusCode());
 
         String invoiceId = invoiceResponse.getBody();
-        String extractedInvoiceId = extractData(invoiceId, "invoiceId");
+        String extractedInvoiceId = extractInvoiceId(invoiceId);
 
         logger.info("invoice Id - in create payment test: " + extractedInvoiceId);
 
@@ -88,7 +100,5 @@ class PaymentControllerTest extends TestBase {
         ResponseEntity<String> paymentResponse = restTemplate.exchange("/payments/payment", HttpMethod.POST, paymentRequestEntity, String.class);
 
         assertEquals(HttpStatus.OK, paymentResponse.getStatusCode());
-
-
     }
 }
