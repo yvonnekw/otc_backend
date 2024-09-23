@@ -51,7 +51,7 @@ jobs:
       - name: Build with Maven
         run:
           #cd otc-backend
-          mvn -B package --DskipTests --file pom.xml
+          mvn -B package -DskipTests --file pom.xml
           
           
       - name: Logging to Docker
