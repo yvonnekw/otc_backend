@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.github.javafaker.Faker;
 
@@ -22,7 +24,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class CallReceiverControllerTest extends TestBase {
 
+    @Container
+    static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:16");
     @Test
+
     public void addCallReceiverTest(){
         ResponseEntity<String> callReceiverResponse = addCallReceiver();
         assertEquals(HttpStatus.OK, callReceiverResponse.getStatusCode());

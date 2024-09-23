@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +29,11 @@ class AuthenticationControllerTest extends TestBase {
     public DockerComposeContainer<?> environment =
             new DockerComposeContainer<>(new File(System.getProperty("user.dir")+"/docker-compose.yml"))
                     .withLocalCompose(true);*/
+
+    @Container
+
+    static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:16");
+
     @Autowired
     TestRestTemplate restTemplate;
 

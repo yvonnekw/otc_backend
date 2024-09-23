@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,6 +26,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class PaymentControllerTest extends TestBase {
 
     private static final Logger logger = LoggerFactory.getLogger(UserControllerTest.class);
+
+    @Container
+    static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:16");
 
     @Autowired
     TestRestTemplate restTemplate;

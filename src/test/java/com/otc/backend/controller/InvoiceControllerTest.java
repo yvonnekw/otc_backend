@@ -22,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 
 import com.otc.backend.base.TestBase;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
@@ -30,6 +32,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public class InvoiceControllerTest extends TestBase {
 
     public static final Logger logger = LoggerFactory.getLogger(AuthenticationControllerTest.class);
+
+    @Container
+    static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:16");
 
     @Autowired
     TestRestTemplate restTemplate;

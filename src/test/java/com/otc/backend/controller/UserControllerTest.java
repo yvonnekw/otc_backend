@@ -31,11 +31,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserControllerTest {
 
     private static final Logger logger = LoggerFactory.getLogger(UserControllerTest.class);
-    /*
-        //@Container
-       // @ServiceConnection
-        //static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:16");
 
+        @Container
+        //@ServiceConnection
+        static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:16");
+/*
         @Container
         public DockerComposeContainer<?> environment =
                 new DockerComposeContainer<>(new File(System.getProperty("user.dir")+"/docker-compose.yml"))
